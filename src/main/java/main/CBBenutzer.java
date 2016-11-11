@@ -1,7 +1,6 @@
 package main;
 
 import Entitys.Benutzer;
-import java.util.concurrent.locks.Lock;
 
 /**
  *
@@ -11,7 +10,21 @@ public class CBBenutzer {
 
     private Benutzer benutzer;
     
-    private Lock lock;
+    private Boolean lock;
     
+    
+    public CBBenutzer(Benutzer benutzer) {
+        this.benutzer = benutzer;
+        
+        lock = false;
+    }
+    
+    public void release() {
+        lock = false;
+    }
+    
+    public void gain() {
+        lock = true;
+    }
     
 }

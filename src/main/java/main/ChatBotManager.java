@@ -2,6 +2,7 @@ package main;
 
 import Controller.ControllerPool;
 import DBBot.BotPool;
+import java.util.HashMap;
 
 /**
  *
@@ -9,16 +10,19 @@ import DBBot.BotPool;
  */
 public class ChatBotManager {
     
-    private ChatBotManager manager;
+    private static ChatBotManager manager;
     
     private final BotPool botPool;
     
     private final ControllerPool contPool;
+    
+    private final HashMap<CBPlattform,CBBenutzer> benutzer;
 
     private ChatBotManager() {
         
         this.botPool = new BotPool();
         this.contPool = new ControllerPool();
+        benutzer = new HashMap<>();
         
     }
     
@@ -26,20 +30,19 @@ public class ChatBotManager {
      * Gibt das Singelton ChatBotManager zurück.
      * @return 
      */
-    public ChatBotManager getInstance() {
+    public static ChatBotManager getInstance() {
         if(manager == null) {
             manager = new ChatBotManager();
         }
         
         return manager;
     }
-
     
     /**
      * Gibt den BotPool zurück.
      * @return 
      */
-    public BotPool getBotPool() {
+    public BotPool gibBotPool() {
         return botPool;
     }
 
@@ -47,8 +50,18 @@ public class ChatBotManager {
      * Gibt den ControllerPool zurück.
      * @return 
      */
-    public ControllerPool getContPool() {
+    public ControllerPool gibContPool() {
         return contPool;
+    }
+    
+    public CBBenutzer gibBenutzer(CBPlattform pt) {
+        
+        CBBenutzer be = benutzer.get(pt);
+        
+        //Zugriffe zählen/verwalten
+        
+        return be;
+        
     }
      
 }

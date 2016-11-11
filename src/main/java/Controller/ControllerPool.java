@@ -1,34 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
+import com.google.gson.JsonObject;
 import java.util.concurrent.ExecutorService;
-import static java.util.concurrent.Executors.newCachedThreadPool;
+import java.util.concurrent.Executors;
 
 /**
  *
  * @author Seve
  */
 public class ControllerPool {
-    private ExecutorService exeSer = newCachedThreadPool();
+      
+    private static final int POOL_SIZE = 30;
+    
+    private ExecutorService pool;
+    
     public void controller(String id){
-        Runnable con = new ControllerThread(id);
-        exeSer.submit(con);
         
-    }
-    public void beenden(){
-        exeSer.shutdown();
+        pool = Executors.newFixedThreadPool(POOL_SIZE);
+        
     }
     
-    public static void main(String[] args) {
-        ControllerPool conpo = new ControllerPool();
-        for (int i = 0; i < 10; i++) {
-            conpo.controller("" + i);
-        }
+    public void loese(JsonObject json) {
         
-        conpo.beenden();
+        pool.submit(new ControllerThread(json));
+        
     }
+
 }

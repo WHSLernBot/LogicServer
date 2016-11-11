@@ -1,22 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
+
+import DAO.DAO;
+import com.google.gson.JsonObject;
+import main.CBBenutzer;
+import main.CBPlattform;
+import main.ChatBotManager;
+
 /**
  *
  * @author Sebastian
  */
 public class ControllerThread implements Runnable{
-    private String id;
-    public ControllerThread(String id){
-        this.id = id;
+    
+    private final JsonObject json;
+    
+    private final ChatBotManager manager;
+    
+    private final DAO dao;
+    
+    private CBBenutzer benutzer;
+    
+    public ControllerThread(JsonObject json) {
+        this.json = json;
+        manager = ChatBotManager.getInstance();
+        dao = DAO.getInstance();
     }
     
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName()+ "####Ich bin User: " + id);
+        System.out.println(json.get("id"));
+        
+        CBPlattform pt = new CBPlattform(json.get("id").getAsLong(),
+                json.get("plattform").getAsInt());
+        
+        
+        benutzer = manager.gibBenutzer(pt);
+        
+        if (benutzer == null) {
+            sucheBenutzer(pt);
+        }
+        
     }
     
+    private void sucheBenutzer(CBPlattform pt) {
+        
+        
+        
+    }
 }
