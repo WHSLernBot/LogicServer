@@ -1,6 +1,7 @@
 package DAO;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -8,11 +9,23 @@ import javax.persistence.EntityManager;
  */
 public class DAO {
     
+    private static DAO dao;
+    
     private EntityManager em;
     
-    public DAO(EntityManager em) {
-        this.em = em;
+    private DAO() {
+
+        em = Persistence.createEntityManagerFactory("LernServletPU").createEntityManager();
         
+    }
+    
+    public static DAO getInstance() {
+        
+        if(dao == null) {
+            dao = new DAO();
+        }
+        
+        return dao;
     }
     
 }
