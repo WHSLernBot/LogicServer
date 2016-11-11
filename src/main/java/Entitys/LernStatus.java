@@ -1,6 +1,8 @@
 package Entitys;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -28,9 +30,77 @@ public class LernStatus implements Serializable {
     
     private Boolean aktiv;
     
+    private int richtige;
+    
+    private int sumPunkte;
+    
+    private Date letztesDatum;
+    
+    private Timestamp letzteAktualisierung;
+    
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> beAufgaben;
 
+    @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Collection<ZuAufgabe> zuAufgaben;
+    
+    @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Collection<XGAufgabe> xgAufgaben;
+    
+    
+    public LernStatus(){
+        
+    }
+    
+    public LernStatus(Boolean aktiv, int richtige, int sumPunkte, Date letztesDatum,
+            Timestamp letzteAktualisierung){
+        this.aktiv = aktiv;
+        this.richtige = richtige;
+        this.sumPunkte = sumPunkte;
+        this.letztesDatum = letztesDatum;
+        this.letzteAktualisierung = letzteAktualisierung;
+    }
+    
+    public void setAktiv(Boolean aktiv){
+        this.aktiv = aktiv;
+    }
+    
+    public boolean getAktiv(){
+        return aktiv;
+    }
+    
+    public void setRichtige(int richtige){
+        this.richtige = richtige;
+    }
+    
+    public int getRichtige(){
+        return richtige;
+    }
+    
+    public void setSumPunkte(int sumPunkte){
+        this.sumPunkte = sumPunkte;
+    }
+    
+    public int getSumPunkte(){
+        return sumPunkte;
+    }
+    
+    public void setLetztesDatum(Date letztesDatum){
+        this.letztesDatum = letztesDatum;
+    }
+    
+    public Date getLetztesDatum(){
+        return letztesDatum;
+    }
+    
+    public void setLetzteAktualisierung(Timestamp letzteAktualisierung){
+        this.letzteAktualisierung = letzteAktualisierung;
+    }
+    
+    public Timestamp getLetzteAktualisierung(){
+        return letzteAktualisierung;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

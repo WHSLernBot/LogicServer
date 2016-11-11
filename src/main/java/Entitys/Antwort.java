@@ -21,20 +21,64 @@ public class Antwort implements Serializable {
     
     @Id
     private int nummer;
-    
-    private String antwort;
+ 
+    private String antwort; 
     
     private Boolean richtig;
     
     private long haeufigkeit;
 
+    public Antwort(){
+        
+    }
+    
+    public Antwort(int nummer, String antwort, Boolean richtig, long haeufigkeit){
+       this.nummer = nummer;
+       this.antwort = antwort;
+       this.richtig = richtig;
+       this.haeufigkeit = haeufigkeit;
+    }
+    
+    public void setNummer(int nummer){
+        this.nummer = nummer;
+    }
+    
+    public int getNummer(){
+        return nummer;
+    }
+    
+    public void setAntwort(String antwort){
+        this.antwort = antwort;
+    }
+    
+    public String getAntwort(){
+        return antwort;
+    }
+    
+    public void setRichtig(boolean richtig){
+        this.richtig = richtig;
+    }
+    
+    public Boolean getRichtig(){
+        return richtig;
+    }
+    
+    public void setHaeufigkeit(long haeufigkeit){
+        this.haeufigkeit = haeufigkeit;
+    }
+    
+    public long getHaeufigkeit(){
+        return haeufigkeit;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 47 * hash + Objects.hashCode(this.antwort);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

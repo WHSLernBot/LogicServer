@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class TeilnahmePK implements Serializable {
     
-    private Long benutzer;
+    private Benutzer benutzer;
     
     private Klausur klausur;
 

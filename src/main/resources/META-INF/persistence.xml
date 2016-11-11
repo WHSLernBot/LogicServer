@@ -14,6 +14,10 @@
     <class>Entitys.Thema</class>
     <class>Entitys.Token</class>
     <class>Entitys.Uni</class>
+    <class>Entitys.Pruefungsperiode</class>
+    <class>Entitys.Statistik</class>
+    <class>Entitys.ZuAufgabe</class>
+    <class>Entitys.XGAufgabe</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/BotData"/>
       <property name="javax.persistence.jdbc.password" value=""/>

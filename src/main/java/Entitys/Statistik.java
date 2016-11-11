@@ -1,45 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Entitys;
 
 import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 /**
  *
- * @author Seve
+ * @author Betül
  */
 @Entity
-public class Uni implements Serializable {
-
+public class Statistik implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private String name;
+    @ManyToOne
+    private Modul modul;
     
-    @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<Benutzer> benutzer;
+    private int woche;
     
-    @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<Modul> modul;
+    private int anteil;
     
-    @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Pruefungsperiode pruefungsperiode;
-    
-    
-    public Uni(){
+    public Statistik(){
         
     }
     
-    public Uni(Long id, String name){
-        this.id = id;
-        this.name = name;
+    public Statistik(int woche, int anteil){
+        this.woche = woche;
+        this.anteil = anteil;
+    }
+    
+    public void setWoche(int woche){
+        this.woche = woche;
+    }
+    
+    public int getWoche(){
+        return woche;
+    }
+    
+    public void setAnteil(int anteil){
+        this.anteil = anteil;
+    }
+    
+    public int getAnteil(){
+        return anteil;
     }
 
     public Long getId() {
@@ -50,14 +62,6 @@ public class Uni implements Serializable {
         this.id = id;
     }
 
-    public void setName(String name){
-        this.name = name;
-    }
-    
-    public String getName(){
-        return name;
-    }
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -68,10 +72,10 @@ public class Uni implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Uni)) {
+        if (!(object instanceof Statistik)) {
             return false;
         }
-        Uni other = (Uni) object;
+        Statistik other = (Statistik) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -80,7 +84,7 @@ public class Uni implements Serializable {
 
     @Override
     public String toString() {
-        return "Entitys.Uni[ id=" + id + " ]";
+        return "Entitys.Statistik[ id=" + id + " ]";
     }
     
 }

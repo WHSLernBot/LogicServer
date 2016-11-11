@@ -27,7 +27,54 @@ public class BeAufgabe implements Serializable {
     private Boolean richtig;
     
     private Date datum;
+    
+    private Boolean hinweis;
+    
+    private Boolean beantwortet;
+    
+    public BeAufgabe(){
+        
+    }
+    
+    public BeAufgabe(Boolean richtig, Date datum, Boolean hinweis, Boolean beantwortet){
+        this.richtig = richtig;
+        this.datum = datum;
+        this.hinweis = hinweis;
+        this.beantwortet = beantwortet;
+    }
 
+    public void setRichtig(Boolean richtig){
+        this.richtig = richtig;
+    }
+    
+    public Boolean getRichtig(){
+        return richtig;
+    }
+    
+    public void setDatum(Date datum){
+        this.datum = datum;
+    }
+    
+    public Date getDatum(){
+        return datum;
+    }
+    
+    public void setHinweis(Boolean hinweis){
+        this.hinweis = hinweis;
+    }
+    
+    public Boolean getHinweis(){
+        return hinweis;
+    }
+    
+    public void setBeantwortet(Boolean beantwortet){
+        this.beantwortet = beantwortet;
+    }
+    
+    public Boolean getBeantwortet(){
+        return beantwortet;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

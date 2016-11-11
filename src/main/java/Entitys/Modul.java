@@ -32,7 +32,37 @@ public class Modul implements Serializable {
     
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Klausur> klausuren;
+    
+    @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Statistik statistik;
 
+    
+    public Modul(){
+        
+    }
+    
+    public Modul(String kuerzel, String name){
+        this.kuerzel = kuerzel;
+        this.name = name;
+    }
+    
+    public void setKuerzel(String kuerzel){
+        this.kuerzel = kuerzel;
+    }
+    
+    public String getKuerzel(){
+        return kuerzel;
+    }
+    
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 7;

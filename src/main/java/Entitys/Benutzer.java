@@ -40,10 +40,43 @@ public class Benutzer implements Serializable {
     @OneToOne(mappedBy="benutzer")
     private Plattform plattform;
 
-    public Long getId() {
+    
+    public Benutzer(){
+        
+    }
+    
+    public Benutzer(Long id, String name, Date letzteAntwort){
+        this.id = id;
+        this.name = name;
+        this.letzteAntwort = letzteAntwort;
+    }
+    
+   
+
+    public void setId(Long id){
+        this.id = id;
+    }
+    
+    public Long getId(){
         return id;
     }
-
+    
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public void setLetzteAntwort(Date letzteAntwort){
+        this.letzteAntwort = letzteAntwort;
+    }
+    
+    public Date getLetzteAntwort(){
+        return letzteAntwort;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

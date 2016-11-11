@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 public class Plattform implements Serializable {
 
     @Id
-    private Long pfID;
+    private String pfID;
 
     @Id
     private int pfNr;
@@ -26,6 +26,37 @@ public class Plattform implements Serializable {
     
     private String witSession;
 
+    public Plattform(String pfID, int pfNr, String witSession){
+        this.pfID = pfID;
+        this.pfNr = pfNr;
+        this.witSession = witSession;
+    }
+    
+    public void setPfID(String pfID){
+        this.pfID = pfID; 
+    }
+    
+    public String getPfID(){
+        return pfID;
+    }
+       
+    public void setPfNr(int pfNr){
+        this.pfNr = pfNr;  
+    }
+    
+    public int getPfNr(){
+        return pfNr;
+    }
+    
+    public void setWitSession(String witSession){
+        this.witSession = witSession;
+    }
+    
+    public String getWitSession(){
+        return witSession;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 7;

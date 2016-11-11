@@ -27,6 +27,9 @@ public class Klausur implements Serializable {
     @Id
     private Date datum;
     
+    @ManyToOne
+    private Pruefungsperiode pruefungsperiode;
+    
     @OneToMany(mappedBy="klausur", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
     
@@ -36,6 +39,84 @@ public class Klausur implements Serializable {
     
     //Time als format??
     private Time dauer;
+    
+    private int durchschnitt;
+    
+    private String hilfsmittel;
+    
+    private int quotient;
+    
+    public Klausur(){
+        
+    }
+    
+    public Klausur(Date datum, Time uhrzeit, Time dauer, String ort,
+            int durchschnitt, String hilfsmittel, int quotient){
+        
+        this.datum = datum;
+        this.uhrzeit = uhrzeit;
+        this.dauer = dauer;
+        this.ort = ort;
+        this.durchschnitt = durchschnitt;
+        this.hilfsmittel = hilfsmittel;
+        this.quotient = quotient;
+    }
+    
+    public void setDatum(Date datum){
+        this.datum = datum;
+    }
+    
+    public Date getDatum(){
+        return datum;
+    }
+    
+    public void setUhrzeit(Time uhrzeit){
+        this.uhrzeit = uhrzeit;
+    }
+    
+    public Time getUhrzeit(){
+        return uhrzeit;
+    }
+    
+    public void setDauer(Time dauer){
+        this.dauer = dauer;
+    }
+    
+    public Time getDauer(){
+        return dauer;
+    }
+    
+    public void setOrt(String ort){
+        this.ort = ort;
+    }
+    
+    public String getOrt(){
+        return ort;
+    }
+    
+    public void setDurchschnitt(int durchschnitt){
+        this.durchschnitt = durchschnitt;
+    }
+    
+    public int getDurchschnitt(){
+        return durchschnitt;
+    }
+
+    public void setHilfsmittel(String hilfsmittel){
+        this.hilfsmittel = hilfsmittel;
+    }
+    
+    public String getHilfsmittel(){
+        return hilfsmittel;
+    }
+    
+    public void setQuotient(int quotient){
+        this.quotient = quotient;
+    }
+    
+    public int getQuootient(){
+        return quotient;
+    }
 
     @Override
     public int hashCode() {

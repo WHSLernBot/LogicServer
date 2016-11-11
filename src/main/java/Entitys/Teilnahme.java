@@ -29,6 +29,22 @@ public class Teilnahme implements Serializable {
     private Klausur klausur;
     
     private int note;
+    
+    public Teilnahme(){
+        
+    }
+    
+    public Teilnahme(int note){
+        this.note = note;
+    }
+    
+    public void setNote(int note){
+        this.note = note;
+    }
+    
+    public int getNote(){
+        return note;
+    }
 
     @Override
     public int hashCode() {

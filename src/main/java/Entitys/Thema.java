@@ -24,14 +24,34 @@ public class Thema implements Serializable {
     
     private String name;
     
-    private int prioritaet;
+    private int anteil;
+    
+    private int aufgabenZahl;
     
     @ManyToOne
     private Modul modul;
     
     @OneToMany(mappedBy="thema", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<LernStatus> lernStadi;
+    
+    @OneToMany(mappedBy="thema", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Aufgabe aufgabe;
 
+    
+
+    public Thema(){
+        
+    }
+    
+    public Thema(Long themenID, String name, int anteil, int aufgabenZahl){
+        
+        this.thmenID = themenID;
+        this.name = name;
+        this.anteil = anteil;
+        this.aufgabenZahl = aufgabenZahl;
+    }
+    
+    
     public Long getId() {
         return thmenID;
     }
@@ -39,7 +59,27 @@ public class Thema implements Serializable {
     public void setId(Long id) {
         this.thmenID = id;
     }
-
+    
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public void setAnteil(int anteil){
+        this.anteil = anteil;
+    }
+    
+    public int getAnteil(){
+        return anteil;
+    }
+    
+    public void setAufgabenZahl(int aufgabenZahl){
+        this.aufgabenZahl = aufgabenZahl;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
