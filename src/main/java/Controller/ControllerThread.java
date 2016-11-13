@@ -60,6 +60,8 @@ public class ControllerThread implements Runnable {
                 //doa.setzeName(json.get("Name").toString);
                 break;
         }
+        
+        erstelleJSON();
     }
 
     private CBBenutzer sucheBenutzer(CBPlattform pt) {
