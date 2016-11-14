@@ -40,7 +40,7 @@ public class ControllerThread implements Runnable {
         }
 
         //Manager.setzeBenutzerAktiv(benutzer);
-        switch (json.get("Methode").toString()) {
+        switch (json.get("methode").getAsString()) {
             case "gibAufgabe()":
                 //doa.gibAufgabe(pt);
                 break;
@@ -60,6 +60,20 @@ public class ControllerThread implements Runnable {
                 //doa.setzeName(json.get("Name").toString);
                 break;
         }
+        gibSession
+gibAufgabe
+setzeName
+speichereAntwort
+speichereNote
+gibInfos
+setzeUni
+gibUnis
+setzePruefung
+neueAufgabe
+neuerBenutzer
+gibKlausurInfos
+bewerteAufgabe
+
         
         erstelleJSON();
     }
