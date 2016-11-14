@@ -19,11 +19,11 @@ public class CBBenutzer {
         lock = 0;
     }
     
-    public void release() {
+    public synchronized void release() {
         lock--;
     }
     
-    public void gain() {
+    public synchronized void gain() {
         lock++;
     }
     

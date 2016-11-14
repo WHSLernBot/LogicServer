@@ -84,6 +84,8 @@ public class ChatBotManager {
         try {
            be = benutzer.get(pt); 
            be.gain();
+        } catch (Exception e) {
+            //Error 
         } finally {
             benutzerLock.unlock();
         }
@@ -125,6 +127,9 @@ public class ChatBotManager {
                 setzeTimer();
 
             }
+            
+        } catch (Exception e) {
+            //Error 
         } finally {                
             nachrichtenLock.unlock();
         }
@@ -154,6 +159,8 @@ public class ChatBotManager {
                     it.remove();
 
             }
+        } catch (Exception e) {
+        //Error 
         } finally {                
             nachrichtenLock.unlock();
         }      
@@ -179,6 +186,8 @@ public class ChatBotManager {
                     nachrichten.addFirst(new Nachricht(null,now));  
             }
 
+        } catch (Exception e) {
+        //Error 
         } finally {                
             nachrichtenLock.unlock();
         } 
