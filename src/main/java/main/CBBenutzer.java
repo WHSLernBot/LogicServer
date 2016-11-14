@@ -8,23 +8,34 @@ import Entitys.Benutzer;
  */
 public class CBBenutzer {
 
-    private Benutzer benutzer;
+    private final Benutzer benutzer;
     
-    private Boolean lock;
+    private int lock;
     
     
     public CBBenutzer(Benutzer benutzer) {
         this.benutzer = benutzer;
         
-        lock = false;
+        lock = 0;
     }
     
     public void release() {
-        lock = false;
+        lock--;
     }
     
     public void gain() {
-        lock = true;
+        lock++;
     }
+    
+    public boolean wirdBenutzt() {
+        
+        return lock != 0;
+    }
+
+    public Benutzer getBenutzer() {
+        return benutzer;
+    }
+    
+    
     
 }

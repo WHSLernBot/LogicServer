@@ -10,9 +10,9 @@ public class CBPlattform {
     
     private final Long id;
     
-    private final int plattform;
+    private final short plattform;
 
-    public CBPlattform(Long id, int plattform) {
+    public CBPlattform(Long id, short plattform) {
         this.id = id;
         this.plattform = plattform;
     }
@@ -50,7 +50,7 @@ public class CBPlattform {
         return id;
     }
 
-    public int getPlattform() {
+    public short getPlattform() {
         return plattform;
     }
     
