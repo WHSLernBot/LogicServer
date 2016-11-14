@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.DAO;
+import Message.MessageCreator;
 import com.google.gson.JsonObject;
 import main.CBBenutzer;
 import main.CBPlattform;
@@ -19,19 +20,23 @@ public class ControllerThread implements Runnable {
     private final DAO dao;
 
     private CBBenutzer benutzer;
+    
+    private final MessageCreator messCreator;
 
     public ControllerThread(JsonObject json) {
         this.json = json;
         manager = ChatBotManager.getInstance();
         dao = DAO.getInstance();
+        messCreator = new MessageCreator();
     }
 
     @Override
     public void run() {
-        System.out.println(json.get("id"));
+        long id = json.get("id").getAsLong();
+        short plattform = json.get("plattform").getAsShort();
 
         CBPlattform pt = new CBPlattform(json.get("id").getAsLong(),
-                json.get("plattform").getAsInt());
+                json.get("plattform").getAsShort());
 
         benutzer = manager.gibBenutzer(pt);
 
@@ -39,52 +44,55 @@ public class ControllerThread implements Runnable {
             benutzer = sucheBenutzer(pt);
         }
 
-        //Manager.setzeBenutzerAktiv(benutzer);
+        //manager.setzeBenutzerAktiv(benutzer);
         switch (json.get("methode").getAsString()) {
-            case "gibAufgabe()":
-                //doa.gibAufgabe(pt);
+            case "gibSession":
+                String witSession;
+                witSession = dao.gibSession(id, plattform);
+                messCreator.creat(id,plattform,witSession);
                 break;
-            case "gibInfo()":
-                //doa.gibInfo(pt);
+            case "gibAufgabe": 
+                dao.gibAufgabe(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
                 break;
-            case "gibSession()":
-                //doa.gibSession();
+            case "setzeName":
+                dao.setzeName(id, plattform, json.get("name").getAsString());
                 break;
-            case "setzeAntwort()":
-                //doa.setzteAntwort(json.get("Antwort").toString());
+            case "speichereAntwort":
+                dao.speichereAntwort(id,plattform, json.get("antwort").getAsString());
                 break;
-            case "setzeNote()":
-                //doa.setzteNote(json.get("Note").getAsShort());
+            case "speichereNote":
+                dao.speichereNote(id,plattform, json.get("note").getAsShort());
                 break;
-            case "setzeName()":
-                //doa.setzeName(json.get("Name").toString);
+            case "gibInfos":
+                dao.gibInfos(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
                 break;
+            case "setzeUni":
+                dao.setzeUni(id,plattform, json.get("uni").getAsShort());
+                break;
+            case "gibUnis":
+                dao.gibUnis();
+                break;
+            case "setzePruefung":
+                dao.setzePruefung(id, plattform, json.get("modul").getAsString(), json.get("datum").getAsString());
+                break;
+            case "neueAufgabe":
+                dao.neueAufgabe(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+                break;
+            case "neuerBenutzer":
+                dao.neuerBenutzer(id,plattform);
+                break;
+            case "gibKlausurInfos":
+                dao.gibKlausurInfos(id, plattform, json.get("modul").getAsString(), json.get("datum").getAsString());
+                break;
+            case "bewerteAufgabe":
+                dao.bewerteAufgabe(id, plattform, json.get("aufgabenID").getAsShort(),json.get("like").getAsBoolean());
+                break;
+                
         }
-        gibSession
-gibAufgabe
-setzeName
-speichereAntwort
-speichereNote
-gibInfos
-setzeUni
-gibUnis
-setzePruefung
-neueAufgabe
-neuerBenutzer
-gibKlausurInfos
-bewerteAufgabe
-
-        
-        erstelleJSON();
+           
     }
 
     private CBBenutzer sucheBenutzer(CBPlattform pt) {
         return null; //dao.gibBenutzer(pt);       
-    }
-
-    private JsonObject erstelleJSON() {
-        JsonObject jsonNeu = null;
-
-        return jsonNeu;
     }
 }
