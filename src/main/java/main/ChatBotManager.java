@@ -2,6 +2,7 @@ package main;
 
 import Controller.ControllerPool;
 import DBBot.BotPool;
+import Message.MessageHandler;
 import Message.Nachricht;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -9,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -29,6 +32,10 @@ public class ChatBotManager {
     private final Calendar calendar;
     
     private Timer timer;
+    
+    private final Lock nachrichtenLock;
+    
+    private final Lock benutzerLock;
 
     private ChatBotManager() {
         
@@ -36,6 +43,9 @@ public class ChatBotManager {
         this.contPool = new ControllerPool();
         benutzer = new HashMap<>();
         this.calendar = Calendar.getInstance();
+        
+        nachrichtenLock = new ReentrantLock();
+        benutzerLock = new ReentrantLock();
         
     }
     
@@ -69,10 +79,17 @@ public class ChatBotManager {
     
     public CBBenutzer gibBenutzer(CBPlattform pt) {
         
-        CBBenutzer be = benutzer.get(pt);
+        CBBenutzer be = null;
+        benutzerLock.lock();
+        try {
+           be = benutzer.get(pt); 
+           be.gain();
+        } catch (Exception e) {
+            //Error 
+        } finally {
+            benutzerLock.unlock();
+        }
         
-        //Zugriffe zählen/verwalten
-        be.gain();
         
         return be;
         
@@ -81,31 +98,40 @@ public class ChatBotManager {
     public void addNachricht(Nachricht n) {
         
         Timestamp now = new Timestamp(calendar.getTime().getTime());
-        
-        if (n.getZeit() == null || n.getZeit().before(now)) {
-            // spark bekommt Nachricht
-        } else {
-            
-            Iterator it = nachrichten.iterator();
-            
-            int i = 0;
-            
-            Nachricht na;
-            
-            while(it.hasNext()) {
-                
-                na = (Nachricht) it.next();
-                
-                if(na.getZeit().before(n.getZeit())) {
-                    break;
+        nachrichtenLock.lock();
+        try {
+            if (n.getZeit() == null || n.getZeit().before(now)) {
+                // spark bekommt Nachricht
+            } else {
+
+                Iterator it = nachrichten.iterator();
+
+                int i = 0;
+
+                Nachricht na;
+
+                while(it.hasNext()) {
+
+                    na = (Nachricht) it.next();
+
+                    if(na.getZeit().before(n.getZeit())) {
+                        break;
+                    }
+                    i++;
                 }
-                i++;
+
+
+                nachrichten.add(i, n);
+
+
+                setzeTimer();
+
             }
             
-            nachrichten.add(i, n);
-            
-            setzeTimer();
-            
+        } catch (Exception e) {
+            //Error 
+        } finally {                
+            nachrichtenLock.unlock();
         }
     }
     
@@ -113,30 +139,60 @@ public class ChatBotManager {
         
         Timestamp now = new Timestamp(calendar.getTime().getTime());
         
-        Iterator it = nachrichten.iterator();
-        
-        Nachricht na;
-            
-        while(it.hasNext()) {
+        nachrichtenLock.lock();
+        try {
+            Iterator it = nachrichten.iterator();
 
-            na = (Nachricht) it.next();
+            Nachricht na;
 
-            if(na.getZeit().after(now)) {
-                break;
+            while(it.hasNext()) {
+
+                na = (Nachricht) it.next();
+
+                if(na.getZeit().after(now)) {
+                    break;
+                }
+
+                //spark muss nachricht kriegen
+
+
+                    it.remove();
+
             }
-
-            //spark muss nachricht kriegen
-
-            it.remove();
-        }
-            
+        } catch (Exception e) {
+        //Error 
+        } finally {                
+            nachrichtenLock.unlock();
+        }      
         setzeTimer();
     }
     
     private void setzeTimer() {
         
-        timer.schedule(task, time);
+        Timestamp now = new Timestamp(calendar.getTime().getTime());
         
+        timer.cancel();
+        long dauer = 0;
+        
+        nachrichtenLock.lock();
+        try {
+            dauer = nachrichten.getFirst().getZeit().getTime() - now.getTime();
+
+            //Server nach 28 min wecken (falls nötig)
+
+            if(dauer > 1680000) {
+                dauer = 1680000;
+
+                    nachrichten.addFirst(new Nachricht(null,now));  
+            }
+
+        } catch (Exception e) {
+        //Error 
+        } finally {                
+            nachrichtenLock.unlock();
+        } 
+        
+        timer.schedule(new MessageHandler(), dauer);
     }
      
 }
