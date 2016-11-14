@@ -8,11 +8,11 @@ import java.util.Objects;
  */
 public class CBPlattform {
     
-    private final Long id;
+    private final String id;
     
     private final short plattform;
 
-    public CBPlattform(Long id, short plattform) {
+    public CBPlattform(String id, short plattform) {
         this.id = id;
         this.plattform = plattform;
     }
@@ -46,7 +46,7 @@ public class CBPlattform {
         return true;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

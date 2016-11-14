@@ -77,6 +77,12 @@ public class ChatBotManager {
         return contPool;
     }
     
+    /**
+     * Gibt den Benutzer zur zugehörigen Plattform zurück.
+     * 
+     * @param pt
+     * @return 
+     */
     public CBBenutzer gibBenutzer(CBPlattform pt) {
         
         CBBenutzer be = null;
@@ -95,6 +101,12 @@ public class ChatBotManager {
         
     }
     
+    /**
+     * Fügt eine Nachricht in die zu sendende Nachrichten hinzu. Falls der 
+     * Timestamp null ist wird die Nachricht sofort verschickt.
+     * 
+     * @param n Die zu verschieckende Nachricht.
+     */
     public void addNachricht(Nachricht n) {
         
         Timestamp now = new Timestamp(calendar.getTime().getTime());
@@ -135,6 +147,9 @@ public class ChatBotManager {
         }
     }
     
+    /**
+     * Startet den Prozess des Nachrichten sendens.
+     */
     public void sendeNachrichten() {
         
         Timestamp now = new Timestamp(calendar.getTime().getTime());

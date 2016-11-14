@@ -10,6 +10,9 @@ import main.ChatBotManager;
  */
 public class MessageHandler extends TimerTask {
 
+    /**
+     * Initiert das Senden.
+     */
     @Override
     public void run() {
         ChatBotManager.getInstance().sendeNachrichten();
