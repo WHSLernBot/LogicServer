@@ -10,7 +10,7 @@ public class EntityManagerHelper {
     private static final ThreadLocal<EntityManager> THREAD_LOCAL;
 
     static {
-        EMF = Persistence.createEntityManagerFactory("Persistent_Name");
+        EMF = Persistence.createEntityManagerFactory("LernServletPU");
         THREAD_LOCAL = new ThreadLocal<>();
     }
 
