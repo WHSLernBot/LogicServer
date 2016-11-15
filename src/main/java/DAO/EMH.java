@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class EntityManagerHelper {
+public class EMH {
 
     private static final EntityManagerFactory EMF;
     private static final ThreadLocal<EntityManager> THREAD_LOCAL;

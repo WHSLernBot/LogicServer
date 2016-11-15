@@ -12,7 +12,6 @@ public class CBBenutzer {
     
     private int lock;
     
-    
     public CBBenutzer(Benutzer benutzer) {
         this.benutzer = benutzer;
         
@@ -26,6 +25,8 @@ public class CBBenutzer {
     public synchronized void gain() {
         lock++;
     }
+    
+    
     
     public boolean wirdBenutzt() {
         
