@@ -1,6 +1,9 @@
 package DBBot;
 
+import DAO.DAO;
 import Entitys.Modul;
+import Entitys.Uni;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import main.CBBenutzer;
@@ -38,6 +41,16 @@ public class BotPool {
     }
     
     private void berechneAlles() {
+        
+        DAO dao = DAO.getInstance();
+        
+//        Collection<Uni> unis = dao.gibUnis();
+//        
+//        for(Uni u : unis) {
+//            
+//            
+//            
+//        }
         
     }
 }
