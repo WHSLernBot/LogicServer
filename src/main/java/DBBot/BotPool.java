@@ -42,15 +42,13 @@ public class BotPool {
     
     private void berechneAlles() {
         
-        DAO dao = DAO.getInstance();
+        Collection<Uni> unis = DAO.gibUnis();
         
-//        Collection<Uni> unis = dao.gibUnis();
-//        
-//        for(Uni u : unis) {
-//            
-//            
-//            
-//        }
+        for(Uni u : unis) {
+            
+            
+            
+        }
         
     }
 }

@@ -1,7 +1,13 @@
 package DAO;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import Entitys.Aufgabe;
+import Entitys.Benutzer;
+import Entitys.Plattform;
+import Entitys.Uni;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.Query;
 
 /**
  *
@@ -9,75 +15,106 @@ import javax.persistence.Persistence;
  */
 public class DAO {
     
-    private static DAO dao;
     
-    private EntityManager em;
+    private static final String ALLE_UNIS = "select object(u) from Uni u";
     
-    private DAO() {
+    private static final String GIB_AUFGABE = "select object(a) from Aufgabe a where a.aufgabenID := ID";
+    
 
-        em = Persistence.createEntityManagerFactory("LernServletPU").createEntityManager();
+    public static void gibAufgabe(long id, short plattform, String modul, String thema) {
+        
+        
         
     }
-    
-    public static DAO getInstance() {
+
+    public static void setzeName(long id, short plattform, String name) {
         
-        if(dao == null) {
-            dao = new DAO();
+    }
+
+    public static void speichereAntwort(long id, short plattform, String antwort) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void speichereNote(long id, short plattform, short asShort) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void gibInfos(long id, short plattform, String asString, String asString0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void setzeUni(long id, short plattform, short asShort) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static Collection<Uni> gibUnis() {
+        
+        ArrayList<Uni> unis = new ArrayList<>();
+        
+        Query q = EntityManagerHelper.getEntityManager().createQuery(ALLE_UNIS);
+        
+        List rs = q.getResultList();
+        
+        for(Object o : rs) {
+            unis.add((Uni) o);
         }
         
-        return dao;
-    }
-    
-    public String gibSession(long id, short plattform) {
-        return "";
+        return unis;
     }
 
-    public void gibAufgabe(long id, short plattform, String modul, String thema) {
+    public static void setzePruefung(long id, short plattform, String asString, String asString0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void neueAufgabe(long id, short plattform, String asString, String asString0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void neuerBenutzer(long id, short plattform) {
         
+        try {
+            EntityManagerHelper.beginTransaction();
+            
+            Benutzer be = new Benutzer();
+            
+            EntityManagerHelper.getEntityManager().persist(be); 
+            
+            Plattform pt = new Plattform(id,plattform,be);
+                 
+            EntityManagerHelper.getEntityManager().persist(pt);
+            
+            EntityManagerHelper.commit();
+            
+        } catch (Exception e) {
+            EntityManagerHelper.rollback();
+        }
     }
 
-    public void setzeName(long id, short plattform, String name) {
+    public static void gibKlausurInfos(long id, short plattform, String asString, String asString0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static void bewerteAufgabe(long id, boolean like) {
+         
+        Query q = EntityManagerHelper.getEntityManager().createQuery(GIB_AUFGABE);
         
-    }
-
-    public void speichereAntwort(long id, short plattform, String antwort) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void speichereNote(long id, short plattform, short asShort) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void gibInfos(long id, short plattform, String asString, String asString0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setzeUni(long id, short plattform, short asShort) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void gibUnis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setzePruefung(long id, short plattform, String asString, String asString0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void neueAufgabe(long id, short plattform, String asString, String asString0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void neuerBenutzer(long id, short plattform) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void gibKlausurInfos(long id, short plattform, String asString, String asString0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void bewerteAufgabe(long id, short plattform, short asShort, boolean asBoolean) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        q.setParameter("ID", id);
+        
+        Aufgabe aufgabe = (Aufgabe) q.getResultList().get(0);
+        
+        try {
+            EntityManagerHelper.beginTransaction();
+            
+            aufgabe.setLike(like);
+            EntityManagerHelper.getEntityManager().persist(aufgabe); 
+            
+            
+            EntityManagerHelper.commit();
+            
+        } catch (Exception e) {
+            EntityManagerHelper.rollback();
+        }
+        
     }
     
 }
