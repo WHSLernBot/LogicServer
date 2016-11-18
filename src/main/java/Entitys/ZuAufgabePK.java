@@ -2,41 +2,34 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
 
 /**
  *
  * @author Betül
  */
-@Entity
-@IdClass(XGAufgabePK.class)
-public class XGAufgabe implements Serializable {
+public class ZuAufgabePK implements Serializable {
     
-    @Id
-    @ManyToOne
     private Aufgabe aufgabe;
     
-    @Id
-    @ManyToOne
     private LernStatus lernStatus;
 
-    
-     public XGAufgabe(){
-        
+    public ZuAufgabePK() {
     }
-    
+
+    public ZuAufgabePK(Aufgabe aufgabe, LernStatus lernStatus) {
+        this.aufgabe = aufgabe;
+        this.lernStatus = lernStatus;
+    }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + Objects.hashCode(this.aufgabe);
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.aufgabe);
+        hash = 41 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
 
-     @Override
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -47,7 +40,7 @@ public class XGAufgabe implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final XGAufgabe other = (XGAufgabe) obj;
+        final ZuAufgabePK other = (ZuAufgabePK) obj;
         if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
@@ -57,9 +50,7 @@ public class XGAufgabe implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Aufgabe " + aufgabe + " " +  lernStatus;
-    }
+   
+     
     
 }
