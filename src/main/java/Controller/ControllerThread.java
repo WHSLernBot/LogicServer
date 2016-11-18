@@ -17,17 +17,17 @@ public class ControllerThread implements Runnable {
 
     private final ChatBotManager manager;
 
-    private final DAO dao;
-
     private CBBenutzer benutzer;
     
     private final MessageCreator messCreator;
+    
+    private String witSession;
 
     public ControllerThread(JsonObject json) {
         this.json = json;
         manager = ChatBotManager.getInstance();
-        dao = DAO.getInstance();
         messCreator = new MessageCreator();
+        witSession = "";
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ControllerThread implements Runnable {
         long id = json.get("id").getAsLong();
         short plattform = json.get("plattform").getAsShort();
 
-        CBPlattform pt = new CBPlattform(json.get("id").getAsLong(),
+        CBPlattform pt = new CBPlattform(json.get("id").getAsString(),
                 json.get("plattform").getAsShort());
 
         benutzer = manager.gibBenutzer(pt);
@@ -47,45 +47,44 @@ public class ControllerThread implements Runnable {
         //manager.setzeBenutzerAktiv(benutzer);
         switch (json.get("methode").getAsString()) {
             case "gibSession":
-                String witSession;
-                witSession = dao.gibSession(id, plattform);
-                messCreator.creat(id,plattform,witSession);
+                //witSession = dao.gibSession(id, plattform);
+                //essCreator.creat(id,plattform,witSession);
                 break;
-            case "gibAufgabe": 
-                dao.gibAufgabe(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+            case "gibAufgabe":               
+                DAO.gibAufgabe(benutzer, witSession, witSession);
                 break;
             case "setzeName":
-                dao.setzeName(id, plattform, json.get("name").getAsString());
+                DAO.setzeName(benutzer, witSession);
                 break;
             case "speichereAntwort":
-                dao.speichereAntwort(id,plattform, json.get("antwort").getAsString());
+                DAO.speichereAntwort(id, plattform, witSession);
                 break;
             case "speichereNote":
-                dao.speichereNote(id,plattform, json.get("note").getAsShort());
+                DAO.speichereNote(id, plattform, plattform);
                 break;
             case "gibInfos":
-                dao.gibInfos(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+                
                 break;
             case "setzeUni":
-                dao.setzeUni(id,plattform, json.get("uni").getAsShort());
+                DAO.setzeUni(benutzer, plattform);
                 break;
             case "gibUnis":
-                dao.gibUnis();
+                DAO.gibUnis();
                 break;
             case "setzePruefung":
-                dao.setzePruefung(id, plattform, json.get("modul").getAsString(), json.get("datum").getAsString());
+                DAO.setzePruefung(id, plattform, witSession, witSession);
                 break;
             case "neueAufgabe":
-                dao.neueAufgabe(id,plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+                DAO.neueAufgabe(id, plattform, witSession, witSession);
                 break;
             case "neuerBenutzer":
-                dao.neuerBenutzer(id,plattform);
+                DAO.neuerBenutzer(pt);
                 break;
             case "gibKlausurInfos":
-                dao.gibKlausurInfos(id, plattform, json.get("modul").getAsString(), json.get("datum").getAsString());
+                DAO.gibKlausur(id, plattform, witSession, witSession);
                 break;
             case "bewerteAufgabe":
-                dao.bewerteAufgabe(id, plattform, json.get("aufgabenID").getAsShort(),json.get("like").getAsBoolean());
+                DAO.bewerteAufgabe(id, true);
                 break;
                 
         }
