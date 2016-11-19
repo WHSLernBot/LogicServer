@@ -6,6 +6,7 @@
 package Entitys;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,13 +20,12 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Statistik implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     
+    @Id
     @ManyToOne
     private Modul modul;
     
+    @Id
     private int woche;
     
     private int anteil;
@@ -55,29 +55,27 @@ public class Statistik implements Serializable {
         return anteil;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.modul);
+        hash = 79 * hash + this.woche;
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Statistik)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        Statistik other = (Statistik) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Statistik other = (Statistik) obj;
+        if (!Objects.equals(this.modul, other.modul)) {
+            return false;
+        }
+        if (this.woche != other.woche) {
             return false;
         }
         return true;
@@ -85,7 +83,10 @@ public class Statistik implements Serializable {
 
     @Override
     public String toString() {
-        return "Entitys.Statistik[ id=" + id + " ]";
+        return "Statistik{" + "modul=" + modul + ", woche=" + woche + ", anteil=" + anteil + '}';
     }
+
+
+   
     
 }

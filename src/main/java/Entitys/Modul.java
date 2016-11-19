@@ -61,6 +61,23 @@ public class Modul implements Serializable {
     public String getName(){
         return name;
     }
+
+    public Collection<Thema> getThemen() {
+        return themen;
+    }
+
+    public void setThemen(Collection<Thema> themen) {
+        this.themen = themen;
+    }
+
+    public Collection<Klausur> getKlausuren() {
+        return klausuren;
+    }
+
+    public void setKlausuren(Collection<Klausur> klausuren) {
+        this.klausuren = klausuren;
+    }
+    
     
     
     @Override

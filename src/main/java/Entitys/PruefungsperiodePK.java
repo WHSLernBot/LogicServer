@@ -9,31 +9,25 @@ import java.util.Objects;
  */
 public class PruefungsperiodePK implements Serializable{
     
-    private Long uni;
-    private Klausur klausur;
-    
-    public PruefungsperiodePK(Long uni, Klausur klausur){
+    private int jahr;
+   
+    private Uni uni;
+
+    public PruefungsperiodePK(int jahr, Uni uni) {
+        this.jahr = jahr;
         this.uni = uni;
-        this.klausur = klausur;
     }
-    
-    public PruefungsperiodePK(){
-        
-    }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.uni);
-        hash = 59 * hash + Objects.hashCode(this.klausur);
+        hash = 83 * hash + this.jahr;
+        hash = 83 * hash + Objects.hashCode(this.uni);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (obj == null) {
             return false;
         }
@@ -41,7 +35,7 @@ public class PruefungsperiodePK implements Serializable{
             return false;
         }
         final PruefungsperiodePK other = (PruefungsperiodePK) obj;
-        if (!Objects.equals(this.klausur, other.klausur)) {
+        if (this.jahr != other.jahr) {
             return false;
         }
         if (!Objects.equals(this.uni, other.uni)) {

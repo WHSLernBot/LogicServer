@@ -2,6 +2,7 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -23,13 +24,14 @@ public class Aufgabe implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO) //schlau machen
     private Long aufgabenID;
     
+    @Id
     @ManyToOne
     private Thema thema;
     
     private String frage;
     
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<BeAufgabe> beantworteAufgabe;
+    private Collection<BeAufgabe> bearbeiteteAufgabe;
     
     private int schwierigkeit;
     
@@ -56,9 +58,18 @@ public class Aufgabe implements Serializable {
 
     public Aufgabe(){
         
+        this.bearbeiteteAufgabe = new HashSet<>();
+        this.antworten = new HashSet<>();
+        this.token = new HashSet<>();
+        this.zuAufgabe = new HashSet<>();
+        this.xgAufgabe = new HashSet<>();
+                
+        
+        
     }
     public Aufgabe(Long aufgabenID, String frage, int schwierigkeit, String hinweis,
             int like, String verweis, int punkte){
+        
         this.aufgabenID = aufgabenID;
         this.frage = frage;
         this.schwierigkeit = schwierigkeit;
@@ -67,6 +78,50 @@ public class Aufgabe implements Serializable {
         this.verweis = verweis;
         this.punkte = punkte;
         
+    }
+    
+    public void fuegeBearbeiteteAufgabeHinzu(BeAufgabe aufg){
+        this.bearbeiteteAufgabe.add(aufg);
+    }
+            
+    public void setBearbeiteteAufgabe(Collection<BeAufgabe>beAufgabe){
+        this.bearbeiteteAufgabe = (Collection) bearbeiteteAufgabe;
+    }
+    
+    public Collection<BeAufgabe> getBearbeiteteAufgabe(){
+        return this.bearbeiteteAufgabe;
+    }
+    
+    public void setAntworten(Collection<Antwort>antwort){
+        this.antworten = (Collection) antwort;
+    }
+    
+    public Collection<Antwort> getAntwort(){
+        return this.antworten;
+    }
+    
+    public void setToken(Collection<Token>tok){
+        this.token = (Collection) tok;
+    }
+    
+    public Collection<Token> getToken(){
+        return this.token;
+    }
+    
+    public void setZuAufgabe(Collection<ZuAufgabe>zuAufg){
+        this.zuAufgabe = (Collection) zuAufg;
+    }
+    
+    public Collection<ZuAufgabe> getZuAufgabe(){
+        return this.zuAufgabe;
+    }
+    
+    public void setXGAufgabe(Collection<XGAufgabe>xgAufg){
+        this.xgAufgabe = (Collection) xgAufg;
+    }
+    
+    public Collection<XGAufgabe> getXGAufgabe(){
+        return this.xgAufgabe;
     }
     
      public void setAufgabenID(Long aufgabenID){

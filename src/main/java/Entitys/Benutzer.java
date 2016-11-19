@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -17,6 +18,7 @@ import javax.persistence.OneToOne;
  * @author Seve
  */
 @Entity
+@IdClass(BenutzerPK.class)
 public class Benutzer implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,10 +28,13 @@ public class Benutzer implements Serializable {
     
     private String name;
     
+    @Id
     @ManyToOne
     private Uni uni;
     
     private Date letzteAntwort;
+    
+    private Boolean datenschutz;
     
     @OneToMany(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<LernStatus> lernStadi;
@@ -37,6 +42,7 @@ public class Benutzer implements Serializable {
     @OneToMany(mappedBy="benutzer" , cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
     
+    @Id
     @OneToOne(mappedBy="benutzer")
     private Plattform plattform;
 
@@ -76,6 +82,39 @@ public class Benutzer implements Serializable {
     public Date getLetzteAntwort(){
         return letzteAntwort;
     }
+
+    public Boolean istDatenschutz() {
+        return datenschutz;
+    }
+
+    public void setDatenschutz(Boolean datenschutz) {
+        this.datenschutz = datenschutz;
+    }
+
+    public Collection<LernStatus> getLernStadi() {
+        return lernStadi;
+    }
+
+    public void setLernStadi(Collection<LernStatus> lernStadi) {
+        this.lernStadi = lernStadi;
+    }
+
+    public Collection<Teilnahme> getTeilnahmen() {
+        return teilnahmen;
+    }
+
+    public void setTeilnahmen(Collection<Teilnahme> teilnahmen) {
+        this.teilnahmen = teilnahmen;
+    }
+
+    public Plattform getPlattform() {
+        return plattform;
+    }
+
+    public void setPlattform(Plattform plattform) {
+        this.plattform = plattform;
+    }
+    
     
     @Override
     public int hashCode() {

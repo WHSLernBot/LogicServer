@@ -28,6 +28,7 @@ public class Thema implements Serializable {
     
     private int aufgabenZahl;
     
+    @Id
     @ManyToOne
     private Modul modul;
     
@@ -79,7 +80,19 @@ public class Thema implements Serializable {
     public void setAufgabenZahl(int aufgabenZahl){
         this.aufgabenZahl = aufgabenZahl;
     }
-    
+
+    public int getAufgabenZahl() {
+        return aufgabenZahl;
+    }
+
+    public Collection<LernStatus> getLernStadi() {
+        return lernStadi;
+    }
+
+    public void setLernStadi(Collection<LernStatus> lernStadi) {
+        this.lernStadi = lernStadi;
+    }
+        
     @Override
     public int hashCode() {
         int hash = 0;

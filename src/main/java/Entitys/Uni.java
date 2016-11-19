@@ -57,6 +57,31 @@ public class Uni implements Serializable {
     public String getName(){
         return name;
     }
+
+    public Collection<Benutzer> getBenutzer() {
+        return benutzer;
+    }
+
+    public void setBenutzer(Collection<Benutzer> benutzer) {
+        this.benutzer = benutzer;
+    }
+
+    public Collection<Modul> getModul() {
+        return modul;
+    }
+
+    public void setModul(Collection<Modul> modul) {
+        this.modul = modul;
+    }
+
+    public Pruefungsperiode getPruefungsperiode() {
+        return pruefungsperiode;
+    }
+
+    public void setPruefungsperiode(Pruefungsperiode pruefungsperiode) {
+        this.pruefungsperiode = pruefungsperiode;
+    }
+    
     
     @Override
     public int hashCode() {

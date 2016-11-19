@@ -47,7 +47,7 @@ public class BeAufgabe implements Serializable {
         this.richtig = richtig;
     }
     
-    public Boolean getRichtig(){
+    public Boolean istRichtig(){
         return richtig;
     }
     
@@ -71,7 +71,7 @@ public class BeAufgabe implements Serializable {
         this.beantwortet = beantwortet;
     }
     
-    public Boolean getBeantwortet(){
+    public Boolean istBeantwortet(){
         return beantwortet;
     }
     

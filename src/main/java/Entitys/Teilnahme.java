@@ -33,6 +33,7 @@ public class Teilnahme implements Serializable {
     public Teilnahme(){
         
     }
+ 
     
     public Teilnahme(int note){
         this.note = note;

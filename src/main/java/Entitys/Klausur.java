@@ -118,6 +118,15 @@ public class Klausur implements Serializable {
         return quotient;
     }
 
+    public Collection<Teilnahme> getTeilnahmen() {
+        return teilnahmen;
+    }
+
+    public void setTeilnahmen(Collection<Teilnahme> teilnahmen) {
+        this.teilnahmen = teilnahmen;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 5;

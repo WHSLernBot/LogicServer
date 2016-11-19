@@ -54,6 +54,7 @@ public class LernStatus implements Serializable {
     
     public LernStatus(Boolean aktiv, int richtige, int sumPunkte, Date letztesDatum,
             Timestamp letzteAktualisierung){
+        
         this.aktiv = aktiv;
         this.richtige = richtige;
         this.sumPunkte = sumPunkte;
@@ -65,7 +66,7 @@ public class LernStatus implements Serializable {
         this.aktiv = aktiv;
     }
     
-    public boolean getAktiv(){
+    public boolean istAktiv(){
         return aktiv;
     }
     
@@ -100,7 +101,32 @@ public class LernStatus implements Serializable {
     public Timestamp getLetzteAktualisierung(){
         return letzteAktualisierung;
     }
+
+    public Collection<BeAufgabe> getBeAufgaben() {
+        return beAufgaben;
+    }
+
+    public void setBeAufgaben(Collection<BeAufgabe> beAufgaben) {
+        this.beAufgaben = beAufgaben;
+    }
+
+    public Collection<ZuAufgabe> getZuAufgaben() {
+        return zuAufgaben;
+    }
+
+    public void setZuAufgaben(Collection<ZuAufgabe> zuAufgaben) {
+        this.zuAufgaben = zuAufgaben;
+    }
+
+    public Collection<XGAufgabe> getXgAufgaben() {
+        return xgAufgaben;
+    }
+
+    public void setXgAufgaben(Collection<XGAufgabe> xgAufgaben) {
+        this.xgAufgaben = xgAufgaben;
+    }
     
+        
     @Override
     public int hashCode() {
         int hash = 7;
