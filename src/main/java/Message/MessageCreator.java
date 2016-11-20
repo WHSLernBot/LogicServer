@@ -17,6 +17,10 @@ public class MessageCreator {
             json.addProperty("id", hashmap.get("id").toString());
         }
         
+        if(hashmap.containsKey("methode")){
+            json.addProperty("nachricht", gibText(hashmap.get("methode").toString()));
+        }
+        
         return json;
     }
     
