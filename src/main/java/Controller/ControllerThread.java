@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.DAO;
+import Entitys.Benutzer;
 import Message.MessageCreator;
 import com.google.gson.JsonObject;
 import main.CBBenutzer;
@@ -21,7 +22,7 @@ public class ControllerThread implements Runnable {
     
     private final MessageCreator messCreator;
     
-    private String witSession;
+    private final String witSession;
 
     public ControllerThread(JsonObject json) {
         this.json = json;
@@ -90,8 +91,7 @@ public class ControllerThread implements Runnable {
         }
            
     }
-
-    private CBBenutzer sucheBenutzer(CBPlattform pt) {
-        return null; //dao.gibBenutzer(pt);       
+    private CBBenutzer sucheBenutzer(CBPlattform pt) {      
+        return DAO.sucheBenutzer(pt);       
     }
 }

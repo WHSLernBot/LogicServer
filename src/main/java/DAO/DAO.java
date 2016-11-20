@@ -159,5 +159,9 @@ public class DAO {
         }
         
     }
+
+    public static CBBenutzer sucheBenutzer(CBPlattform pt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
