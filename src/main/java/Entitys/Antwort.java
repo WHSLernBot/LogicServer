@@ -18,65 +18,67 @@ public class Antwort implements Serializable {
     @Id
     @ManyToOne
     private Aufgabe aufgabe;
-
+    
     @Id
     private int nummer;
-
-    private String antwort;
-
+ 
+    private String antwort; 
+    
     private Boolean richtig;
-
+    
     private long haeufigkeit;
 
-    public Antwort() {
-
+    public Antwort(){
+        
     }
-
-    public Antwort(int nummer, String antwort, Boolean richtig) {
+    
+    public Antwort(int nummer, String antwort, Boolean richtig){
+       this.nummer = nummer;
+       this.antwort = antwort;
+       this.richtig = richtig;
+       this.haeufigkeit = 0;
+    }
+    
+    public void setNummer(int nummer){
         this.nummer = nummer;
-        this.antwort = antwort;
-        this.richtig = richtig;
     }
-
-    public void setNummer(int nummer) {
-        this.nummer = 0;
-    }
-
-    public int getNummer() {
+    
+    public int getNummer(){
         return nummer;
     }
-
-    public void setAntwort(String antwort) {
+    
+    public void setAntwort(String antwort){
         this.antwort = antwort;
     }
-
-    public String getAntwort() {
+    
+    public String getAntwort(){
         return antwort;
     }
-
-    public void setRichtig(boolean richtig) {
+    
+    public void setRichtig(boolean richtig){
         this.richtig = richtig;
     }
-
-    public Boolean istRichtig() {
+    
+    public Boolean getRichtig(){
         return richtig;
     }
-
-    public void setHaeufigkeit(long haeufigkeit) {
-        this.haeufigkeit = haeufigkeit++;
+    
+    public void wurdeGewaehlt(){
+        this.haeufigkeit++;
     }
-
-    public long getHaeufigkeit() {
+    
+    public long getHaeufigkeit(){
         return haeufigkeit;
     }
-
+    
+    
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 47 * hash + Objects.hashCode(this.antwort);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -97,10 +99,10 @@ public class Antwort implements Serializable {
         }
         return true;
     }
-
+ 
     @Override
     public String toString() {
-        return antwort + " von " + aufgabe;
-    }
-
+        return nummer + " " + antwort + " von " + aufgabe;
+    }   
+    
 }
