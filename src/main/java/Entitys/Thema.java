@@ -92,7 +92,33 @@ public class Thema implements Serializable {
     public void setLernStadi(Collection<LernStatus> lernStadi) {
         this.lernStadi = lernStadi;
     }
+
+    public Long getThmenID() {
+        return thmenID;
+    }
+
+    public void setThmenID(Long thmenID) {
+        this.thmenID = thmenID;
+    }
+
+    public Modul getModul() {
+        return modul;
+    }
+
+    public void setModul(Modul modul) {
+        this.modul = modul;
+    }
+
+    public Aufgabe getAufgabe() {
+        return aufgabe;
+    }
+
+    public void setAufgabe(Aufgabe aufgabe) {
+        this.aufgabe = aufgabe;
+    }
         
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;

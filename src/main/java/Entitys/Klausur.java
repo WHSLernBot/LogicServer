@@ -125,6 +125,15 @@ public class Klausur implements Serializable {
     public void setTeilnahmen(Collection<Teilnahme> teilnahmen) {
         this.teilnahmen = teilnahmen;
     }
+
+    public Pruefungsperiode getPruefungsperiode() {
+        return pruefungsperiode;
+    }
+
+    public void setPruefungsperiode(Pruefungsperiode pruefungsperiode) {
+        this.pruefungsperiode = pruefungsperiode;
+    }
+    
     
     
     @Override

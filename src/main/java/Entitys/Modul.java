@@ -77,8 +77,16 @@ public class Modul implements Serializable {
     public void setKlausuren(Collection<Klausur> klausuren) {
         this.klausuren = klausuren;
     }
+
+    public Statistik getStatistik() {
+        return statistik;
+    }
+
+    public void setStatistik(Statistik statistik) {
+        this.statistik = statistik;
+    }
     
-    
+        
     
     @Override
     public int hashCode() {

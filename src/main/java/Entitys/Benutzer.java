@@ -136,6 +136,16 @@ public class Benutzer implements Serializable {
         return true;
     }
 
+    public Uni getUni() {
+        return uni;
+    }
+
+    public void setUni(Uni uni) {
+        this.uni = uni;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "Benutzer: " + name;
