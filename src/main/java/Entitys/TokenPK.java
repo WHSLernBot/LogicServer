@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class TokenPK implements Serializable {
     
-    private Long aufgabe;
+    private Long aufgabenID;
     
     private String token;
 
@@ -17,14 +17,14 @@ public class TokenPK implements Serializable {
     }
 
     public TokenPK(Long aufgabe, String token) {
-        this.aufgabe = aufgabe;
+        this.aufgabenID = aufgabe;
         this.token = token;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.aufgabe);
+        hash = 23 * hash + Objects.hashCode(this.aufgabenID);
         hash = 23 * hash + Objects.hashCode(this.token);
         return hash;
     }
@@ -44,7 +44,7 @@ public class TokenPK implements Serializable {
         if (!Objects.equals(this.token, other.token)) {
             return false;
         }
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
             return false;
         }
         return true;

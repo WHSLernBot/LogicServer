@@ -14,21 +14,21 @@ public class KlausurPK implements Serializable {
     
     private ModulPK modul;
     
-    private Date datum;
+    private Pruefungsperiode periode;
 
     public KlausurPK() {
     }
 
-    public KlausurPK(ModulPK modul, Date datum) {
+    public KlausurPK(ModulPK modul, Date periode) {
         this.modul = modul;
-        this.datum = datum;
+        this.periode = periode;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + Objects.hashCode(this.modul);
-        hash = 31 * hash + Objects.hashCode(this.datum);
+        hash = 31 * hash + Objects.hashCode(this.periode);
         return hash;
     }
 
@@ -47,7 +47,7 @@ public class KlausurPK implements Serializable {
         if (!Objects.equals(this.modul, other.modul)) {
             return false;
         }
-        if (!Objects.equals(this.datum, other.datum)) {
+        if (!Objects.equals(this.periode, other.periode)) {
             return false;
         }
         return true;

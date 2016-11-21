@@ -27,7 +27,19 @@ public class XGAufgabe implements Serializable {
      public XGAufgabe(){
         
     }
-    
+
+    public XGAufgabe(Aufgabe aufgabe, LernStatus lernStatus) {
+        this.aufgabe = aufgabe;
+        this.lernStatus = lernStatus;
+    }
+
+    public Aufgabe getAufgabe() {
+        return aufgabe;
+    }
+
+    public LernStatus getLernStatus() {
+        return lernStatus;
+    }
 
     @Override
     public int hashCode() {

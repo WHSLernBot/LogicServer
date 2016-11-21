@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class StatistikPK implements Serializable{
     
-    private Modul modul;
+    private ModulPK modul; // oder nur Modul ??
     
     private int woche;
 

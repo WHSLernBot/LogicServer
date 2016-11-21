@@ -3,8 +3,6 @@ package Entitys;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
@@ -17,9 +15,6 @@ import javax.persistence.OneToOne;
 @Entity
 @IdClass(ZuAufgabePK.class)
 public class ZuAufgabe implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
-    private LernStatus status;
     
     private boolean zuletzt;
     
@@ -28,47 +23,59 @@ public class ZuAufgabe implements Serializable {
     private Aufgabe aufgabe;
     
     @Id
-    @OneToOne(mappedBy="zuAufgabe")
-    private LernStatus lernStadi;
+    @OneToOne
+    private LernStatus status;
     
     @OneToOne(mappedBy="zuAufgabe")
-    private ZuAufgabe zuAufgabe;
+    private ZuAufgabe naechsteAufgabe;
     
     public ZuAufgabe(){
         
     }
     
-    public ZuAufgabe(LernStatus status, boolean zuletzt){
+    public ZuAufgabe(LernStatus status, Aufgabe aufgabe, boolean zuletzt){
         this.status = status;
+        this.aufgabe = aufgabe;
         this.zuletzt = zuletzt;
-    }
-
-    public void setStatus(LernStatus status){
-        this.status = status;
     }
     
     public LernStatus getStatus(){
         return status;
     }
     
-    public void setZuletzt(boolean zuletzt){
-        this.zuletzt = zuletzt;
-    }
-    
     public boolean istZuletzt(){
         return zuletzt;
     }
 
+    public Aufgabe getAufgabe() {
+        return aufgabe;
+    }
+
+    public ZuAufgabe getNaechsteAufgabe() {
+        return naechsteAufgabe;
+    }
+
+    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
+        this.naechsteAufgabe = new ZuAufgabe(status,aufgabe,true);
+        this.zuletzt = false;
+        
+        return naechsteAufgabe;
+    } 
+    
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.aufgabe);
-        hash = 23 * hash + Objects.hashCode(this.lernStadi);
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.aufgabe);
+        hash = 67 * hash + Objects.hashCode(this.status);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
@@ -79,11 +86,13 @@ public class ZuAufgabe implements Serializable {
         if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
-        if (!Objects.equals(this.lernStadi, other.lernStadi)) {
+        if (!Objects.equals(this.status, other.status)) {
             return false;
         }
         return true;
     }
+
+
     
 
     @Override

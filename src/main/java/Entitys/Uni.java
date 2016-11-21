@@ -1,6 +1,7 @@
 package Entitys;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -30,24 +31,19 @@ public class Uni implements Serializable {
     private Collection<Modul> modul;
     
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Pruefungsperiode pruefungsperiode;
+    private Collection<Pruefungsperiode> pruefungsperiode;
     
     
-    public Uni(){
+    public Uni() {
         
     }
     
-    public Uni(Long id, String name){
-        this.id = id;
+    public Uni(String name) {
         this.name = name;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setName(String name){
@@ -62,26 +58,26 @@ public class Uni implements Serializable {
         return benutzer;
     }
 
-    public void setBenutzer(Collection<Benutzer> benutzer) {
-        this.benutzer = benutzer;
+    public void addBenutzer(Benutzer benutzer) {
+        this.benutzer.add(benutzer);
     }
 
     public Collection<Modul> getModul() {
         return modul;
     }
 
-    public void setModul(Collection<Modul> modul) {
-        this.modul = modul;
+    public void addModul(String kuerzel, String name) {
+        this.modul.add(new Modul(this,kuerzel,name));
     }
 
-    public Pruefungsperiode getPruefungsperiode() {
+    public Collection<Pruefungsperiode> getPruefungsperiode() {
         return pruefungsperiode;
     }
 
-    public void setPruefungsperiode(Pruefungsperiode pruefungsperiode) {
-        this.pruefungsperiode = pruefungsperiode;
+
+    public void addPruefungsperiode(int jahr, int phase, Date anmeldebeginn, Date anfang, Date ende) {
+        this.pruefungsperiode.add(new Pruefungsperiode(this,jahr,phase,anmeldebeginn,anfang,ende));
     }
-    
     
     @Override
     public int hashCode() {

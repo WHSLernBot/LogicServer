@@ -2,7 +2,6 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,108 +23,60 @@ public class Aufgabe implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO) //schlau machen
     private Long aufgabenID;
     
-    @Id
     @ManyToOne
     private Thema thema;
     
     private String frage;
     
-    @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<BeAufgabe> bearbeiteteAufgabe;
-    
     private int schwierigkeit;
     
     private String hinweis;
     
-    private int like;
+    private int bewertung;
     
     private String verweis;
     
     private int punkte;
+    
+    private int anzAntworten;
     
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Antwort> antworten;
     
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Token> token;
-    
-    
-    @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<ZuAufgabe> zuAufgabe;
-    
-    @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<XGAufgabe> xgAufgabe;
 
-    public Aufgabe(){
-        
-        this.bearbeiteteAufgabe = new HashSet<>();
-        this.antworten = new HashSet<>();
-        this.token = new HashSet<>();
-        this.zuAufgabe = new HashSet<>();
-        this.xgAufgabe = new HashSet<>();
-                
-        
-        
+    public Aufgabe(){    
     }
-    public Aufgabe(Long aufgabenID, String frage, int schwierigkeit, String hinweis,
-            int like, String verweis, int punkte){
+    
+    public Aufgabe(Thema thema, String frage, int schwierigkeit, String hinweis, String verweis){
         
-        this.aufgabenID = aufgabenID;
+        this.thema = thema;
         this.frage = frage;
-        this.schwierigkeit = schwierigkeit;
+        this.schwierigkeit = schwierigkeit; //??
         this.hinweis = hinweis;
-        this.like = like;
+        this.bewertung = 10;
         this.verweis = verweis;
-        this.punkte = punkte;
+        this.punkte = 100;
+        this.anzAntworten = 0;
+    }
+    
+    public void addAntwort(String antwort, Boolean richtig) {
+        this.antworten.add(new Antwort(this,anzAntworten,antwort,richtig));
         
+        anzAntworten++;
     }
     
-    public void fuegeBearbeiteteAufgabeHinzu(BeAufgabe aufg){
-        this.bearbeiteteAufgabe.add(aufg);
-    }
-            
-    public void setBearbeiteteAufgabe(Collection<BeAufgabe>beAufgabe){
-        this.bearbeiteteAufgabe = (Collection) bearbeiteteAufgabe;
-    }
-    
-    public Collection<BeAufgabe> getBearbeiteteAufgabe(){
-        return this.bearbeiteteAufgabe;
-    }
-    
-    public void setAntworten(Collection<Antwort>antwort){
-        this.antworten = (Collection) antwort;
-    }
-    
-    public Collection<Antwort> getAntwort(){
+    public Collection<Antwort> getAntworten(){
         return this.antworten;
     }
     
-    public void setToken(Collection<Token>tok){
-        this.token = (Collection) tok;
+    public void addToken(String tok){
+        this.token.add(new Token(this,tok));
     }
     
     public Collection<Token> getToken(){
         return this.token;
-    }
-    
-    public void setZuAufgabe(Collection<ZuAufgabe>zuAufg){
-        this.zuAufgabe = (Collection) zuAufg;
-    }
-    
-    public Collection<ZuAufgabe> getZuAufgabe(){
-        return this.zuAufgabe;
-    }
-    
-    public void setXGAufgabe(Collection<XGAufgabe>xgAufg){
-        this.xgAufgabe = (Collection) xgAufg;
-    }
-    
-    public Collection<XGAufgabe> getXGAufgabe(){
-        return this.xgAufgabe;
-    }
-    
-     public void setAufgabenID(Long aufgabenID){
-        this.aufgabenID = aufgabenID;
     }
     
     public long getAufgabenID(){
@@ -157,11 +108,11 @@ public class Aufgabe implements Serializable {
     }
     
     public void setLike(int like){
-        this.like = like;
+        this.bewertung = like;
     } 
     
     public int getLike(){
-        return like;
+        return bewertung;
     } 
     
     public void setVerweis(String verweis){
@@ -200,9 +151,6 @@ public class Aufgabe implements Serializable {
         }
         final Aufgabe other = (Aufgabe) obj;
         if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
-            return false;
-        }
-        if (!Objects.equals(this.thema, other.thema)) {
             return false;
         }
         return true;

@@ -24,9 +24,9 @@ public class Klausur implements Serializable {
     @ManyToOne
     private Modul modul;
     
-    @Id
     private Date datum;
     
+    @Id
     @ManyToOne
     private Pruefungsperiode pruefungsperiode;
     
@@ -46,20 +46,20 @@ public class Klausur implements Serializable {
     
     private int quotient;
     
-    public Klausur(){
-        
+    public Klausur(){ 
     }
     
-    public Klausur(Date datum, Time uhrzeit, Time dauer, String ort,
-            int durchschnitt, String hilfsmittel, int quotient){
+    public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, Time dauer, String ort, String hilfsmittel){
         
+        this.modul = modul;
+        this.pruefungsperiode = pruefungsperiode;
         this.datum = datum;
         this.uhrzeit = uhrzeit;
         this.dauer = dauer;
         this.ort = ort;
-        this.durchschnitt = durchschnitt;
+        this.durchschnitt = 0;
         this.hilfsmittel = hilfsmittel;
-        this.quotient = quotient;
+        this.quotient = 0;
     }
     
     public void setDatum(Date datum){
@@ -122,18 +122,9 @@ public class Klausur implements Serializable {
         return teilnahmen;
     }
 
-    public void setTeilnahmen(Collection<Teilnahme> teilnahmen) {
-        this.teilnahmen = teilnahmen;
+    public void addTeilnahmen(Teilnahme teilnahme) {
+        this.teilnahmen.add(teilnahme);
     }
-
-    public Pruefungsperiode getPruefungsperiode() {
-        return pruefungsperiode;
-    }
-
-    public void setPruefungsperiode(Pruefungsperiode pruefungsperiode) {
-        this.pruefungsperiode = pruefungsperiode;
-    }
-    
     
     
     @Override
@@ -163,8 +154,6 @@ public class Klausur implements Serializable {
         }
         return true;
     }
-    
-    
 
     @Override
     public String toString() {

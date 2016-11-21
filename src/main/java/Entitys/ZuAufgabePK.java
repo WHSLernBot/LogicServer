@@ -9,22 +9,22 @@ import java.util.Objects;
  */
 public class ZuAufgabePK implements Serializable {
     
-    private Aufgabe aufgabe;
+    private Long aufgabenID;
     
     private LernStatus lernStatus;
 
     public ZuAufgabePK() {
     }
 
-    public ZuAufgabePK(Aufgabe aufgabe, LernStatus lernStatus) {
-        this.aufgabe = aufgabe;
+    public ZuAufgabePK(Long aufgabe, LernStatus lernStatus) {
+        this.aufgabenID = aufgabe;
         this.lernStatus = lernStatus;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.aufgabe);
+        hash = 41 * hash + Objects.hashCode(this.aufgabenID);
         hash = 41 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
@@ -41,7 +41,7 @@ public class ZuAufgabePK implements Serializable {
             return false;
         }
         final ZuAufgabePK other = (ZuAufgabePK) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {

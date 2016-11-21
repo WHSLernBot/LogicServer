@@ -32,15 +32,12 @@ public class Antwort implements Serializable {
         
     }
     
-    public Antwort(int nummer, String antwort, Boolean richtig){
+    public Antwort(Aufgabe aufgabe, int nummer, String antwort, Boolean richtig) {
+       this.aufgabe = aufgabe;
        this.nummer = nummer;
        this.antwort = antwort;
        this.richtig = richtig;
        this.haeufigkeit = 0;
-    }
-    
-    public void setNummer(int nummer){
-        this.nummer = nummer;
     }
     
     public int getNummer(){

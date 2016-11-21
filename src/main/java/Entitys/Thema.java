@@ -28,7 +28,6 @@ public class Thema implements Serializable {
     
     private int aufgabenZahl;
     
-    @Id
     @ManyToOne
     private Modul modul;
     
@@ -36,29 +35,22 @@ public class Thema implements Serializable {
     private Collection<LernStatus> lernStadi;
     
     @OneToMany(mappedBy="thema", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Aufgabe aufgabe;
-
-    
+    private Collection<Aufgabe> aufgaben;
 
     public Thema(){
         
     }
     
-    public Thema(Long themenID, String name, int anteil, int aufgabenZahl){
-        
-        this.thmenID = themenID;
+    public Thema(Modul modul, String name, int anteil) {
+        this.modul = modul;
         this.name = name;
         this.anteil = anteil;
-        this.aufgabenZahl = aufgabenZahl;
+        this.aufgabenZahl = 0;
     }
     
     
     public Long getId() {
         return thmenID;
-    }
-
-    public void setId(Long id) {
-        this.thmenID = id;
     }
     
     public void setName(String name){
@@ -76,10 +68,6 @@ public class Thema implements Serializable {
     public int getAnteil(){
         return anteil;
     }
-    
-    public void setAufgabenZahl(int aufgabenZahl){
-        this.aufgabenZahl = aufgabenZahl;
-    }
 
     public int getAufgabenZahl() {
         return aufgabenZahl;
@@ -89,35 +77,23 @@ public class Thema implements Serializable {
         return lernStadi;
     }
 
-    public void setLernStadi(Collection<LernStatus> lernStadi) {
-        this.lernStadi = lernStadi;
-    }
-
-    public Long getThmenID() {
-        return thmenID;
-    }
-
-    public void setThmenID(Long thmenID) {
-        this.thmenID = thmenID;
-    }
-
-    public Modul getModul() {
-        return modul;
-    }
-
-    public void setModul(Modul modul) {
-        this.modul = modul;
-    }
-
-    public Aufgabe getAufgabe() {
-        return aufgabe;
-    }
-
-    public void setAufgabe(Aufgabe aufgabe) {
-        this.aufgabe = aufgabe;
-    }
-        
     
+    /**
+     * Wenn überhaupt sinnvoll
+     * @param lernStatus 
+     */
+    public void addLernStatus(LernStatus lernStatus) {
+        this.lernStadi.add(lernStatus);
+    }
+
+    public Collection<Aufgabe> getAufgaben() {
+        return aufgaben;
+    }
+
+    public void addAufgaben(Aufgabe aufgaben) {
+        this.aufgabenZahl++;
+        this.aufgaben.add(new Aufgabe(this));
+    }
     
     @Override
     public int hashCode() {

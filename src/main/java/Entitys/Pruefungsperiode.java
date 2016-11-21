@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
@@ -20,14 +18,18 @@ import javax.persistence.OneToMany;
 @Entity
 @IdClass(PruefungsperiodePK.class)
 public class Pruefungsperiode implements Serializable {
-    private static final long serialVersionUID = 1L;
     
     @Id
     private int jahr;
     
+    @Id
     private int phase;
     
     private Date anmeldebeginn;
+    
+    private Date anfang;
+    
+    private Date ende;
     
     @Id
     @ManyToOne 
@@ -40,17 +42,19 @@ public class Pruefungsperiode implements Serializable {
         
     }
     
-    public Pruefungsperiode(int jahr, int phase, Date anmeldebeginn){
-        
+    public Pruefungsperiode(Uni uni, int jahr, int phase, Date anmeldebeginn, Date anfang, Date ende){
+        this.uni = uni;
         this.jahr = jahr;
         this.phase = phase;
         this.anmeldebeginn = anmeldebeginn;
+        this.anfang = anfang;
+        this.ende = ende;
+    }
+
+    public Uni getUni() {
+        return uni;
     }
     
-
-    public void setJahr(int jahr){
-        this.jahr = jahr;
-    }
     
     public int getJahr(){
         return jahr;
@@ -76,8 +80,24 @@ public class Pruefungsperiode implements Serializable {
         return klausuren;
     }
 
-    public void setKlausuren(Collection<Klausur> klausuren) {
-        this.klausuren = klausuren;
+    public void addKlausuren(Klausur klausuren) {
+        this.klausuren.add(klausuren);
+    }
+
+    public Date getAnfang() {
+        return anfang;
+    }
+
+    public void setAnfang(Date anfang) {
+        this.anfang = anfang;
+    }
+
+    public Date getEnde() {
+        return ende;
+    }
+
+    public void setEnde(Date ende) {
+        this.ende = ende;
     }
     
     

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Entitys;
 
 import java.io.Serializable;
@@ -33,7 +28,12 @@ public class Teilnahme implements Serializable {
     public Teilnahme(){
         
     }
- 
+
+    public Teilnahme(Benutzer benutzer, Klausur klausur) {
+        this.benutzer = benutzer;
+        this.klausur = klausur;
+        this.note = 0;
+    }
     
     public Teilnahme(int note){
         this.note = note;

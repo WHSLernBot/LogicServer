@@ -9,14 +9,14 @@ import java.util.Objects;
  */
 public class PlattformPK implements Serializable {
     
-    private Long pfID;
+    private String pfID;
     
     private int pfNr;
 
     public PlattformPK() {
     }
 
-    public PlattformPK(Long pfID, int pfNr) {
+    public PlattformPK(String pfID, int pfNr) {
         this.pfID = pfID;
         this.pfNr = pfNr;
     }

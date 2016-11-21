@@ -26,22 +26,15 @@ public class Plattform implements Serializable {
     
     private String witSession;
 
-    public Plattform(String pfID, int pfNr, String witSession){
+    public Plattform(String pfID, int pfNr,Benutzer benutzer, String witSession){
         this.pfID = pfID;
         this.pfNr = pfNr;
+        this.benutzer = benutzer;
         this.witSession = witSession;
-    }
-    
-    public void setPfID(String pfID){
-        this.pfID = pfID; 
     }
     
     public String getPfID(){
         return pfID;
-    }
-       
-    public void setPfNr(int pfNr){
-        this.pfNr = pfNr;  
     }
     
     public int getPfNr(){
@@ -55,7 +48,11 @@ public class Plattform implements Serializable {
     public String getWitSession(){
         return witSession;
     }
-    
+
+    public Benutzer getBenutzer() {
+        return benutzer;
+    }
+
     
     @Override
     public int hashCode() {

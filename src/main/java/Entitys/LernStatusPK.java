@@ -2,11 +2,13 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Seve
  */
+@Embeddable
 public class LernStatusPK implements Serializable {
     
     private Long benutzer;

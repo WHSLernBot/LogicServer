@@ -36,43 +36,39 @@ public class BeAufgabe implements Serializable {
         
     }
     
-    public BeAufgabe(Boolean richtig, Date datum, Boolean hinweis, Boolean beantwortet){
+    public BeAufgabe(Aufgabe aufgabe, LernStatus lernStatus, Boolean richtig, 
+            Date datum, Boolean hinweis, Boolean beantwortet) {
+        
+        this.aufgabe = aufgabe;
+        this.lernStatus = lernStatus;
         this.richtig = richtig;
         this.datum = datum;
         this.hinweis = hinweis;
         this.beantwortet = beantwortet;
-    }
-
-    public void setRichtig(Boolean richtig){
-        this.richtig = richtig;
     }
     
     public Boolean istRichtig(){
         return richtig;
     }
     
-    public void setDatum(Date datum){
-        this.datum = datum;
-    }
-    
     public Date getDatum(){
         return datum;
-    }
-    
-    public void setHinweis(Boolean hinweis){
-        this.hinweis = hinweis;
     }
     
     public Boolean getHinweis(){
         return hinweis;
     }
     
-    public void setBeantwortet(Boolean beantwortet){
-        this.beantwortet = beantwortet;
-    }
-    
     public Boolean istBeantwortet(){
         return beantwortet;
+    }
+
+    public Aufgabe getAufgabe() {
+        return aufgabe;
+    }
+
+    public LernStatus getLernStatus() {
+        return lernStatus;
     }
     
     @Override

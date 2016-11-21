@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Entitys;
 
 import java.io.Serializable;
@@ -14,22 +9,22 @@ import java.util.Objects;
  */
 public class XGAufgabePK implements Serializable{
     
-    private Aufgabe aufgabe;
+    private Long aufgabenID; //nicht long??
     
     private LernStatus lernStatus;
 
     public XGAufgabePK() {
     }
 
-    public XGAufgabePK(Aufgabe aufgabe, LernStatus lernStatus) {
-        this.aufgabe = aufgabe;
+    public XGAufgabePK(Long aufgabe, LernStatus lernStatus) {
+        this.aufgabenID = aufgabe;
         this.lernStatus = lernStatus;
     }
     
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.aufgabe);
+        hash = 41 * hash + Objects.hashCode(this.aufgabenID);
         hash = 41 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
@@ -46,7 +41,7 @@ public class XGAufgabePK implements Serializable{
             return false;
         }
         final XGAufgabePK other = (XGAufgabePK) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -36,13 +37,11 @@ public class LernStatus implements Serializable {
     
     private Date letztesDatum;
     
-    private Timestamp letzteAktualisierung;
-    
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> beAufgaben;
 
-    @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Collection<ZuAufgabe> zuAufgaben;
+    @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drüber sprechen
+    private ZuAufgabe zuAufgaben;
     
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<XGAufgabe> xgAufgaben;
@@ -52,14 +51,14 @@ public class LernStatus implements Serializable {
         
     }
     
-    public LernStatus(Boolean aktiv, int richtige, int sumPunkte, Date letztesDatum,
-            Timestamp letzteAktualisierung){
+    public LernStatus(Benutzer benutzer, Thema thema, Date letztesDatum){
         
-        this.aktiv = aktiv;
-        this.richtige = richtige;
-        this.sumPunkte = sumPunkte;
+        this.benutzer = benutzer;
+        this.thema = thema;
+        this.aktiv = true;
+        this.richtige = 0;
+        this.sumPunkte = 0;
         this.letztesDatum = letztesDatum;
-        this.letzteAktualisierung = letzteAktualisierung;
     }
     
     public void setAktiv(Boolean aktiv){
@@ -70,8 +69,8 @@ public class LernStatus implements Serializable {
         return aktiv;
     }
     
-    public void setRichtige(int richtige){
-        this.richtige = richtige;
+    public void richtigGeloest(){
+        this.richtige++;
     }
     
     public int getRichtige(){
@@ -93,28 +92,21 @@ public class LernStatus implements Serializable {
     public Date getLetztesDatum(){
         return letztesDatum;
     }
-    
-    public void setLetzteAktualisierung(Timestamp letzteAktualisierung){
-        this.letzteAktualisierung = letzteAktualisierung;
-    }
-    
-    public Timestamp getLetzteAktualisierung(){
-        return letzteAktualisierung;
-    }
 
     public Collection<BeAufgabe> getBeAufgaben() {
         return beAufgaben;
     }
 
-    public void setBeAufgaben(Collection<BeAufgabe> beAufgaben) {
-        this.beAufgaben = beAufgaben;
+    public void addBeAufgaben(Aufgabe aufgabe, Boolean richtig, 
+            Date datum, Boolean hinweis, Boolean beantwortet) {
+        this.beAufgaben.add(new BeAufgabe(aufgabe,this,richtig,datum,hinweis,beantwortet));
     }
 
-    public Collection<ZuAufgabe> getZuAufgaben() {
+    public ZuAufgabe getZuAufgaben() {
         return zuAufgaben;
     }
 
-    public void setZuAufgaben(Collection<ZuAufgabe> zuAufgaben) {
+    public void setZuAufgaben(ZuAufgabe zuAufgaben) {
         this.zuAufgaben = zuAufgaben;
     }
 
@@ -122,11 +114,22 @@ public class LernStatus implements Serializable {
         return xgAufgaben;
     }
 
-    public void setXgAufgaben(Collection<XGAufgabe> xgAufgaben) {
-        this.xgAufgaben = xgAufgaben;
+    public void addXgAufgaben(Aufgabe aufgabe) {
+        this.xgAufgaben.add(new XGAufgabe(aufgabe,this));
     }
-    
-        
+
+    public Benutzer getBenutzer() {
+        return benutzer;
+    }
+
+    public Thema getThema() {
+        return thema;
+    }
+
+    public Boolean getAktiv() {
+        return aktiv;
+    }
+     
     @Override
     public int hashCode() {
         int hash = 7;
@@ -155,9 +158,6 @@ public class LernStatus implements Serializable {
         }
         return true;
     }
-
-    
-    
 
     @Override
     public String toString() {

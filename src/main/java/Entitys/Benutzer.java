@@ -18,7 +18,7 @@ import javax.persistence.OneToOne;
  * @author Seve
  */
 @Entity
-@IdClass(BenutzerPK.class)
+//@IdClass(BenutzerPK.class)
 public class Benutzer implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,7 +28,6 @@ public class Benutzer implements Serializable {
     
     private String name;
     
-    @Id
     @ManyToOne
     private Uni uni;
     
@@ -42,25 +41,17 @@ public class Benutzer implements Serializable {
     @OneToMany(mappedBy="benutzer" , cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
     
-    @Id
-    @OneToOne(mappedBy="benutzer")
+    @OneToOne(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Plattform plattform;
-
     
     public Benutzer(){
         
     }
     
-    public Benutzer(Long id, String name, Date letzteAntwort){
-        this.id = id;
+    public Benutzer(String pfID, int pfNr, String witSession,String name, Date letzteAntwort){
         this.name = name;
         this.letzteAntwort = letzteAntwort;
-    }
-    
-   
-
-    public void setId(Long id){
-        this.id = id;
+        plattform = new Plattform(pfID,pfNr,witSession);
     }
     
     public Long getId(){
@@ -90,29 +81,39 @@ public class Benutzer implements Serializable {
     public void setDatenschutz(Boolean datenschutz) {
         this.datenschutz = datenschutz;
     }
+    
 
     public Collection<LernStatus> getLernStadi() {
         return lernStadi;
     }
+    
+    public LernStatus getStatus(Long id) {
+        
+        LernStatus ls = null;
+        
+        for(LernStatus l : lernStadi) {
+            if(l.getThema().getId() == id) {
+                ls = l;
+                break;
+            }
+        }
+        return ls;
+    }
 
-    public void setLernStadi(Collection<LernStatus> lernStadi) {
-        this.lernStadi = lernStadi;
+    public void addLernStadi(Thema thema,Date datum) {
+        this.lernStadi.add(new LernStatus(this,thema,datum));
     }
 
     public Collection<Teilnahme> getTeilnahmen() {
         return teilnahmen;
     }
 
-    public void setTeilnahmen(Collection<Teilnahme> teilnahmen) {
-        this.teilnahmen = teilnahmen;
+    public void addTeilnahmen(Klausur klausur) {
+        this.teilnahmen.add(new Teilnahme(this,klausur));
     }
 
     public Plattform getPlattform() {
         return plattform;
-    }
-
-    public void setPlattform(Plattform plattform) {
-        this.plattform = plattform;
     }
     
     
@@ -135,16 +136,6 @@ public class Benutzer implements Serializable {
         }
         return true;
     }
-
-    public Uni getUni() {
-        return uni;
-    }
-
-    public void setUni(Uni uni) {
-        this.uni = uni;
-    }
-    
-    
 
     @Override
     public String toString() {

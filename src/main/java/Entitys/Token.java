@@ -26,11 +26,8 @@ public class Token implements Serializable {
         
     }
     
-    public Token(String token){
-        this.token = token;
-    }
-    
-    public void setToken(String token){
+    public Token(Aufgabe aufgabe, String token){
+        this.aufgabe = aufgabe;
         this.token = token;
     }
     

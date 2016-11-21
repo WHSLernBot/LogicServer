@@ -41,13 +41,10 @@ public class Modul implements Serializable {
         
     }
     
-    public Modul(String kuerzel, String name){
+    public Modul(Uni uni, String kuerzel, String name) {
+        this.uni = uni;
         this.kuerzel = kuerzel;
         this.name = name;
-    }
-    
-    public void setKuerzel(String kuerzel){
-        this.kuerzel = kuerzel;
     }
     
     public String getKuerzel(){
@@ -66,27 +63,17 @@ public class Modul implements Serializable {
         return themen;
     }
 
-    public void setThemen(Collection<Thema> themen) {
-        this.themen = themen;
+    public void addThema(Thema thema) {
+        this.themen.add(new Thema(this));
     }
 
     public Collection<Klausur> getKlausuren() {
         return klausuren;
     }
 
-    public void setKlausuren(Collection<Klausur> klausuren) {
-        this.klausuren = klausuren;
+    public void addKlausuren(Klausur klausur) {
+        this.klausuren.add(new Klausur(this));
     }
-
-    public Statistik getStatistik() {
-        return statistik;
-    }
-
-    public void setStatistik(Statistik statistik) {
-        this.statistik = statistik;
-    }
-    
-        
     
     @Override
     public int hashCode() {
@@ -116,9 +103,6 @@ public class Modul implements Serializable {
         }
         return true;
     }
-
-    
-
 
     @Override
     public String toString() {
