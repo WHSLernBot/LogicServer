@@ -2,8 +2,11 @@ package Controller;
 
 import DAO.DAO;
 import Entitys.Aufgabe;
+import Entitys.Uni;
 import Message.MessageCreator;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import main.CBBenutzer;
 import main.CBPlattform;
@@ -46,10 +49,7 @@ public class ControllerThread implements Runnable {
             benutzer = sucheBenutzer(pt);
         }
         
-        //manager.setzeBenutzerAktiv(benutzer);
-        jsonAttribute.put("id", id);
-        jsonAttribute.put("plattform", plattform);
-        
+        //manager.setzeBenutzerAktiv(benutzer);        
         switch (json.get("methode").getAsString()) {
             case "gibSession":
                 //witSession
@@ -57,8 +57,7 @@ public class ControllerThread implements Runnable {
                 break;
             case "gibAufgabe":               
                 Aufgabe aufgabe = DAO.gibAufgabe(benutzer, json.get("modul").getAsString(), json.get("thema").getAsString());
-                jsonAttribute.put("aufgabe", aufgabe);
-                messCreator.erstelleText(jsonAttribute);
+                messCreator.erstelleAufgabenText(id,plattform, aufgabe);
                 break;
             case "setzeName":
                 DAO.setzeName(benutzer, json.get("name").getAsString());
@@ -76,7 +75,8 @@ public class ControllerThread implements Runnable {
                 DAO.setzeUni(benutzer, json.get("uni").getAsShort());
                 break;
             case "gibUnis":
-                DAO.gibUnis();
+                Collection<Uni> alUnis = DAO.gibUnis();
+                
                 break;
             case "setzePruefung":
                 DAO.setzePruefung(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
@@ -85,7 +85,7 @@ public class ControllerThread implements Runnable {
                 DAO.neueAufgabe(id, plattform, witSession, witSession);
                 break;
             case "neuerBenutzer":
-                DAO.neuerBenutzer(pt);
+                //DAO.neuerBenutzer(pt);
                 break;
             case "gibKlausurInfos":
                 DAO.gibKlausur(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
@@ -95,7 +95,6 @@ public class ControllerThread implements Runnable {
                 break;
                 
         }         
-        JsonObject jsonResponse = messCreator.erstelleText(jsonAttribute);
     }
     private CBBenutzer sucheBenutzer(CBPlattform pt) {      
         return DAO.sucheBenutzer(pt);       
