@@ -51,7 +51,7 @@ public class Benutzer implements Serializable {
     public Benutzer(String pfID, int pfNr, String witSession,String name, Date letzteAntwort){
         this.name = name;
         this.letzteAntwort = letzteAntwort;
-        plattform = new Plattform(pfID,pfNr,witSession);
+        plattform = new Plattform(pfID,pfNr,this,witSession);
     }
     
     public Long getId(){

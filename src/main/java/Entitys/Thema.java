@@ -90,9 +90,9 @@ public class Thema implements Serializable {
         return aufgaben;
     }
 
-    public void addAufgaben(Aufgabe aufgaben) {
+    public void addAufgaben(String frage, int schwierigkeit, String hinweis, String verweis) {
         this.aufgabenZahl++;
-        this.aufgaben.add(new Aufgabe(this));
+        this.aufgaben.add(new Aufgabe(this,frage,schwierigkeit,hinweis,verweis));
     }
     
     @Override

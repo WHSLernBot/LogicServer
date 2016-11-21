@@ -1,6 +1,8 @@
 package main;
 
 import DAO.DAO;
+import DAO.EMH;
+import Entitys.Uni;
 
 /**
  *
@@ -10,7 +12,9 @@ public class Tester {
     
     public static void main(String[] args) {
         
-        DAO.gibUnis();
+        EMH.getEntityManager().persist(new Uni("WHS"));
+        
+        System.out.println(DAO.gibUnis().iterator().next().toString());
         
     }
     

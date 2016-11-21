@@ -1,6 +1,8 @@
 package Entitys;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -34,9 +36,8 @@ public class Modul implements Serializable {
     private Collection<Klausur> klausuren;
     
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
-    private Statistik statistik;
+    private Collection<Statistik> statistiken;
 
-    
     public Modul(){
         
     }
@@ -63,17 +64,26 @@ public class Modul implements Serializable {
         return themen;
     }
 
-    public void addThema(Thema thema) {
-        this.themen.add(new Thema(this));
+    public void addThema(String name) {
+        this.themen.add(new Thema(this,name,20)); //anteil dynamisch bestimmen
     }
 
     public Collection<Klausur> getKlausuren() {
         return klausuren;
     }
 
-    public void addKlausuren(Klausur klausur) {
-        this.klausuren.add(new Klausur(this));
+    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, Time dauer, String ort, String hilfsmittel) {
+        this.klausuren.add(new Klausur(this,pruefungsperiode,datum,uhrzeit,dauer,ort,hilfsmittel));
     }
+
+    public Collection<Statistik> getStatistiken() {
+        return statistiken;
+    }
+
+    public void addStatistik(int woche,int anteil) {
+        this.statistiken.add(new Statistik(this,woche,anteil));
+    }
+    
     
     @Override
     public int hashCode() {
