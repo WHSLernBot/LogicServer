@@ -2,7 +2,6 @@ package Entitys;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -40,7 +39,7 @@ public class LernStatus implements Serializable {
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> beAufgaben;
 
-    @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drüber sprechen
+    @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drï¿½ber sprechen
     private ZuAufgabe zuAufgaben;
     
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)

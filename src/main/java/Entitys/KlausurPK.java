@@ -14,12 +14,12 @@ public class KlausurPK implements Serializable {
     
     private ModulPK modul;
     
-    private Pruefungsperiode periode;
+    private PruefungsperiodePK periode;
 
     public KlausurPK() {
     }
 
-    public KlausurPK(ModulPK modul, Date periode) {
+    public KlausurPK(ModulPK modul, PruefungsperiodePK periode) {
         this.modul = modul;
         this.periode = periode;
     }

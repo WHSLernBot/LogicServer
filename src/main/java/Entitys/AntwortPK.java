@@ -9,13 +9,13 @@ import java.util.Objects;
  */
 public class AntwortPK implements Serializable {
     
-    private Long aufgabenID;
+    private Long aufgabe;
     
     private int nummer;
     
     
-    public AntwortPK(Long aufgabenID, int nummer) {
-        this.aufgabenID = aufgabenID;
+    public AntwortPK(Long aufgabe, int nummer) {
+        this.aufgabe = aufgabe;
         this.nummer = nummer;
     }
     
@@ -26,7 +26,7 @@ public class AntwortPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.aufgabenID);
+        hash = 89 * hash + Objects.hashCode(this.aufgabe);
         hash = 89 * hash + this.nummer;
         return hash;
     }
@@ -40,7 +40,7 @@ public class AntwortPK implements Serializable {
             return false;
         }
         final AntwortPK other = (AntwortPK) obj;
-        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
+        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
         if (this.nummer != other.nummer) {

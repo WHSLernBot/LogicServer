@@ -2,21 +2,23 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Seve
  */
+@Embeddable
 public class TeilnahmePK implements Serializable {
     
-    private Benutzer benutzer;
+    private Long benutzer;
     
-    private Klausur klausur;
+    private KlausurPK klausur;
 
     public TeilnahmePK() {
     }
 
-    public TeilnahmePK(Benutzer benutzer, Klausur klausur) {
+    public TeilnahmePK(Long benutzer, KlausurPK klausur) {
         this.benutzer = benutzer;
         this.klausur = klausur;
     }

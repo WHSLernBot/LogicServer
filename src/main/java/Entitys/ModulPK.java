@@ -11,17 +11,27 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ModulPK implements Serializable {
     
-    private Long uni;
+    private short uni;
     
     private String kuerzel;
 
-    public ModulPK(Long uni, String kuerzel) {
+    public ModulPK(short uni, String kuerzel) {
         this.uni = uni;
         this.kuerzel = kuerzel;
     }
 
     public ModulPK() {
     }
+
+    public short getUni() {
+        return uni;
+    }
+
+    public String getKuerzel() {
+        return kuerzel;
+    }
+    
+    
     
     @Override
     public int hashCode() {

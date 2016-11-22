@@ -28,7 +28,7 @@ public class Klausur implements Serializable {
     
     @Id
     @ManyToOne
-    private Pruefungsperiode pruefungsperiode;
+    private Pruefungsperiode periode;
     
     @OneToMany(mappedBy="klausur", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
@@ -52,7 +52,7 @@ public class Klausur implements Serializable {
     public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, Time dauer, String ort, String hilfsmittel){
         
         this.modul = modul;
-        this.pruefungsperiode = pruefungsperiode;
+        this.periode = pruefungsperiode;
         this.datum = datum;
         this.uhrzeit = uhrzeit;
         this.dauer = dauer;
@@ -114,7 +114,7 @@ public class Klausur implements Serializable {
         this.quotient = quotient;
     }
     
-    public int getQuootient(){
+    public int getQuotient(){
         return quotient;
     }
 
@@ -125,7 +125,11 @@ public class Klausur implements Serializable {
     public void addTeilnahmen(Teilnahme teilnahme) {
         this.teilnahmen.add(teilnahme);
     }
-    
+
+    public Pruefungsperiode getPruefungsperiode() {
+        return periode;
+    }
+ 
     
     @Override
     public int hashCode() {

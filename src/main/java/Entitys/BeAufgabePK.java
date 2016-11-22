@@ -2,30 +2,32 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Seve
  */
+@Embeddable
 public class BeAufgabePK implements Serializable {
     
-    private Long aufgabenID;
+    private Long aufgabe;
     
-    private LernStatusPK lernStatus; //prüfen
+    private LernStatusPK lernStatus; //prï¿½fen
 
     public BeAufgabePK() {
     }
 
-    public BeAufgabePK(Long aufgabenID, LernStatus lernStatus) {
-        this.aufgabenID = aufgabenID;
+    public BeAufgabePK(Long aufgabenID, LernStatusPK lernStatus) {
+        this.aufgabe = aufgabenID;
         this.lernStatus = lernStatus;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 41 * hash + Objects.hashCode(this.aufgabenID);
-        hash = 41 * hash + Objects.hashCode(this.lernStatus);
+        hash = 97 * hash + Objects.hashCode(this.aufgabe);
+        hash = 97 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
 
@@ -41,7 +43,7 @@ public class BeAufgabePK implements Serializable {
             return false;
         }
         final BeAufgabePK other = (BeAufgabePK) obj;
-        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
+        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -50,6 +52,5 @@ public class BeAufgabePK implements Serializable {
         return true;
     }
 
-    
-    
+   
 }

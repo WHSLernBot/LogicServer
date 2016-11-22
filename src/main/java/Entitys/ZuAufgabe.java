@@ -10,7 +10,7 @@ import javax.persistence.OneToOne;
 
 /**
  *
- * @author Betül
+ * @author Betï¿½l
  */
 @Entity
 @IdClass(ZuAufgabePK.class)
@@ -24,23 +24,23 @@ public class ZuAufgabe implements Serializable {
     
     @Id
     @OneToOne
-    private LernStatus status;
+    private LernStatus lernStatus;
     
-    @OneToOne(mappedBy="zuAufgabe")
-    private ZuAufgabe naechsteAufgabe;
+//    @OneToOne(mappedBy="zuAufgabe")
+//    private ZuAufgabe naechsteAufgabe;
     
     public ZuAufgabe(){
         
     }
     
     public ZuAufgabe(LernStatus status, Aufgabe aufgabe, boolean zuletzt){
-        this.status = status;
+        this.lernStatus = status;
         this.aufgabe = aufgabe;
         this.zuletzt = zuletzt;
     }
     
     public LernStatus getStatus(){
-        return status;
+        return lernStatus;
     }
     
     public boolean istZuletzt(){
@@ -51,23 +51,23 @@ public class ZuAufgabe implements Serializable {
         return aufgabe;
     }
 
-    public ZuAufgabe getNaechsteAufgabe() {
-        return naechsteAufgabe;
-    }
-
-    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
-        this.naechsteAufgabe = new ZuAufgabe(status,aufgabe,true);
-        this.zuletzt = false;
-        
-        return naechsteAufgabe;
-    } 
+//    public ZuAufgabe getNaechsteAufgabe() {
+//        return naechsteAufgabe;
+//    }
+//
+//    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
+//        this.naechsteAufgabe = new ZuAufgabe(lernStatus,aufgabe,true);
+//        this.zuletzt = false;
+//        
+//        return naechsteAufgabe;
+//    } 
     
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 67 * hash + Objects.hashCode(this.aufgabe);
-        hash = 67 * hash + Objects.hashCode(this.status);
+        hash = 67 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
 
@@ -86,7 +86,7 @@ public class ZuAufgabe implements Serializable {
         if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
-        if (!Objects.equals(this.status, other.status)) {
+        if (!Objects.equals(this.lernStatus, other.lernStatus)) {
             return false;
         }
         return true;
@@ -97,7 +97,7 @@ public class ZuAufgabe implements Serializable {
 
     @Override
     public String toString() {
-        return "Zuletzt bearbeitete Aufgabe: " + status;
+        return "Zuletzt bearbeitete Aufgabe: " + lernStatus;
     }
     
 }

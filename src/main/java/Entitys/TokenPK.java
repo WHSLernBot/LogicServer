@@ -2,14 +2,16 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Seve
  */
+@Embeddable
 public class TokenPK implements Serializable {
     
-    private Long aufgabenID;
+    private Long aufgabe;
     
     private String token;
 
@@ -17,14 +19,14 @@ public class TokenPK implements Serializable {
     }
 
     public TokenPK(Long aufgabe, String token) {
-        this.aufgabenID = aufgabe;
+        this.aufgabe = aufgabe;
         this.token = token;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.aufgabenID);
+        hash = 23 * hash + Objects.hashCode(this.aufgabe);
         hash = 23 * hash + Objects.hashCode(this.token);
         return hash;
     }
@@ -44,7 +46,7 @@ public class TokenPK implements Serializable {
         if (!Objects.equals(this.token, other.token)) {
             return false;
         }
-        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
+        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
         return true;

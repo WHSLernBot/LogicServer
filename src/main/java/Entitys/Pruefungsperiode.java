@@ -35,7 +35,7 @@ public class Pruefungsperiode implements Serializable {
     @ManyToOne 
     private Uni uni;
     
-    @OneToMany(mappedBy="pruefungsperiode", cascade=CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy="periode", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Klausur> klausuren;
 
     public Pruefungsperiode(){

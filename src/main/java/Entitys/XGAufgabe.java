@@ -24,7 +24,7 @@ public class XGAufgabe implements Serializable {
     private LernStatus lernStatus;
 
     
-     public XGAufgabe(){
+    public XGAufgabe(){
         
     }
 

@@ -34,7 +34,6 @@ public class Uni implements Serializable {
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Pruefungsperiode> pruefungsperiode;
     
-    
     public Uni() {
         
     }

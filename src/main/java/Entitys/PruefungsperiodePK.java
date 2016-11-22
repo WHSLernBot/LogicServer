@@ -6,18 +6,21 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author Betül
+ * @author Betï¿½l
  */
 @Embeddable
 public class PruefungsperiodePK implements Serializable{
     
     private int jahr;
    
-    private Long uni;
+    private short uni;
     
     private int phase;
 
-    public PruefungsperiodePK(int jahr, Long uni, int phase) {
+    public PruefungsperiodePK() {
+    }
+    
+    public PruefungsperiodePK(int jahr, short uni, int phase) {
         this.jahr = jahr;
         this.uni = uni;
         this.phase = phase;

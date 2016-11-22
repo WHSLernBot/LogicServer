@@ -1,6 +1,7 @@
 package DBBot;
 
 import DAO.DAO;
+import Entitys.LernStatus;
 import Entitys.Modul;
 import Entitys.Uni;
 import java.util.Collection;

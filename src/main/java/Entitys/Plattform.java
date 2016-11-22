@@ -26,6 +26,11 @@ public class Plattform implements Serializable {
     
     private String witSession;
 
+    public Plattform() {
+    }
+
+    
+    
     public Plattform(String pfID, int pfNr,Benutzer benutzer, String witSession){
         this.pfID = pfID;
         this.pfNr = pfNr;

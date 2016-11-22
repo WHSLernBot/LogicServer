@@ -2,18 +2,23 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
- * @author Betül
+ * @author Betï¿½l
  */
+@Embeddable
 public class StatistikPK implements Serializable{
     
     private ModulPK modul; // oder nur Modul ??
     
     private int woche;
 
-    public StatistikPK(Modul modul, int woche) {
+    public StatistikPK() {
+    }
+    
+    public StatistikPK(ModulPK modul, int woche) {
         this.modul = modul;
         this.woche = woche;
     }

@@ -2,29 +2,31 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author Betül
  */
+@Embeddable
 public class XGAufgabePK implements Serializable{
     
-    private Long aufgabenID; //nicht long??
+    private Long aufgabe; //nicht long??
     
-    private LernStatus lernStatus;
+    private LernStatusPK lernStatus;
 
     public XGAufgabePK() {
     }
 
-    public XGAufgabePK(Long aufgabe, LernStatus lernStatus) {
-        this.aufgabenID = aufgabe;
+    public XGAufgabePK(Long aufgabe, LernStatusPK lernStatus) {
+        this.aufgabe = aufgabe;
         this.lernStatus = lernStatus;
     }
     
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.aufgabenID);
+        hash = 41 * hash + Objects.hashCode(this.aufgabe);
         hash = 41 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
@@ -41,7 +43,7 @@ public class XGAufgabePK implements Serializable{
             return false;
         }
         final XGAufgabePK other = (XGAufgabePK) obj;
-        if (!Objects.equals(this.aufgabenID, other.aufgabenID)) {
+        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {

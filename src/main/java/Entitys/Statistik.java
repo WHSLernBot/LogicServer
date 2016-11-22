@@ -4,13 +4,15 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
 /**
  *
- * @author Betül
+ * @author Betï¿½l
  */
 @Entity
+@IdClass(StatistikPK.class)
 public class Statistik implements Serializable {
     
     @Id

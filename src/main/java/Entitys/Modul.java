@@ -83,6 +83,12 @@ public class Modul implements Serializable {
     public void addStatistik(int woche,int anteil) {
         this.statistiken.add(new Statistik(this,woche,anteil));
     }
+
+    public Uni getUni() {
+        return uni;
+    }
+    
+    
     
     
     @Override
