@@ -7,29 +7,51 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
- *
+ * Diese Klasse stellt einer Aufgabe dar, die von einem Benutzer bearbeitet wurde.
+ * 
  * @author Seve
  */
 @Entity
 @IdClass(BeAufgabePK.class)
 public class BeAufgabe implements Serializable {
     
+    /**
+     * Die bearbeitete Aufgabe.
+     */
     @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
+    /**
+     * Der Zugehörige Lernstatus des Benutzers.
+     */
     @Id
     @ManyToOne
     private LernStatus lernStatus;
     
+    /**
+     * Ist true, falls die Aufgabe richtig beantwortet wurde.
+     */
     private Boolean richtig;
     
+    /**
+     * Das Datum, an dem die Aufgabe bearbeitet wurde.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date datum;
     
+    /**
+     * Ist true, falls ein Hinweis benutzt wurde.
+     */
     private Boolean hinweis;
     
+    /**
+     * Ist true, falls die Aufgabe beantwortet wurde,
+     * oder von Benutzer noch aussteht (vielleicht nichtmer sinnvoll)
+     */
     private Boolean beantwortet;
     
     public BeAufgabe(){
@@ -99,7 +121,6 @@ public class BeAufgabe implements Serializable {
         }
         return true;
     }
-    
     
 
     @Override

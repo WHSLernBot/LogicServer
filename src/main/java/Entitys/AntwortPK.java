@@ -4,17 +4,18 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *
+ * Die PrmaryKey Klasse zu Antwort. Für weitere Infos siehe Antwort.
+ * 
  * @author Seve
  */
 public class AntwortPK implements Serializable {
     
     private Long aufgabe;
     
-    private int nummer;
+    private short nummer;
     
     
-    public AntwortPK(Long aufgabe, int nummer) {
+    public AntwortPK(Long aufgabe, short nummer) {
         this.aufgabe = aufgabe;
         this.nummer = nummer;
     }

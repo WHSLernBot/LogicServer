@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,43 +13,92 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
- *
+ * Diese Klasse stellt eine Aufgabe zu einem bestimmten Thema dar.
+ * 
  * @author Seve
  */
 @Entity
 public class Aufgabe implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Eindeutige Nummer der Antwort.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) //schlau machen
     private Long aufgabenID;
     
+    /**
+     * Das Thema, zu dem die Antwort gehöhrt.
+     */
     @ManyToOne
     private Thema thema;
     
+    /**
+     * Die Fragestellung.
+     */
+    @Column(length = 2000)
     private String frage;
     
+    /**
+     * Der Schwiereigkeitsgrad der Aufgabe.
+     */
     private int schwierigkeit;
     
+    /**
+     * Ein Hinweistext zur Lösung der Aufgabe.
+     */
+    @Column(length = 2000)
     private String hinweis;
     
+    /**
+     * Die Bewertung einer Aufgabe. Falls dieser Wert bei 0 liegt,
+     * muss die Aufgabe gelöscht oder geprüft werden.
+     */
     private int bewertung;
     
+    /**
+     * Ein Verweis, wo man etwas nachlesen kann, falls man die Aufgabe nicht
+     * beantworten kann.
+     */
+    @Column(length = 1000)
     private String verweis;
     
+    /**
+     * Die Punktzahl die die Aufgabe gibt. So wichtiger die Aufgabe für eine
+     * Klausur, desto höher auch dieser Wert.
+     */
     private int punkte;
     
-    private int anzAntworten;
+    /**
+     * Die Anzahl der bisherigen Antworten.
+     */
+    private short anzAntworten;
     
+    /**
+     * Die Antworten zu dieser Frage.
+     */
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Antwort> antworten;
     
+    /**
+     * Die Token, die Begriffe zu dieser Frage enthalten.
+     */
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Token> token;
 
     public Aufgabe(){    
     }
     
+    /**
+     * 
+     * @param thema Das zugehörige Thema der Frage.
+     * @param frage Der Fragetext.
+     * @param schwierigkeit Der schwierigkeitsgrad.
+     * @param hinweis Ein Hinweistext.
+     * @param verweis Ein Verweistext zum nachlesen.
+     */
     public Aufgabe(Thema thema, String frage, int schwierigkeit, String hinweis, String verweis){
         
         this.thema = thema;
@@ -61,20 +111,38 @@ public class Aufgabe implements Serializable {
         this.anzAntworten = 0;
     }
     
+    /**
+     * Fügt eine neue Antwort dieser Aufgabe hinzu.
+     * 
+     * @param antwort Der Antworttext.
+     * @param richtig true, falls diese Antwort richtig ist.
+     */
     public void addAntwort(String antwort, Boolean richtig) {
         this.antworten.add(new Antwort(this,anzAntworten,antwort,richtig));
         
         anzAntworten++;
     }
     
+    /**
+     * 
+     * @return Alle Antwortmöglichkeiten dieser Frage.
+     */
     public Collection<Antwort> getAntworten(){
         return this.antworten;
     }
     
+    /**
+     * Fügt der Aufgabe einen neuen Token hinzu.
+     * @param tok Der Token.
+     */
     public void addToken(String tok){
         this.token.add(new Token(this,tok));
     }
     
+    /**
+     * 
+     * @return Alle Token der Aufgabe.
+     */
     public Collection<Token> getToken(){
         return this.token;
     }
@@ -107,11 +175,15 @@ public class Aufgabe implements Serializable {
         return hinweis;
     }
     
-    public void setLike(int like){
-        this.bewertung = like;
+    public void positivBewertet(){
+        this.bewertung++;
     } 
     
-    public int getLike(){
+    public void negativBewertet() {
+        this.bewertung--;
+    }
+    
+    public int getBewertung(){
         return bewertung;
     } 
     
