@@ -21,7 +21,7 @@ public class Antwort implements Serializable {
     
     @Id
     private int nummer;
- 
+    
     private String antwort; 
     
     private Boolean richtig;
