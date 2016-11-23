@@ -1,4 +1,4 @@
-package testpackage;
+package responseTransformer;
 
 
 import com.google.gson.Gson;
