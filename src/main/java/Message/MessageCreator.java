@@ -3,6 +3,8 @@ package Message;
 
 import Entitys.Klausur;
 import Entitys.Aufgabe;
+import Entitys.Modul;
+import Entitys.Thema;
 import Entitys.Uni;
 import com.google.gson.JsonObject;
 import java.util.Collection;
@@ -72,7 +74,7 @@ public class MessageCreator {
         int i = 0;
         for (Uni name : unis) {
             this.jUni.addProperty("name" + i, name.getName());
-            this.jUni.addProperty(name.getName()+"id", name.getId());
+            //this.jUni.addProperty("nameid", name.getId());
             i++;
         }
         jResponse.add("user", jUser);
@@ -93,10 +95,11 @@ public class MessageCreator {
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
         
-        jKlausurinfo.addProperty("klausurinfo",klausur.getHilfsmittel());
+        jKlausurinfo.addProperty("hilfsmittel",klausur.getHilfsmittel());
+        jKlausurinfo.addProperty("ort",klausur.getOrt());
         
-        jResponse.add("klausurinfo", jKlausurinfo);
         jResponse.add("user", jUser);
+        jResponse.add("klausurinfo", jKlausurinfo);     
         jResponse.addProperty("nachricht", gibText("info"));
         return jResponse;        
     }
