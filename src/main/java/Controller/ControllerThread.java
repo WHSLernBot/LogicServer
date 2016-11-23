@@ -12,8 +12,8 @@ import main.CBPlattform;
 import main.ChatBotManager;
 
 /**
- *
- * @author Sebastian
+ * Diese Klasse stellt Methoden zur Verfügung, um ein JsonObject zu verarbeiten.
+ * 
  */
 public class ControllerThread implements Runnable {
 
@@ -22,17 +22,24 @@ public class ControllerThread implements Runnable {
     private final ChatBotManager manager;
 
     private CBBenutzer benutzer;
-    
+
     private final MessageCreator messCreator;
-    
+
     private final String witSession;
 
+    /**
+     * Konstruktor, dem ein JsonObjekt übergeben wird.
+     * @param json Enthält alle wichtigen Informationen.
+     */
     public ControllerThread(JsonObject json) {
         this.json = json;
         manager = ChatBotManager.getInstance();
         messCreator = new MessageCreator();
         witSession = "";
     }
+    /**
+     * Führt den Thread aus.
+     */
     @Override
     public void run() {
         long id = json.get("id").getAsLong();
@@ -40,25 +47,28 @@ public class ControllerThread implements Runnable {
 
         CBPlattform pt = new CBPlattform(json.get("id").getAsString(),
                 json.get("plattform").getAsShort());
-     
+
         benutzer = manager.gibBenutzer(pt);
 
         if (benutzer == null) {
             benutzer = sucheBenutzer(pt);
         }
+
+        //manager.setzeBenutzer(benutzer); Benutzer bei dem Manager als Aktiv melden        
         
-        //manager.setzeBenutzerAktiv(benutzer);        
+        //Es wird kontrolliert welche Methode im Json übergeben wurde und
+        //dem entsprächend ausgeführt.
         switch (json.get("methode").getAsString()) {
             case "gibSession":
                 //witSession
                 //essCreator.creat(id,plattform,witSession);
                 break;
-            case "gibAufgabe":               
-                Aufgabe aufgabe = DAO.gibAufgabe(benutzer
-                        , json.get("modul").getAsString()
-                        , json.get("thema").getAsString());
-                
-                messCreator.erstelleAufgabenJson(id,plattform, aufgabe);
+            case "gibAufgabe":
+                Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
+                         json.get("modul").getAsString(),
+                         json.get("thema").getAsString());
+
+                messCreator.erstelleAufgabenJson(id, plattform, aufgabe);
                 break;
             case "setzeName":
                 DAO.setzeName(benutzer, json.get("name").getAsString());
@@ -70,7 +80,7 @@ public class ControllerThread implements Runnable {
                 DAO.speichereNote(id, plattform, json.get("note").getAsShort());
                 break;
             case "gibInfos":
-                
+
                 break;
             case "setzeUni":
                 DAO.setzeUni(benutzer, json.get("uni").getAsShort());
@@ -90,15 +100,23 @@ public class ControllerThread implements Runnable {
                 break;
             case "gibKlausurInfos":
                 Klausur klausur = DAO.gibKlausur(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
-                this.messCreator.erstelleInfoJson(id, plattform, klausur);
+                this.messCreator.erstelleKlausurInfoJson(id, plattform, klausur);
                 break;
             case "bewerteAufgabe":
                 DAO.bewerteAufgabe(id, json.get("bewerte").getAsBoolean());
                 break;
-                
-        }         
+
+        }
     }
-    private CBBenutzer sucheBenutzer(CBPlattform pt) {      
-        return DAO.sucheBenutzer(pt);       
+
+    /**
+     * Diese Methode kontrolliert, ob ein Benutzer in der Datenbank vorhanden
+     * ist.
+     *
+     * @param pt Plattformid zum suchen des Benutzers.
+     * @return Es wird ein CBBenutzer zurück gegeben.
+     */
+    private CBBenutzer sucheBenutzer(CBPlattform pt) {
+        return new CBBenutzer(DAO.sucheBenutzer(pt));
     }
 }
