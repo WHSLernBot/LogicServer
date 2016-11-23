@@ -2,12 +2,11 @@ package Controller;
 
 import DAO.DAO;
 import Entitys.Aufgabe;
+import Entitys.Klausur;
 import Entitys.Uni;
 import Message.MessageCreator;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import main.CBBenutzer;
 import main.CBPlattform;
 import main.ChatBotManager;
@@ -36,7 +35,6 @@ public class ControllerThread implements Runnable {
     }
     @Override
     public void run() {
-        HashMap jsonAttribute = new HashMap();
         long id = json.get("id").getAsLong();
         short plattform = json.get("plattform").getAsShort();
 
@@ -56,8 +54,11 @@ public class ControllerThread implements Runnable {
                 //essCreator.creat(id,plattform,witSession);
                 break;
             case "gibAufgabe":               
-                Aufgabe aufgabe = DAO.gibAufgabe(benutzer, json.get("modul").getAsString(), json.get("thema").getAsString());
-                messCreator.erstelleAufgabenText(id,plattform, aufgabe);
+                Aufgabe aufgabe = DAO.gibAufgabe(benutzer
+                        , json.get("modul").getAsString()
+                        , json.get("thema").getAsString());
+                
+                messCreator.erstelleAufgabenJson(id,plattform, aufgabe);
                 break;
             case "setzeName":
                 DAO.setzeName(benutzer, json.get("name").getAsString());
@@ -75,8 +76,8 @@ public class ControllerThread implements Runnable {
                 DAO.setzeUni(benutzer, json.get("uni").getAsShort());
                 break;
             case "gibUnis":
-                Collection<Uni> alUnis = DAO.gibUnis();
-                
+                Collection<Uni> colUnis = DAO.gibUnis();
+                this.messCreator.erstelleUniJason(id, plattform, colUnis);
                 break;
             case "setzePruefung":
                 DAO.setzePruefung(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
@@ -88,7 +89,8 @@ public class ControllerThread implements Runnable {
                 //DAO.neuerBenutzer(pt);
                 break;
             case "gibKlausurInfos":
-                DAO.gibKlausur(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+                Klausur klausur = DAO.gibKlausur(id, plattform, json.get("modul").getAsString(), json.get("thema").getAsString());
+                this.messCreator.erstelleInfoJson(id, plattform, klausur);
                 break;
             case "bewerteAufgabe":
                 DAO.bewerteAufgabe(id, json.get("bewerte").getAsBoolean());
