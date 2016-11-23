@@ -30,13 +30,13 @@ public class DAO {
             + "Benutzer b, LernStatus l, Thema t, Modul m"
             + "where b.id := ID and l.benutzer = b and b.uni = m.uni and Thema";
     
-
+   
     public static Date gibDatum() {
         return new Date(new java.util.Date().getTime());
     }
     
     public static Aufgabe gibAufgabe(CBBenutzer benutzer, String modul, String thema) {
-        
+       
         return null;
         
     }
@@ -156,7 +156,7 @@ public class DAO {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static void bewerteAufgabe(long id, boolean like) {
+    public static void bewerteAufgabe(long id, int like) {
          
         Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
         
