@@ -5,20 +5,21 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
- * @author Betï¿½l
+ * Primary Key zu Statistik.
+ * @author Betül
  */
 @Embeddable
 public class StatistikPK implements Serializable{
     
+    private static final long serialVersionUID = 1L;
+    
     private ModulPK modul; // oder nur Modul ??
     
-    private int woche;
+    private short woche;
 
-    public StatistikPK() {
-    }
+    public StatistikPK() {}
     
-    public StatistikPK(ModulPK modul, int woche) {
+    public StatistikPK(ModulPK modul, short woche) {
         this.modul = modul;
         this.woche = woche;
     }

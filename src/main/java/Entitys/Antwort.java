@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.Digits;
 
 /**
  * Diese Klasse stellt eine Antwortmöglichkeit einer Aufgabe dar.
@@ -18,6 +17,8 @@ import javax.validation.constraints.Digits;
 @IdClass(AntwortPK.class)
 public class Antwort implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Die Aufgabe dessen Antwortmöglichkeit diese Antwort ist.
      */

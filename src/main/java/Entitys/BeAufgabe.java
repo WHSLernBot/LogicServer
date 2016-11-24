@@ -18,6 +18,8 @@ import javax.persistence.Temporal;
 @IdClass(BeAufgabePK.class)
 public class BeAufgabe implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Die bearbeitete Aufgabe.
      */

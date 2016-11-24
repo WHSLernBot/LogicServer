@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Primary Key zu Token
  * @author Seve
  */
 @Embeddable
 public class TokenPK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long aufgabe;
     
     private String token;
 
-    public TokenPK() {
-    }
+    public TokenPK() {}
 
     public TokenPK(Long aufgabe, String token) {
         this.aufgabe = aufgabe;
@@ -52,5 +53,4 @@ public class TokenPK implements Serializable {
         return true;
     }
 
-    
 }

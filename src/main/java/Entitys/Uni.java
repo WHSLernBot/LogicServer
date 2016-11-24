@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,31 +13,46 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 /**
- *
+ * Diese Klasse stellt eine Universität und einen dort angesiedelten Fachbereich dar.
  * @author Seve
  */
 @Entity
 public class Uni implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Eideutige id der Uni.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private short id;
     
+    /**
+     * Name der Universität - Name des Fachbereichs.
+     */
+    @Column(length = 200)
     private String name;
     
+    /**
+     * Benutzer die diese Uni/Fachbereich besuchen.
+     */
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Benutzer> benutzer;
     
+    /**
+     * Module die dieser Fachbereich anbietet.
+     */
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Modul> modul;
     
+    /**
+     * Prüfungsperioden die dieser Fachbereich hat.
+     */
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Pruefungsperiode> pruefungsperiode;
     
-    public Uni() {
-        
-    }
+    public Uni() {}
     
     public Uni(String name) {
         this.name = name;
@@ -74,8 +90,7 @@ public class Uni implements Serializable {
         return pruefungsperiode;
     }
 
-
-    public void addPruefungsperiode(int jahr, int phase, Date anmeldebeginn, Date anfang, Date ende) {
+    public void addPruefungsperiode(short jahr, short phase, Date anmeldebeginn, Date anfang, Date ende) {
         this.pruefungsperiode.add(new Pruefungsperiode(this,jahr,phase,anmeldebeginn,anfang,ende));
     }
 
@@ -106,8 +121,6 @@ public class Uni implements Serializable {
         }
         return true;
     }
-
-    
 
     @Override
     public String toString() {

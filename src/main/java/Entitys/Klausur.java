@@ -6,50 +6,90 @@ import java.sql.Time;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 
 /**
- *
+ * Diese Klasse stellt eine Klausur dar, an dem sich ein Benutzer anmelden kann. 
  * @author Seve
  */
 @Entity
 @IdClass(KlausurPK.class)
 public class Klausur implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * Das Modul über das die Klausur geht.
+     */
     @Id
     @ManyToOne
     private Modul modul;
     
+    /**
+     * Das Datum der Klausur.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date datum;
     
+    /**
+     * Die Prüfungsperiode in der die Klausur liegt.
+     */
     @Id
     @ManyToOne
     private Pruefungsperiode periode;
     
+    /**
+     * Die Benutzer die an der Klausur teilnehmen.
+     */
     @OneToMany(mappedBy="klausur", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
     
+    /**
+     * Der Ort der Klausur, also Raum, Gebäude etc.
+     */
+    @Column(length = 50)
     private String ort;
     
+    /**
+     * Die Uhrzeit an dem die Klausur geschrieben wird.
+     */
+    @Temporal(javax.persistence.TemporalType.TIME)
     private Time uhrzeit;
     
-    //Time als format??
-    private Time dauer;
+    /**
+     * Die Dauer der Klausur in Minuten.
+     */
+    private short dauer;
     
-    private int durchschnitt;
+    /**
+     * Die Durchschnittsnote der Klausur * 10.
+     * => 2,5 = 25
+     */
+    private short durchschnitt;
     
+    /**
+     * Die Hilfsmittel die in der Klausur benutzer werden können,
+     * wie Taschenrechner, Bücher etc.
+     */
+    @Column(length = 200)
     private String hilfsmittel;
     
+    /**
+     * Der quoteint durch den die Punktzahl eines Benutzers geteil werden muss um
+     * ungefähr die Klausurnote zu bestimmen.
+     */
     private int quotient;
     
     public Klausur(){ 
     }
     
-    public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, Time dauer, String ort, String hilfsmittel){
+    public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel){
         
         this.modul = modul;
         this.periode = pruefungsperiode;
@@ -78,11 +118,11 @@ public class Klausur implements Serializable {
         return uhrzeit;
     }
     
-    public void setDauer(Time dauer){
+    public void setDauer(short dauer){
         this.dauer = dauer;
     }
     
-    public Time getDauer(){
+    public short getDauer(){
         return dauer;
     }
     
@@ -94,11 +134,11 @@ public class Klausur implements Serializable {
         return ort;
     }
     
-    public void setDurchschnitt(int durchschnitt){
+    public void setDurchschnitt(short durchschnitt){
         this.durchschnitt = durchschnitt;
     }
     
-    public int getDurchschnitt(){
+    public short getDurchschnitt(){
         return durchschnitt;
     }
 

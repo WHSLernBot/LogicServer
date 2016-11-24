@@ -11,44 +11,83 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
 
 /**
- *
+ * Diese Klasse stellt einen LernStatus dar, der den Fortschritt eines Benutzers
+ * bei einem bestimmten Thema eines Moduls persistiert..
+ * 
  * @author Seve
  */
 @Entity
 @IdClass(LernStatusPK.class)
 public class LernStatus implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * Der Benutzer dem der LernStatus gehöhrt.
+     */
     @Id
     @ManyToOne
     private Benutzer benutzer;
     
+    /**
+     * Das Thema das der LernStatus persistiert.
+     */
     @Id
     @ManyToOne
     private Thema thema;
     
+    /**
+     * Falls true, so hat der Benutzer dieses Thema noch nicht abgeschlossen.
+     */
     private Boolean aktiv;
     
+    /**
+     * Summe der richtig beantowrteten Aufgaben.
+     */
     private int richtige;
     
+    /**
+     * Anzahl der geloesten Aufgaben.
+     */
+    private int geloest;
+    
+    /**
+     * Summe der Punkte die alle Aufgaben abzüglich der Häufigkeit und 
+     * Richtigkeit eingebracht haben.
+     */
     private int sumPunkte;
     
+    /**
+     * Das Datum an dem der Benutzer zuletzt Aufgaben zu diesem Thema gelöst hat.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date letztesDatum;
     
+    /**
+     * Die Aufgaben die der Benutzer bearbeitet hat.
+     */
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> beAufgaben;
 
+    /**
+     * Die Aufgabe, die der Benutzer als nächstes zu bearbeitet hat.
+     */
     @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drï¿½ber sprechen
     private ZuAufgabe zuAufgaben;
     
+    /**
+     * Die Aufgaben die der Benutzer zusätzlich gelöst hat, die aber nicht
+     * in der Reihe der zu lösenden Aufgaben war. z.b. durch spezielle suche
+     * gelöste Aufgaben. XG = eXtra Gelöst
+     */
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<XGAufgabe> xgAufgaben;
     
     
-    public LernStatus(){
-        
-    }
+    public LernStatus(){}
     
     public LernStatus(Benutzer benutzer, Thema thema, Date letztesDatum){
         
@@ -57,6 +96,7 @@ public class LernStatus implements Serializable {
         this.aktiv = true;
         this.richtige = 0;
         this.sumPunkte = 0;
+        this.geloest = 0;
         this.letztesDatum = letztesDatum;
     }
     
@@ -127,6 +167,14 @@ public class LernStatus implements Serializable {
 
     public Boolean getAktiv() {
         return aktiv;
+    }
+
+    public int getGeloest() {
+        return geloest;
+    }
+    
+    public void neueGeloest() {
+        geloest++;
     }
      
     @Override

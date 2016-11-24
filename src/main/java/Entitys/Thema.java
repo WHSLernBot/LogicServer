@@ -3,6 +3,7 @@ package Entitys;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,35 +12,56 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
- *
+ * Diese Klasse stellt ein Thema eines Moduls dar.
  * @author Seve
  */
 @Entity
 public class Thema implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Eindeutige id des Themas.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long thmenID;
     
+    /**
+     * Vollständiger Name des Themas
+     */
+    @Column(length = 200)
     private String name;
     
+    /**
+     * Anteil den das Thema an der gesamten Klausur ausmacht.
+     */
     private int anteil;
     
+    /**
+     * Anzahl der Aufgaben, die das Thema besitzt.
+     */
     private int aufgabenZahl;
     
+    /**
+     * Das Modul zu dem das Thema gehöhrt.
+     */
     @ManyToOne
     private Modul modul;
     
+    /**
+     * Die Lernstadi, die das Thema bearbeiten.
+     */
     @OneToMany(mappedBy="thema", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<LernStatus> lernStadi;
     
+    /**
+     * Die Aufgaben die auf das Thema bezogen sind.
+     */
     @OneToMany(mappedBy="thema", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Aufgabe> aufgaben;
 
-    public Thema(){
-        
-    }
+    public Thema(){}
     
     public Thema(Modul modul, String name, int anteil) {
         this.modul = modul;
@@ -76,7 +98,6 @@ public class Thema implements Serializable {
     public Collection<LernStatus> getLernStadi() {
         return lernStadi;
     }
-
     
     /**
      * Wenn überhaupt sinnvoll
@@ -93,6 +114,10 @@ public class Thema implements Serializable {
     public void addAufgaben(String frage, int schwierigkeit, String hinweis, String verweis) {
         this.aufgabenZahl++;
         this.aufgaben.add(new Aufgabe(this,frage,schwierigkeit,hinweis,verweis));
+    }
+
+    public Modul getModul() {
+        return modul;
     }
     
     @Override

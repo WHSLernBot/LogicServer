@@ -12,6 +12,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class BeAufgabePK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long aufgabe;
     
     private LernStatusPK lernStatus; //pr�fen

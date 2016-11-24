@@ -4,43 +4,72 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.Collection;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
 
 /**
- *
+ * Diese Klasse stellt einen Benutzer des ChatBots dar.
+ * 
  * @author Seve
  */
 @Entity
-//@IdClass(BenutzerPK.class)
 public class Benutzer implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Die eindeutige id des Benutzers.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    /**
+     * Der Name des Benutzers, wie er angesprochen werden möchte.
+     */
+    @Column(length = 30)
     private String name;
     
+    /**
+     * Die entsprechende Universität auf die der Benutzer geht.
+     */
     @ManyToOne
     private Uni uni;
     
+    /**
+     * Das Datum der letzten Antwort.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date letzteAntwort;
     
+    /**
+     * Falls true möchte der Benutzer keine Daten über sich angeben.
+     */
     private Boolean datenschutz;
     
+    /**
+     * Die entsprechenden Lern Stadi die der Benutzer zu jedem Thema 
+     * eines Fachs besitzt.
+     */
     @OneToMany(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<LernStatus> lernStadi;
     
+    /**
+     * Die Klausuren an den der Benutzer teilnimmt.
+     */
     @OneToMany(mappedBy="benutzer" , cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
     
+    /**
+     * Die Plattforminformationen des Benutzers.
+     */
     @OneToOne(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Plattform plattform;
     
@@ -48,11 +77,21 @@ public class Benutzer implements Serializable {
         
     }
     
-    public Benutzer(String pfID, int pfNr, String witSession,String name, Date letzteAntwort){
+    /**
+     * Erstellt einen neuen Benutzer.
+     * 
+     * @param pfID Plattform id des Benutzers.
+     * @param pfNr Plattform Nummer. Für weitere infos siehe Plattform.
+     * @param witSession Die Wit.ai session (Falls immer gleich)
+     * @param name Name des Benutzers.
+     * @param letzteAntwort Datum der letzten Antwort (hier erstelldatum).
+     */
+    public Benutzer(String pfID, short pfNr, String witSession,String name, Date letzteAntwort){
         this.name = name;
         this.letzteAntwort = letzteAntwort;
         plattform = new Plattform(pfID,pfNr,this,witSession);
     }
+    
     
     public Long getId(){
         return id;
@@ -87,7 +126,12 @@ public class Benutzer implements Serializable {
         return lernStadi;
     }
     
-    public LernStatus getStatus(Long id) {
+    /**
+     * 
+     * @param id Themen id des entsprechenden Status.
+     * @return Der entsprechende LernStatus zum Thema.
+     */
+    public LernStatus getStatus(long id) {
         
         LernStatus ls = null;
         
@@ -100,6 +144,12 @@ public class Benutzer implements Serializable {
         return ls;
     }
 
+    /**
+     * Fügt einen neuen Lernstatus hinzu.
+     * 
+     * @param thema
+     * @param datum 
+     */
     public void addLernStadi(Thema thema,Date datum) {
         this.lernStadi.add(new LernStatus(this,thema,datum));
     }
@@ -115,7 +165,10 @@ public class Benutzer implements Serializable {
     public Plattform getPlattform() {
         return plattform;
     }
-    
+
+    public Uni getUni() {
+        return uni;
+    }
     
     @Override
     public int hashCode() {

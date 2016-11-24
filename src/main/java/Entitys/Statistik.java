@@ -8,37 +8,50 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
 /**
- *
- * @author Betï¿½l
+ * Diese Klasse stellt eine statisik dar, die berechnet in wie weit der Zeitfaktor
+ * eine Rolle auf die Note einer Klausur hat.
+ * @author Betül
  */
 @Entity
 @IdClass(StatistikPK.class)
 public class Statistik implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * Das zugehöroge Modul.
+     */
     @Id
     @ManyToOne
     private Modul modul;
     
+    /**
+     * Die woche der Statistik. Gerechnet in bezug auf Abstand der Klausur.
+     * => 2 = 2 wochen vor der Klausur
+     */
     @Id
-    private int woche;
+    private short woche;
     
+    /**
+     * Der Anteil den diese Statistik ausmacht.
+     */
     private int anteil;
     
     public Statistik(){
         
     }
     
-    public Statistik(Modul modul, int woche, int anteil) {
+    public Statistik(Modul modul, short woche, int anteil) {
         this.modul = modul;
         this.woche = woche;
         this.anteil = anteil;
     }
     
-    public void setWoche(int woche){
+    public void setWoche(short woche){
         this.woche = woche;
     }
     
-    public int getWoche(){
+    public short getWoche(){
         return woche;
     }
     

@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Primary Key von Teilnahme.
  * @author Seve
  */
 @Embeddable
 public class TeilnahmePK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long benutzer;
     
     private KlausurPK klausur;
 
-    public TeilnahmePK() {
-    }
+    public TeilnahmePK() {}
 
     public TeilnahmePK(Long benutzer, KlausurPK klausur) {
         this.benutzer = benutzer;
@@ -51,6 +52,5 @@ public class TeilnahmePK implements Serializable {
         }
         return true;
     }
-
     
 }

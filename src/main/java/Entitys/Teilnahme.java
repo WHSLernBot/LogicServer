@@ -8,26 +8,36 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
 /**
- *
+ * Diese Klasse beschreibt die Teilnahme eines Benutzers an einer Klausur.
  * @author Seve
  */
 @Entity
 @IdClass(TeilnahmePK.class)
 public class Teilnahme implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * Der Benutzer der teilnimmt.
+     */
     @Id
     @ManyToOne
     private Benutzer benutzer;
     
+    /**
+     * Die Klausur die der Benutzer schreibt.
+     */
     @Id
     @ManyToOne
     private Klausur klausur;
     
-    private int note;
+    /**
+     * Die Note die geschrieben wurde * 10.
+     * => 3,2 = 32
+     */
+    private short note;
     
-    public Teilnahme(){
-        
-    }
+    public Teilnahme(){}
 
     public Teilnahme(Benutzer benutzer, Klausur klausur) {
         this.benutzer = benutzer;
@@ -35,11 +45,11 @@ public class Teilnahme implements Serializable {
         this.note = 0;
     }
     
-    public Teilnahme(int note){
+    public Teilnahme(short note){
         this.note = note;
     }
     
-    public void setNote(int note){
+    public void setNote(short note){
         this.note = note;
     }
     

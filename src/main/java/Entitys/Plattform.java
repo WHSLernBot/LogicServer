@@ -2,36 +2,52 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.OneToOne;
 
 /**
- *
+ * Diese Klasse beschreibt die Plattform mit der ein Benutzer den ChatBot aufruft.
  * @author Seve
  */
 @Entity
 @IdClass(PlattformPK.class)
 public class Plattform implements Serializable {
-
+    
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * Die id die von der Plattform mitgegeben wird
+     */
     @Id
+    @Column(length = 200)
     private String pfID;
 
+    /**
+     * Die Plattformnummer.
+     * 0 = Facebook
+     * Rest nicht verwendet
+     */
     @Id
-    private int pfNr;
+    private short pfNr;
     
+    /**
+     * Der zugehörige Benutzer dieser Plattform.
+     */
     @OneToOne
     private Benutzer benutzer;
     
+    /**
+     * Die witSession (Falls nötig)
+     */
+    @Column(length = 100)
     private String witSession;
 
-    public Plattform() {
-    }
-
-    
-    
-    public Plattform(String pfID, int pfNr,Benutzer benutzer, String witSession){
+    public Plattform() {}
+  
+    public Plattform(String pfID, short pfNr,Benutzer benutzer, String witSession){
         this.pfID = pfID;
         this.pfNr = pfNr;
         this.benutzer = benutzer;
@@ -57,7 +73,6 @@ public class Plattform implements Serializable {
     public Benutzer getBenutzer() {
         return benutzer;
     }
-
     
     @Override
     public int hashCode() {
@@ -86,9 +101,7 @@ public class Plattform implements Serializable {
             return false;
         }
         return true;
-    }
-    
-    
+    } 
 
     @Override
     public String toString() {

@@ -202,6 +202,14 @@ public class Aufgabe implements Serializable {
     public int getPunkte(){
         return punkte;
     }
+
+    public Thema getThema() {
+        return thema;
+    }
+
+    public short getAnzAntworten() {
+        return anzAntworten;
+    }
     
     @Override
     public int hashCode() {

@@ -10,6 +10,8 @@ import java.util.Objects;
  */
 public class AntwortPK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long aufgabe;
     
     private short nummer;

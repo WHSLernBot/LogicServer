@@ -5,20 +5,21 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Der Primary Key von Plattform.
  * @author Seve
  */
 @Embeddable
 public class PlattformPK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private String pfID;
     
-    private int pfNr;
+    private short pfNr;
 
-    public PlattformPK() {
-    }
+    public PlattformPK() {}
 
-    public PlattformPK(String pfID, int pfNr) {
+    public PlattformPK(String pfID, short pfNr) {
         this.pfID = pfID;
         this.pfNr = pfNr;
     }

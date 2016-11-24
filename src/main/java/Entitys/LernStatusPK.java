@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Der Primary Key eines LernStatus.
  * @author Seve
  */
 @Embeddable
 public class LernStatusPK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long benutzer;
     
     private Long thema;
 
-    public LernStatusPK() {
-    }
+    public LernStatusPK() {}
 
     public LernStatusPK(Long benutzer, Long thema) {
         this.benutzer = benutzer;
@@ -51,7 +52,5 @@ public class LernStatusPK implements Serializable {
         }
         return true;
     }
-    
-    
-    
+
 }

@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Primary Key Klasse von XGAufgabe.
  * @author Betül
  */
 @Embeddable
-public class XGAufgabePK implements Serializable{
+public class XGAufgabePK implements Serializable {
     
-    private Long aufgabe; //nicht long??
+    private static final long serialVersionUID = 1L;
+    
+    private Long aufgabe;
     
     private LernStatusPK lernStatus;
 
-    public XGAufgabePK() {
-    }
+    public XGAufgabePK() {}
 
     public XGAufgabePK(Long aufgabe, LernStatusPK lernStatus) {
         this.aufgabe = aufgabe;

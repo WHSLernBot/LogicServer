@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -13,34 +14,55 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
- *
+ * Diese Klasse stellt ein Modul eines Unistudiengangs dar.
  * @author Seve
  */
 @Entity
 @IdClass(ModulPK.class)
 public class Modul implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
+    /**
+     * Die Uni die dieses Modul anbietet.
+     */
     @Id
     @ManyToOne
     private Uni uni;
     
+    /**
+     * Das Kürzel des Moduls.
+     */
     @Id
+    @Column(length = 10)
     private String kuerzel;
     
+    /**
+     * Der vollständige Name des Moduls.
+     */
+    @Column(length = 50)
     private String name;
     
+    /**
+     * Die einzelnen Themen des Moduls.
+     */
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Thema> themen;
     
+    /**
+     * Die Klausuren die zu diesem Modul geschrieben werden.
+     */
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Klausur> klausuren;
     
+    /**
+     * Die statistiken über dieses Modul, die zeigen wie sehr sich die Zeit
+     * auf die einzelnen Punktzahlen einer Aufgabe auswirkt.
+     */
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Statistik> statistiken;
 
-    public Modul(){
-        
-    }
+    public Modul(){}
     
     public Modul(Uni uni, String kuerzel, String name) {
         this.uni = uni;
@@ -72,7 +94,7 @@ public class Modul implements Serializable {
         return klausuren;
     }
 
-    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, Time dauer, String ort, String hilfsmittel) {
+    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel) {
         this.klausuren.add(new Klausur(this,pruefungsperiode,datum,uhrzeit,dauer,ort,hilfsmittel));
     }
 
@@ -80,16 +102,13 @@ public class Modul implements Serializable {
         return statistiken;
     }
 
-    public void addStatistik(int woche,int anteil) {
+    public void addStatistik(short woche,int anteil) {
         this.statistiken.add(new Statistik(this,woche,anteil));
     }
 
     public Uni getUni() {
         return uni;
-    }
-    
-    
-    
+    } 
     
     @Override
     public int hashCode() {

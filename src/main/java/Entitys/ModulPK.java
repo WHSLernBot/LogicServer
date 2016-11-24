@@ -5,11 +5,13 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Primary Key zu Modul.
  * @author Seve
  */
 @Embeddable
 public class ModulPK implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     private short uni;
     
@@ -20,8 +22,7 @@ public class ModulPK implements Serializable {
         this.kuerzel = kuerzel;
     }
 
-    public ModulPK() {
-    }
+    public ModulPK() {}
 
     public short getUni() {
         return uni;
@@ -30,9 +31,7 @@ public class ModulPK implements Serializable {
     public String getKuerzel() {
         return kuerzel;
     }
-    
-    
-    
+  
     @Override
     public int hashCode() {
         int hash = 7;

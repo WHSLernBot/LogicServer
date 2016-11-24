@@ -5,18 +5,19 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Primary Key Klasse von ZuAufgabe.
  * @author Betül
  */
 @Embeddable
 public class ZuAufgabePK implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
     private Long aufgabe;
     
     private LernStatusPK lernStatus;
 
-    public ZuAufgabePK() {
-    }
+    public ZuAufgabePK() {}
 
     public ZuAufgabePK(Long aufgabe, LernStatusPK lernStatus) {
         this.aufgabe = aufgabe;
@@ -51,8 +52,4 @@ public class ZuAufgabePK implements Serializable {
         }
         return true;
     }
-
-   
-     
-    
 }

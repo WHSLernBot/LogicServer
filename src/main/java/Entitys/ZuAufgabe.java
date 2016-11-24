@@ -9,25 +9,42 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
- *
- * @author Betï¿½l
+ * Diese Klasse stellt eine Aufgabe dar, die der Benutzer als nächstes 
+ * zu bearbeitet hat. Außerdem verweist sie auf eine Aufgabe die 
+ * er dannach bearbeiten soll.
+ * 
+ * @author Betül
  */
 @Entity
 @IdClass(ZuAufgabePK.class)
 public class ZuAufgabe implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+    
+    /**
+     * Ist true, falls dies die letzte Aufgabe ist.
+     */
     private boolean zuletzt;
     
+    /**
+     * Die zubearbeitende Aufgabe.
+     */
     @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
+    /**
+     * Der zugehörige Lernstatus.
+     */
     @Id
     @OneToOne
     private LernStatus lernStatus;
     
-//    @OneToOne(mappedBy="zuAufgabe")
-//    private ZuAufgabe naechsteAufgabe;
+    /**
+     * Die nächste zu bearbeitenden Aufgabe.
+     */
+    @OneToOne
+    private ZuAufgabe naechsteAufgabe;
     
     public ZuAufgabe(){
         
@@ -51,16 +68,16 @@ public class ZuAufgabe implements Serializable {
         return aufgabe;
     }
 
-//    public ZuAufgabe getNaechsteAufgabe() {
-//        return naechsteAufgabe;
-//    }
-//
-//    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
-//        this.naechsteAufgabe = new ZuAufgabe(lernStatus,aufgabe,true);
-//        this.zuletzt = false;
-//        
-//        return naechsteAufgabe;
-//    } 
+    public ZuAufgabe getNaechsteAufgabe() {
+        return naechsteAufgabe;
+    }
+
+    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
+        this.naechsteAufgabe = new ZuAufgabe(lernStatus,aufgabe,true);
+        this.zuletzt = false;
+        
+        return naechsteAufgabe;
+    } 
     
 
     @Override

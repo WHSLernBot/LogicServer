@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -19,30 +20,54 @@ import javax.persistence.OneToMany;
 @IdClass(PruefungsperiodePK.class)
 public class Pruefungsperiode implements Serializable {
     
-    @Id
-    private int jahr;
+    private static final long serialVersionUID = 1L;
     
+    /**
+     * Das Jahr der Prüfungsperiode.
+     */
     @Id
-    private int phase;
+    private short jahr;
     
+    /**
+     * DIe entsprechende nummer der Phase.
+     */
+    @Id
+    private short phase;
+    
+    /**
+     * Der anmeldebeginn zu dieser Prüfunsphase.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date anmeldebeginn;
     
+    /**
+     * Das Anfangsdatum dieser Periode.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date anfang;
     
+    /**
+     * Das Enddatum dieser Periode.
+     */
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date ende;
     
+    /**
+     * Die zugehörige Uni dieser Prüfungsperiode.
+     */
     @Id
     @ManyToOne 
     private Uni uni;
     
+    /**
+     * Die Klausuren die geschrieben werden.
+     */
     @OneToMany(mappedBy="periode", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Klausur> klausuren;
 
-    public Pruefungsperiode(){
-        
-    }
+    public Pruefungsperiode(){}
     
-    public Pruefungsperiode(Uni uni, int jahr, int phase, Date anmeldebeginn, Date anfang, Date ende){
+    public Pruefungsperiode(Uni uni, short jahr, short phase, Date anmeldebeginn, Date anfang, Date ende){
         this.uni = uni;
         this.jahr = jahr;
         this.phase = phase;
@@ -55,16 +80,15 @@ public class Pruefungsperiode implements Serializable {
         return uni;
     }
     
-    
     public int getJahr(){
         return jahr;
     }
     
-    public void setPhase(int phase){
+    public void setPhase(short phase){
         this.phase = phase;
     }
     
-    public int getPhase(){
+    public short getPhase(){
         return phase;
     }
     
@@ -99,8 +123,6 @@ public class Pruefungsperiode implements Serializable {
     public void setEnde(Date ende) {
         this.ende = ende;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -128,8 +150,6 @@ public class Pruefungsperiode implements Serializable {
         return true;
     }
     
-    
-  
     @Override
     public String toString() {
         return "Pruefungsperiode " + phase + ":" + jahr +

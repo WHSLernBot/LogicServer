@@ -5,22 +5,23 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
- * @author Betï¿½l
+ * Primary Key Klasse zu Pruefungsperiode.
+ * @author Betül
  */
 @Embeddable
-public class PruefungsperiodePK implements Serializable{
+public class PruefungsperiodePK implements Serializable {
     
-    private int jahr;
+    private static final long serialVersionUID = 1L;
+    
+    private short jahr;
    
     private short uni;
     
-    private int phase;
+    private short phase;
 
-    public PruefungsperiodePK() {
-    }
+    public PruefungsperiodePK() {}
     
-    public PruefungsperiodePK(int jahr, short uni, int phase) {
+    public PruefungsperiodePK(short jahr, short uni, short phase) {
         this.jahr = jahr;
         this.uni = uni;
         this.phase = phase;

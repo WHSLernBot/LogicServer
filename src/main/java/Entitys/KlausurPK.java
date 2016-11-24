@@ -1,16 +1,18 @@
 package Entitys;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- *
+ * Die Primary Key Klasse zu Klausur.
+ * 
  * @author Seve
  */
 @Embeddable
 public class KlausurPK implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     private ModulPK modul;
     
