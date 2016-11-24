@@ -29,7 +29,6 @@ public class DAO {
     private static final String GIB_LERNSTATUS = "select object(l) from "
             + "Benutzer b, LernStatus l, Thema t, Modul m"
             + "where b.id := ID and l.benutzer = b and b.uni = m.uni and Thema";
-    
    
     public static Date gibDatum() {
         return new Date(new java.util.Date().getTime());
