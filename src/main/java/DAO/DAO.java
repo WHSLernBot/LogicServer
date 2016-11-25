@@ -168,7 +168,7 @@ public class DAO {
         
     }
 
-    public static void setzePruefung(long id, short plattform, String asString, String asString0) {
+    public static void setzePruefung(long id, short plattform, String asString) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -213,7 +213,7 @@ public class DAO {
         }
     }
 
-    public static Klausur gibKlausur(long id, short plattform, String asString, String asString0) {
+    public static Klausur gibKlausur(long id, short plattform, String asString) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -253,5 +253,4 @@ public class DAO {
         
         return EMH.getEntityManager().find(Benutzer.class, pt.getId());
     }
-    
 }

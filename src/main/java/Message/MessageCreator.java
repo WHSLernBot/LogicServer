@@ -3,11 +3,14 @@ package Message;
 
 import Entitys.Klausur;
 import Entitys.Aufgabe;
+import Entitys.LernStatus;
 import Entitys.Modul;
 import Entitys.Thema;
 import Entitys.Uni;
 import com.google.gson.JsonObject;
 import java.util.Collection;
+import main.CBBenutzer;
+import main.ChatBotManager;
 /**
  * Die Klasse MessageCreator stellt Methoden zur Verfügung, um aus Objekten,
  * ein JsonObject zu erzeugen.
@@ -43,12 +46,13 @@ public class MessageCreator {
      * entsprechenen Aufgabentext.
      * @param id Id des Nutzers.
      * @param plattform Plattform des Nutzers.
+     * @param witSession
      * @param aufgabe Aufgabe für den Nutzer.
-     * @return JsonObject mit informationen über den Benutzer und der Aufgabenstellung.
      */
-    public JsonObject erstelleAufgabenJson(long id,long plattform, Aufgabe aufgabe) {
+    public void erstelleAufgabenJson(long id,long plattform,String witSession, Aufgabe aufgabe) {
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
+        jUser.addProperty("witsession", witSession);
         
         jAufgabe.addProperty("frage", aufgabe.getFrage());
         jAufgabe.addProperty("hinweis", aufgabe.getHinweis());
@@ -57,30 +61,30 @@ public class MessageCreator {
         jResponse.add("user", jUser);
         jResponse.add("aufgabe",jAufgabe);
         jResponse.addProperty("nachricht", gibText("aufgabe"));
-        
-        return jResponse;
+        erzeugeNachricht(jResponse);
     }
     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die übergeben werden.
      * @param id Id des Nutzers.
      * @param plattform Plattform des Nutzers.
+     * @param witSession
      * @param unis Enthält alle Unis, die zur auswahl stehen.
-     * @return JsonObject mit allen Unis.
      */
-    public JsonObject erstelleUniJason(long id, long plattform,Collection<Uni> unis){
+    public void erstelleUniJason(long id, long plattform,String witSession,Collection<Uni> unis){
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
+        jUser.addProperty("witsession", witSession);
         int i = 0;
         for (Uni name : unis) {
             this.jUni.addProperty("name" + i, name.getName());
-            //this.jUni.addProperty("nameid", name.getId());
+            this.jUni.addProperty("nameid", name.getId());
             i++;
         }
         jResponse.add("user", jUser);
         jResponse.add("uni", jUni);
         jResponse.addProperty("nachricht", gibText("uni"));
-        return jResponse;
+        erzeugeNachricht(jResponse);
     }
     
     /**
@@ -88,12 +92,13 @@ public class MessageCreator {
      * die zur Klausur vorhanden sind.
      * @param id Id des Nutzers.
      * @param plattform Plattform des Nutzers.     
+     * @param witSession     
      * @param klausur Enthält alle Informatonen zur Klausur.
-     * @return JsonObject, welches alle Informationen zur Klausur enthält.
      */
-    public JsonObject erstelleKlausurInfoJson(long id, long plattform, Klausur klausur) {
+    public void erstelleKlausurInfoJson(long id, long plattform,String witSession, Klausur klausur) {
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
+        jUser.addProperty("witsession", witSession);
         
         jKlausurinfo.addProperty("hilfsmittel",klausur.getHilfsmittel());
         jKlausurinfo.addProperty("ort",klausur.getOrt());
@@ -101,11 +106,33 @@ public class MessageCreator {
         jResponse.add("user", jUser);
         jResponse.add("klausurinfo", jKlausurinfo);     
         jResponse.addProperty("nachricht", gibText("info"));
-        return jResponse;        
+        erzeugeNachricht(jResponse);
     }
     
     /**
-     * Erzeugt einen Text, für die entsprechende Me.thode
+     * Die Methode erstellt ein JsonObject, mit allen Informationen, 
+     * die zu dem Benutzer vorhanden sind.
+     * @param benutzer 
+     */
+    public void erstelleBenutzerInfoNachricht(CBBenutzer benutzer) {
+        jUser.addProperty("id", benutzer.getBenutzer().getId());
+        jUser.addProperty("plattform", benutzer.getBenutzer().getPlattform().getPfID());
+        jUser.addProperty("witsession", benutzer.getBenutzer().getPlattform().getWitSession());
+        Collection<LernStatus> stadi = benutzer.getBenutzer().getLernStadi();
+        int i = 0;
+        for (LernStatus status : stadi) {
+            this.jUni.addProperty("status" + i, status.getSumPunkte());
+            i++;
+        }
+        jResponse.add("user", jUser);
+        jResponse.add("info", jInfo);     
+        jResponse.addProperty("nachricht", gibText("info"));
+        erzeugeNachricht(jResponse);
+    }
+    
+    
+    /**
+     * Erzeugt einen Text, für die entsprechende Methode.
      * @param methode Gibt an, für welche Methode der Text erzeugt werden soll.
      * @return Gibt den entsprechenden Text zurück.
      */
@@ -123,5 +150,15 @@ public class MessageCreator {
                 break;
         }
         return text;
+    }
+    
+    /**
+     * Fügt eine Nachricht dem ChatBotManager hinzu.
+     * @param json Enthält alle wichtigen Informationen.
+     */
+    private void erzeugeNachricht(JsonObject json){
+        ChatBotManager cbm = ChatBotManager.getInstance();
+        Nachricht nachricht = new Nachricht(json,null);
+        cbm.addNachricht(nachricht);
     }
 }
