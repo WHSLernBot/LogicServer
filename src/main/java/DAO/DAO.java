@@ -146,20 +146,26 @@ public class DAO {
         
         return unis;
     }
+    // uni wiedergeben mit find() Methode. Query kann weg.
+//    public static Collection<Uni> gibUni(short id) {
+//        
+//        ArrayList<Uni> unis = new ArrayList<>();
+//        
+//        Query q = EMH.getEntityManager().createQuery(ALLE_UNIS);
+//        
+//        List rs = q.getResultList();
+//        
+//        for(Object o : rs) {
+//            unis.add((Uni) o);
+//        }
+//        
+//        return unis;
+//    }
     
-    public static Collection<Uni> gibUni(short id) {
+    public static Uni gibUni(short id){
         
-        ArrayList<Uni> unis = new ArrayList<>();
+        return EMH.getEntityManager().find(Uni.class, id);
         
-        Query q = EMH.getEntityManager().createQuery(ALLE_UNIS);
-        
-        List rs = q.getResultList();
-        
-        for(Object o : rs) {
-            unis.add((Uni) o);
-        }
-        
-        return unis;
     }
 
     public static void setzePruefung(long id, short plattform, String asString, String asString0) {
@@ -222,7 +228,16 @@ public class DAO {
         try {
             EMH.beginTransaction();
             
-            aufgabe.setLike(like);
+//            aufgabe.setLike(like);
+            if(like <= 0){
+                
+                aufgabe.negativBewertet();
+                
+            }else{
+                
+                aufgabe.positivBewertet();
+                
+            }
             EMH.getEntityManager().persist(aufgabe); 
             
             

@@ -169,7 +169,7 @@ public class Benutzer implements Serializable {
     public Uni getUni() {
         return uni;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
