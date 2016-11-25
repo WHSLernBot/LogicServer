@@ -56,12 +56,12 @@ public class ControllerThread implements Runnable {
             benutzer = new CBBenutzer(DAO.sucheBenutzer(pt));
         } 
         
+        witSession = benutzer.getBenutzer().getPlattform().getWitSession();
+        
+        
         //Es wird kontrolliert welche Methode im Json übergeben wurde und
         //dem entsprächend ausgeführt.
         switch (json.get("methode").getAsString()) {
-            case "gibSession":
-                witSession = benutzer.getBenutzer().getPlattform().getWitSession();
-                break;
             case "gibAufgabe":
                 Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
                          json.get("modul").getAsString(),
