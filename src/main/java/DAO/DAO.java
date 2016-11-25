@@ -1,10 +1,12 @@
 package DAO;
 
+import Entitys.Antwort;
 import Entitys.Aufgabe;
 import Entitys.Benutzer;
 import Entitys.Klausur;
 import Entitys.LernStatus;
 import Entitys.Modul;
+import Entitys.Teilnahme;
 import Entitys.Uni;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -29,13 +31,24 @@ public class DAO {
     private static final String GIB_LERNSTATUS = "select object(l) from "
             + "Benutzer b, LernStatus l, Thema t, Modul m"
             + "where b.id := ID and l.benutzer = b and b.uni = m.uni and Thema";
-   
+    
+   private static final String GIB_ANTWORT = "select object(aw)"
+            + "from Antwort aw, Aufgabe a where aw.antwort = a";
+    
+    private static final String GIB_NOTE = "select object(t)"
+            + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b"
+            + "and l.klausur = k and b.id := ID";
+    
+    private static final String GIB_KLAUSUR = "select object(k)"
+            + "from Klausur k where";
+    
+    
     public static Date gibDatum() {
         return new Date(new java.util.Date().getTime());
     }
     
     public static Aufgabe gibAufgabe(CBBenutzer benutzer, String modul, String thema) {
-       
+               
         return null;
         
     }
@@ -60,11 +73,36 @@ public class DAO {
     }
 
     public static void speichereAntwort(long id, short plattform, String antwort) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
+        
+        q.setParameter("ID", id);
+        
+        Antwort antw = (Antwort) q.getResultList().get(plattform);
+        
+        try{
+            EMH.beginTransaction();
+            antw.setAntwort(antwort);
+            EMH.getEntityManager().persist(antw);
+            EMH.commit();  
+        } catch (Exception e){
+            EMH.rollback();
+        }
+        
     }
 
     public static void speichereNote(long id, short plattform, short asShort) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query q = EMH.getEntityManager().createQuery(GIB_NOTE);
+        q.setParameter("ID", id);
+        Teilnahme t = (Teilnahme) q.getResultList().get(plattform);
+        try{
+            EMH.beginTransaction();
+            t.setNote(asShort);
+            EMH.getEntityManager().persist(t);
+            EMH.commit();  
+        } catch (Exception e){
+            EMH.rollback();
+        }
     }
 
     public static LernStatus gibLernstatus(CBBenutzer benutzer, Long themenId) {
@@ -128,8 +166,26 @@ public class DAO {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static void neueAufgabe(long id, short plattform, String asString, String asString0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static void neueAufgabe(long id, short plattform, String modul, String thema) {
+        
+        Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
+        
+        q.setParameter("ID", id);
+        
+        Aufgabe aufgabe = (Aufgabe) q.getResultList().get(0);
+        
+        try {
+            EMH.beginTransaction();
+            
+            aufgabe.getAufgabenID();
+            EMH.getEntityManager().persist(aufgabe); 
+            
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
     }
 
     public static void neuerBenutzer(CBPlattform pt, String name, String witSession) {
@@ -179,7 +235,8 @@ public class DAO {
     }
 
     public static Benutzer sucheBenutzer(CBPlattform pt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return EMH.getEntityManager().find(Benutzer.class, pt.getId());
     }
     
 }
