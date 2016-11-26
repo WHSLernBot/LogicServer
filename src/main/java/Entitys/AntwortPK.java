@@ -1,4 +1,4 @@
- package Entitys;
+package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
