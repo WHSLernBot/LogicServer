@@ -94,9 +94,6 @@ public class ControllerThread implements Runnable {
             case "neueAufgabe":
                 DAO.neueAufgabe(id, plattform, witSession, witSession);
                 break;
-            case "neuerBenutzer":
-                //DAO.neuerBenutzer(pt);
-                break;
             case "gibKlausurInfos":
                 Klausur klausur = DAO.gibKlausur(id, plattform, json.get("modul").getAsString());
                 this.messCreator.erstelleKlausurInfoJson(id, plattform,witSession, klausur);
