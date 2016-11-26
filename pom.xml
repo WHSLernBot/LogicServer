@@ -96,10 +96,10 @@
         <version>0.4.4</version>
         <configuration>
             <jdkVersion>1.8</jdkVersion>
-            <appName>spark-heroku-example</appName>
+            <appName>whslernbot</appName>
             <processTypes>
                 <!-- Tell Heroku how to launch your application -->
-                <web>java -jar ./target/whslernbot-jar-with-dependencies.jar</web>
+                <web>java -jar ./target/whslernbot-1.0.jar</web>
             </processTypes>
         </configuration>
       </plugin>
