@@ -120,7 +120,7 @@ public class DAO {
                 
                 
                 
-                benutzer.getBenutzer().setUni(u);
+//                benutzer.getBenutzer().setUni(u);
             
                 EMH.getEntityManager().merge(benutzer.getBenutzer());
             }

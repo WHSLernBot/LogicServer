@@ -41,9 +41,9 @@ public class BotPool {
     
     public void neueAufgaben(CBBenutzer benutzer, Modul modul) {
         
-        LernStatus ls = DAO.gibLernstatus(benutzer, modul);
+//        LernStatus ls = DAO.gibLernstatus(benutzer, modul);
         
-        aufgabenBots.submit(new AufgabenBot(ls));
+//        aufgabenBots.submit(new AufgabenBot(ls));
         
     }
     
