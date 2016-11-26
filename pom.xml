@@ -76,7 +76,7 @@
           <appendAssemblyId>false</appendAssemblyId>
           <archive>
             <manifest>
-              <mainClass>Main</mainClass>
+              <mainClass>spark.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -99,7 +99,7 @@
             <appName>secure-plateau-70134</appName>
             <processTypes>
                 <!-- Tell Heroku how to launch your application -->
-                <web>java -jar ./target/whslernbot-1.0.jar</web>
+                <web>java -jar ./target/whslernbot.jar</web>
             </processTypes>
         </configuration>
       </plugin>
