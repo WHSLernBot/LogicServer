@@ -13,20 +13,29 @@ public class Main {
     
 
     public static void main(String[] args) {
+        
+        
+        get("/", (req, res) -> {
+            
+           
+            return "Das ist meine Hauptseite";
+            
+            
+        });
       
         get("/db", (req, res) -> {
             
             
-            JsonParser jp = new JsonParser();
-            
-            JsonElement je = jp.parse(req.body());
-            
-            JsonObject jo = je.getAsJsonObject();
-            
-            res.status(200);
-            res.type("application/json");
+//            JsonParser jp = new JsonParser();
+//            
+//            JsonElement je = jp.parse(req.body());
+//            
+//            JsonObject jo = je.getAsJsonObject();
+//            
+//            res.status(200);
+//            res.type("application/json");
 
-            return jo;
+            return "Läuft etwas";
         });
     
     
