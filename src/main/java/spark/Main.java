@@ -23,13 +23,10 @@ public class Main {
             
             JsonObject jo = je.getAsJsonObject();
             
-            ChatBotManager.getInstance().gibContPool().loese(jo);
-            
-            
-            
-          
-          
-            return "Hello World";
+            res.status(200);
+            res.type("application/json");
+
+            return jo;
         });
     
     
