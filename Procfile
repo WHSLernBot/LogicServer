@@ -1,1 +1,1 @@
-web:    java -jar target/whslernbot.jar
+web:    java -jar target/whslernbot-jar-with-dependencies.jar
