@@ -1,3 +1,5 @@
+package spark;
+
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
       
-        get("/hello", (req, res) -> {
+        get("/db", (req, res) -> {
             
             
             JsonParser jp = new JsonParser();
