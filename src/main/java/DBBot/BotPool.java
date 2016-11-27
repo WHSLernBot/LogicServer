@@ -2,7 +2,7 @@ package DBBot;
 
 import DAO.DAO;
 import Entitys.LernStatus;
-import Entitys.Modul;
+import Entitys.Thema;
 import Entitys.Uni;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
@@ -35,27 +35,25 @@ public class BotPool {
     
     public void berechneNeu(CBBenutzer benutzer) {
         
-        benutzerBots.submit(new BenutzerBot(benutzer));
+//        benutzerBots.submit(new BenutzerBot(benutzer));
         
     }
     
-    public void neueAufgaben(CBBenutzer benutzer, Modul modul) {
+    public void neueAufgaben(CBBenutzer benutzer) {
         
-        LernStatus ls = DAO.gibLernstatus(benutzer, modul);
-        
-        aufgabenBots.submit(new AufgabenBot(ls));
+        aufgabenBots.submit(new AufgabenBot(benutzer));
         
     }
     
     private void berechneAlles() {
         
-        Collection<Uni> unis = DAO.gibUnis();
-        
-        for(Uni u : unis) {
-            
-            
-            
-        }
+//        Collection<Uni> unis = DAO.gibUnis();c
+//        
+//        for(Uni u : unis) {
+//            
+//            
+//            
+//        }
         
     }
 }

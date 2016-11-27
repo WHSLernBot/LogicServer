@@ -173,6 +173,9 @@ public class LernStatus implements Serializable {
         return geloest;
     }
     
+    /**
+     * Zu verwenden falls eine Aufgabe zu diesem LernStatus gelöst wurde.
+     */
     public void neueGeloest() {
         geloest++;
     }

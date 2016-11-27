@@ -61,6 +61,10 @@ public class ChatBotManager {
         return manager;
     }
     
+    public Timestamp jetzt() {
+        return new Timestamp(calendar.getTime().getTime());
+    }
+    
     /**
      * Gibt den BotPool zurück.
      * @return 
@@ -109,7 +113,7 @@ public class ChatBotManager {
      */
     public void addNachricht(Nachricht n) {
         
-        Timestamp now = new Timestamp(calendar.getTime().getTime());
+        Timestamp now = jetzt();
         nachrichtenLock.lock();
         try {
             if (n.getZeit() == null || n.getZeit().before(now)) {
@@ -152,7 +156,7 @@ public class ChatBotManager {
      */
     public void sendeNachrichten() {
         
-        Timestamp now = new Timestamp(calendar.getTime().getTime());
+        Timestamp now = jetzt();
         
         nachrichtenLock.lock();
         try {
@@ -184,7 +188,7 @@ public class ChatBotManager {
     
     private void setzeTimer() {
         
-        Timestamp now = new Timestamp(calendar.getTime().getTime());
+        Timestamp now = jetzt();
         
         timer.cancel();
         long dauer = 0;
