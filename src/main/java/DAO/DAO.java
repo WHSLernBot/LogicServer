@@ -1,11 +1,11 @@
 package DAO;
 
+import DBBot.lsItem;
 import Entitys.Antwort;
 import Entitys.Aufgabe;
 import Entitys.Benutzer;
 import Entitys.Klausur;
 import Entitys.LernStatus;
-import Entitys.Modul;
 import Entitys.Teilnahme;
 import Entitys.Uni;
 import java.sql.Date;
@@ -252,5 +252,9 @@ public class DAO {
     public static Benutzer sucheBenutzer(CBPlattform pt) {
         
         return EMH.getEntityManager().find(Benutzer.class, pt.getId());
+    }
+    
+    public static void setztZuAufgaben(LernStatus ls,Collection<lsItem> aufgaben) {
+        
     }
 }
