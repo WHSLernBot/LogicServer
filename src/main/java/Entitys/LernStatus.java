@@ -86,6 +86,10 @@ public class LernStatus implements Serializable {
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<XGAufgabe> xgAufgaben;
     
+    /**
+     * Zeigt an, ob sich der LernStatus seit dem letzten berechnen veraendert hat.
+     */
+    private boolean veraendert;
     
     public LernStatus(){}
     
@@ -98,6 +102,7 @@ public class LernStatus implements Serializable {
         this.sumPunkte = 0;
         this.geloest = 0;
         this.letztesDatum = letztesDatum;
+        veraendert = false;
     }
     
     public void setAktiv(Boolean aktiv){
@@ -171,6 +176,14 @@ public class LernStatus implements Serializable {
 
     public int getGeloest() {
         return geloest;
+    }
+
+    public boolean isVeraendert() {
+        return veraendert;
+    }
+
+    public void setVeraendert(boolean veraendert) {
+        this.veraendert = veraendert;
     }
     
     /**

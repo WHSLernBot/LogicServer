@@ -1,13 +1,16 @@
 package DBBot;
 
 import DAO.DAO;
-import Entitys.LernStatus;
-import Entitys.Thema;
+import Entitys.Modul;
 import Entitys.Uni;
+import Entitys.Benutzer;
+import Entitys.Uni;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import main.CBBenutzer;
+import main.ChatBotManager;
 
 /**
  *
@@ -34,8 +37,8 @@ public class BotPool {
     }
     
     public void berechneNeu(CBBenutzer benutzer) {
-        
-//        benutzerBots.submit(new BenutzerBot(benutzer));
+        Timestamp heute = ChatBotManager.getInstance().jetzt();
+        benutzerBots.submit(new BenutzerBot(benutzer,heute));
         
     }
     
@@ -47,13 +50,23 @@ public class BotPool {
     
     private void berechneAlles() {
         
-//        Collection<Uni> unis = DAO.gibUnis();c
-//        
-//        for(Uni u : unis) {
-//            
-//            
-//            
-//        }
+        Timestamp heute = ChatBotManager.getInstance().jetzt();
+        
+        Collection<Uni> unis = DAO.gibUnis();
+        
+        for(Uni u : unis) {
+            
+            for(Benutzer b : u.getBenutzer()) {
+                benutzerBots.submit(new BenutzerBot(b,heute));
+            }
+            
+            for(Modul m : u.getModul()) {
+                aufgabenBots.submit(new AufgabenBot(m));
+            }
+            
+//            u.getPruefungsperiode()
+            
+        }
         
     }
 }

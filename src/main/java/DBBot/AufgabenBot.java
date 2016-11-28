@@ -30,7 +30,7 @@ public class AufgabenBot implements Runnable {
     public AufgabenBot(CBBenutzer benutzer) {
         this.benutzer = benutzer;
         this.modul = null;
-        
+        benutzer.gain();
         heute = ChatBotManager.getInstance().jetzt();
     }
      
@@ -55,6 +55,11 @@ public class AufgabenBot implements Runnable {
                 berechne(stadi);
             }
         }  
+        
+        if(benutzer != null) {
+            //evet. hier nachricht an den Benutzer senden
+            benutzer.release();
+        }
     }
     
     private void berechne(Collection<LernStatus> stadi) {
@@ -71,7 +76,7 @@ public class AufgabenBot implements Runnable {
         for(LernStatus ls : stadi) {
             // Gucken ob man neu berechnen muss
             
-            if(ls.istAktiv() && ls.getLetztesDatum().compareTo(heute) == 0) { //Nochmal drüber nachdenken
+            if(ls.istAktiv() && ls.isVeraendert()) { //Nochmal drüber nachdenken
                 
                 thema = ls.getThema();
 
