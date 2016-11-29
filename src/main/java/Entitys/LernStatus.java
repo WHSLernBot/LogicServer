@@ -56,7 +56,7 @@ public class LernStatus implements Serializable {
     
     /**
      * Summe der Punkte die alle Aufgaben abzüglich der Häufigkeit und 
-     * Richtigkeit eingebracht haben.
+     * Richtigkeit eingebracht haben. Maximal 100.
      */
     private int sumPunkte;
     

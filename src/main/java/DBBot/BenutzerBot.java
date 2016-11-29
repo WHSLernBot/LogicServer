@@ -43,10 +43,9 @@ public class BenutzerBot implements Runnable {
         
         if(ls.isVeraendert()) {
             
+            //ne garnicht .. nur gucken ob angeschrieben werden muss
+            
         }
-        
-        
-        
     }
     
 }

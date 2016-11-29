@@ -56,6 +56,8 @@ public class BotPool {
         
         for(Uni u : unis) {
             
+            
+            
             for(Benutzer b : u.getBenutzer()) {
                 benutzerBots.submit(new BenutzerBot(b,heute));
             }

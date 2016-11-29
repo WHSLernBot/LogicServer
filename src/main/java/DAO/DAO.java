@@ -1,6 +1,6 @@
 package DAO;
 
-import DBBot.lsItem;
+import DBBot.aufgabenItem;
 import Entitys.Antwort;
 import Entitys.Aufgabe;
 import Entitys.Benutzer;
@@ -254,7 +254,7 @@ public class DAO {
         return EMH.getEntityManager().find(Benutzer.class, pt.getId());
     }
     
-    public static void setztZuAufgaben(LernStatus ls,Collection<lsItem> aufgaben) {
+    public static void setztZuAufgaben(LernStatus ls,Collection<aufgabenItem> aufgaben) {
         
     }
 }

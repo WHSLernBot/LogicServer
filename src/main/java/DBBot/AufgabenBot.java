@@ -67,11 +67,13 @@ public class AufgabenBot implements Runnable {
         
         Collection<BeAufgabe> beAufgaben;
         
-        List<lsItem> zuAufgaben = new LinkedList<>();
+        List<aufgabenItem> zuAufgaben = new LinkedList<>();
         
-        HashMap<Long,lsItem> infos = new HashMap<>();
+        HashMap<Long,aufgabenItem> infos = new HashMap<>();
         
         Thema thema;
+        
+        int sumPunkte = 0;
         
         for(LernStatus ls : stadi) {
             // Gucken ob man neu berechnen muss
@@ -83,8 +85,9 @@ public class AufgabenBot implements Runnable {
                 aufgaben = thema.getAufgaben();
                 // Alle Aufgaben holen 
                 for(Aufgabe a : aufgaben) {
+                    sumPunkte += a.getPunkte();
                     
-                    infos.put(a.getAufgabenID(), new lsItem(a));             
+                    infos.put(a.getAufgabenID(), new aufgabenItem(a));             
                     
                 }
                 
@@ -94,30 +97,15 @@ public class AufgabenBot implements Runnable {
                 for(BeAufgabe b : beAufgaben) {
                     if(b.istBeantwortet()) {
                         long id = b.getAufgabe().getAufgabenID();
-                        lsItem item = infos.get(id);
+                        aufgabenItem item = infos.get(id);
                         
-                        item.beantwortet(b.istRichtig());
-                        
-                        item.hinweis(b.getHinweis());
-                        
-                        item.preufeDatum(b.getDatum());    
+                        item.addAntwort(b.getDatum(), b.istRichtig(), b.getHinweis());
                     }                   
                 }
 
-                // Nicht zu bearbeitende Aufgaben streichen
-                
-                for(long id : infos.keySet()) {
-                    
-                    lsItem item = infos.get(id);
-                    
-                    item.berechnePrio(heute);
-                    if(item.gibPrio() != 0) {
-                        zuAufgaben.add(item);
-                    }
-                    
-                }
-
                 //Aufgaben nach priorität sortieren
+                
+                DeepThought.berechnePrioritaet(zuAufgaben);
 
                 Collections.sort(zuAufgaben);
                 
