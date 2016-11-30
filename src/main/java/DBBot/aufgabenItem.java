@@ -13,14 +13,14 @@ public class aufgabenItem implements Comparable<aufgabenItem> {
         
     private final List<beantwortetItem> beantwortet;
     
-    private int prio;
+    private int punkte;
     
     private final Aufgabe aufgabe;
 
     public aufgabenItem(Aufgabe aufgabe) {
 
         beantwortet = new ArrayList<>();
-        prio = 0;
+        punkte = 0;
         this.aufgabe = aufgabe;
     }
     
@@ -32,17 +32,21 @@ public class aufgabenItem implements Comparable<aufgabenItem> {
         return aufgabe;
     }
 
-    public int getPrio() {
-        return prio;
+    public int getPunkte() {
+        return punkte;
     }
 
-    public void setPrio(int prio) {
-        this.prio = prio;
+    public void setPunkte(int prio) {
+        this.punkte = prio;
+    }
+    
+    public List<beantwortetItem> gibBeantwortet() {
+        return this.beantwortet;
     }
 
     @Override
     public int compareTo(aufgabenItem o) {
-        return (prio > o.prio) ? 1 : -1;
+        return (punkte < o.punkte) ? 1 : -1;
     }
     
 }

@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class DeepThoughtPrio {
     
-    private static final int ANTEIL = 10;
-    
     private HashMap<Short,Statistik> stats;
     
     private final Timestamp heute;
@@ -31,11 +29,54 @@ public class DeepThoughtPrio {
         });
     }
     
-    public void berechnePrioritaet(List<aufgabenItem> aufgaben) {
+    /**
+     * Berechnet die einzelnen Prioritaeten der Aufgaben und gib den gesamten
+     * erfolgswert fuer den LernStatus zuruek
+     * 
+     * @param aufgaben alle Aufgaben und wie sie beantwortet wurden
+     * @return Der Erfolgswert des Lernstatus. Wert zwischen 0 und 1000.
+     */
+    public int berechnePrioritaet(List<aufgabenItem> aufgaben) {
+        
+        long eineWoche = (1000 * 60 * 60 * 24 * 7);
+        
+        long heuteMs = heute.getTime();
+        
+        long lsPunkte = 0;
         
         for(aufgabenItem item : aufgaben) {
-            item.setPrio(100);
+            
+            int punkte = item.getAufgabe().getPunkte();
+            
+            long aufgabenPunkte = 0;
+            
+            long beantwortetPunkte = 0;
+            
+            for(beantwortetItem beItem : item.gibBeantwortet()) {
+                
+                long woche = (heuteMs - beItem.getDatum().getTime()) / eineWoche;
+                
+                int anteilPunkte = gibStat((short) woche).getAnteil() * punkte;
+                
+                aufgabenPunkte += anteilPunkte;
+                
+                if(beItem.isRichtig()) {
+                    beantwortetPunkte += (beItem.isHinweis()) ? anteilPunkte / 2 : anteilPunkte;
+                }
+                
+            }
+            
+            int prioPunkte = 0;
+            
+            if(aufgabenPunkte != 0) {
+                prioPunkte = (int)((beantwortetPunkte * 1000) / aufgabenPunkte);
+            }
+            item.setPunkte(prioPunkte);
+            
+            lsPunkte += prioPunkte;
         }
+        
+        return (int) lsPunkte / aufgaben.size();
         
     }
     
@@ -47,7 +88,7 @@ public class DeepThoughtPrio {
             try {
                 EMH.beginTransaction();
 
-                modul.addStatistik(woche, ANTEIL);
+                modul.addStatistik(woche,berechneAnteil(woche));
 
                 EMH.getEntityManager().merge(modul);
 
@@ -59,6 +100,10 @@ public class DeepThoughtPrio {
         
         return s;
         
+    }
+    
+    private int berechneAnteil(short woche) {
+        return 100 / (woche + 1);
     }
     
 }

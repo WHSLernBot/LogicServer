@@ -48,11 +48,11 @@ public class AufgabenBot implements Runnable {
         
         if(modul == null) {
             stadi = benutzer.getBenutzer().getLernStadi();
-            berechne(stadi);
+            berechne(stadi,null);
         } else {
             for(Thema t : modul.getThemen()) {
                 stadi = t.getLernStadi();
-                berechne(stadi);
+                berechne(stadi,new DeepThoughtPrio(modul,heute));
             }
         }  
         
@@ -62,7 +62,7 @@ public class AufgabenBot implements Runnable {
         }
     }
     
-    private void berechne(Collection<LernStatus> stadi) {
+    private void berechne(Collection<LernStatus> stadi, DeepThoughtPrio rechner) {
         Collection<Aufgabe> aufgaben;
         
         Collection<BeAufgabe> beAufgaben;
@@ -78,7 +78,7 @@ public class AufgabenBot implements Runnable {
         for(LernStatus ls : stadi) {
             // Gucken ob man neu berechnen muss
             
-            if(ls.istAktiv() && ls.isVeraendert()) { //Nochmal drüber nachdenken
+            if(ls.istAktiv() && ls.isVeraendert()) {
                 
                 thema = ls.getThema();
 
@@ -103,19 +103,27 @@ public class AufgabenBot implements Runnable {
                     }                   
                 }
 
-                //Aufgaben nach priorität sortieren
+                //Aufgaben nach prioritaet sortieren
                 
-                DeepThought.berechnePrioritaet(zuAufgaben);
+                int punkteLs;
+                
+                if(rechner == null) {
+                    punkteLs = new DeepThoughtPrio(thema.getModul(),heute).berechnePrioritaet(zuAufgaben);
+                } else {
+                    punkteLs = rechner.berechnePrioritaet(zuAufgaben);
+                }
 
                 Collections.sort(zuAufgaben);
                 
-                //Aufgaben in Datenbankliste einfügen , alte vorher löschen
+                //Aufgaben in Datenbankliste einfuegen , alte vorher loeschen
                 
-                //Hier auch dynamisch schauen wie viele Aufgaben überhaubt gemacht werden sollen. 
-                //Zuerst allerdings einfach alle möglich in der Reihenfolge einfügen.
+                //Hier auch dynamisch schauen wie viele Aufgaben ueberhaubt gemacht werden sollen. 
+                //Zuerst allerdings einfach alle moeglich in der Reihenfolge einfuegen.
                 //wer macht das? Das DAO.
                     
                 DAO.setztZuAufgaben(ls,zuAufgaben);
+                
+                DAO.setzteLSPunkte(ls,punkteLs);
                 
                 //loeschen
                 
