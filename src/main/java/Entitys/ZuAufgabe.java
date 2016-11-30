@@ -9,11 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
- * Diese Klasse stellt eine Aufgabe dar, die der Benutzer als nächstes 
- * zu bearbeitet hat. Außerdem verweist sie auf eine Aufgabe die 
+ * Diese Klasse stellt eine Aufgabe dar, die der Benutzer als naechstes 
+ * zu bearbeitet hat. Ausserdem verweist sie auf eine Aufgabe die 
  * er dannach bearbeiten soll.
  * 
- * @author Betül
+ * @author Betuel
  */
 @Entity
 @IdClass(ZuAufgabePK.class)
@@ -34,14 +34,14 @@ public class ZuAufgabe implements Serializable {
     private Aufgabe aufgabe;
     
     /**
-     * Der zugehörige Lernstatus.
+     * Der zugehoerige Lernstatus.
      */
     @Id
     @OneToOne
     private LernStatus lernStatus;
     
     /**
-     * Die nächste zu bearbeitenden Aufgabe.
+     * Die naechste zu bearbeitenden Aufgabe.
      */
     @OneToOne
     private ZuAufgabe naechsteAufgabe;

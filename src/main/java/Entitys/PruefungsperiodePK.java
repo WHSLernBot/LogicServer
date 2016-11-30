@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Primary Key Klasse zu Pruefungsperiode.
- * @author Betül
+ * @author Betuel
  */
 @Embeddable
 public class PruefungsperiodePK implements Serializable {

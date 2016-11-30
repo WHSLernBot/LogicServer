@@ -28,7 +28,7 @@ public class Thema implements Serializable {
     private Long thmenID;
     
     /**
-     * Vollständiger Name des Themas
+     * Vollstaendiger Name des Themas
      */
     @Column(length = 200)
     private String name;
@@ -44,7 +44,7 @@ public class Thema implements Serializable {
     private int aufgabenZahl;
     
     /**
-     * Das Modul zu dem das Thema gehöhrt.
+     * Das Modul zu dem das Thema gehoehrt.
      */
     @ManyToOne
     private Modul modul;
@@ -100,7 +100,7 @@ public class Thema implements Serializable {
     }
     
     /**
-     * Wenn überhaupt sinnvoll
+     * Wenn ueberhaupt sinnvoll
      * @param lernStatus 
      */
     public void addLernStatus(LernStatus lernStatus) {

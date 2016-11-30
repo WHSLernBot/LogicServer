@@ -9,7 +9,7 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
 /**
- * Diese Klasse stellt eine Antwortmöglichkeit einer Aufgabe dar.
+ * Diese Klasse stellt eine Antwortmoeglichkeit einer Aufgabe dar.
  * 
  * @author Seve
  */
@@ -20,14 +20,14 @@ public class Antwort implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Die Aufgabe dessen Antwortmöglichkeit diese Antwort ist.
+     * Die Aufgabe dessen Antwortmoeglichkeit diese Antwort ist.
      */
     @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
     /**
-     * Die Nummer der Antwortmöglichkeit.
+     * Die Nummer der Antwortmoeglichkeit.
      */
     @Id
     private short nummer;
@@ -44,7 +44,7 @@ public class Antwort implements Serializable {
     private Boolean richtig;
     
     /**
-     * Gibt an wie häufig diese Antwort gewählt wurde.
+     * Gibt an wie haeufig diese Antwort gewaehlt wurde.
      */
     private long haeufigkeit;
 
@@ -62,7 +62,7 @@ public class Antwort implements Serializable {
     
     /**
      * 
-     * @return Die Nummer der Antwort unter den Antwortmöglichkeiten einer Aufgabe.
+     * @return Die Nummer der Antwort unter den Antwortmoeglichkeiten einer Aufgabe.
      */
     public int getNummer(){
         return nummer;
@@ -100,16 +100,16 @@ public class Antwort implements Serializable {
     }
     
     /**
-     * Erhöht den Wert, der zählt wie h-äufig die Antwort gewählt wurde.
+     * Erhoeht den Wert, der zaehlt wie haeufig die Antwort gewaehlt wurde.
      */
     public void wurdeGewaehlt(){
         this.haeufigkeit++;
     }
     
     /**
-     * Gibt zurück wie Häufig eine Antwort gewählt wurde.
+     * Gibt zurueck wie Haeufig eine Antwort gewaehlt wurde.
      * 
-     * @return Die Häufigkeit.
+     * @return Die Haeufigkeit.
      */
     public long getHaeufigkeit(){
         return haeufigkeit;

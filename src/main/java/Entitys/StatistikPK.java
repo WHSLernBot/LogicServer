@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Primary Key zu Statistik.
- * @author Betül
+ * @author Betuel
  */
 @Embeddable
 public class StatistikPK implements Serializable{

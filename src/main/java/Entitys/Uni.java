@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 /**
- * Diese Klasse stellt eine Universität und einen dort angesiedelten Fachbereich dar.
+ * Diese Klasse stellt eine Universitaet und einen dort angesiedelten Fachbereich dar.
  * @author Seve
  */
 @Entity
@@ -29,7 +29,7 @@ public class Uni implements Serializable {
     private short id;
     
     /**
-     * Name der Universität - Name des Fachbereichs.
+     * Name der Universitaet - Name des Fachbereichs.
      */
     @Column(length = 200)
     private String name;
@@ -47,7 +47,7 @@ public class Uni implements Serializable {
     private Collection<Modul> modul;
     
     /**
-     * Prüfungsperioden die dieser Fachbereich hat.
+     * Pruefungsperioden die dieser Fachbereich hat.
      */
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Pruefungsperiode> pruefungsperiode;

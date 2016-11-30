@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 /**
  * Diese Klasse stellt eine statisik dar, die berechnet in wie weit der Zeitfaktor
  * eine Rolle auf die Note einer Klausur hat.
- * @author Betül
+ * @author Betuel
  */
 @Entity
 @IdClass(StatistikPK.class)
@@ -19,7 +19,7 @@ public class Statistik implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Das zugehöroge Modul.
+     * Das zugehoeroge Modul.
      */
     @Id
     @ManyToOne

@@ -32,13 +32,13 @@ public class Benutzer implements Serializable {
     private Long id;
     
     /**
-     * Der Name des Benutzers, wie er angesprochen werden möchte.
+     * Der Name des Benutzers, wie er angesprochen werden moechte.
      */
     @Column(length = 30)
     private String name;
     
     /**
-     * Die entsprechende Universität auf die der Benutzer geht.
+     * Die entsprechende Universitaet auf die der Benutzer geht.
      */
     @ManyToOne
     private Uni uni;
@@ -50,7 +50,7 @@ public class Benutzer implements Serializable {
     private Date letzteAntwort;
     
     /**
-     * Falls true möchte der Benutzer keine Daten über sich angeben.
+     * Falls true moechte der Benutzer keine Daten ueber sich angeben.
      */
     private Boolean datenschutz;
     
@@ -81,7 +81,7 @@ public class Benutzer implements Serializable {
      * Erstellt einen neuen Benutzer.
      * 
      * @param pfID Plattform id des Benutzers.
-     * @param pfNr Plattform Nummer. Für weitere infos siehe Plattform.
+     * @param pfNr Plattform Nummer. Fuer weitere infos siehe Plattform.
      * @param witSession Die Wit.ai session (Falls immer gleich)
      * @param name Name des Benutzers.
      * @param letzteAntwort Datum der letzten Antwort (hier erstelldatum).
@@ -145,7 +145,7 @@ public class Benutzer implements Serializable {
     }
 
     /**
-     * Fügt einen neuen Lernstatus hinzu.
+     * Fuegt einen neuen Lernstatus hinzu.
      * 
      * @param thema
      * @param datum 

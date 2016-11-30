@@ -28,7 +28,7 @@ public class BeAufgabe implements Serializable {
     private Aufgabe aufgabe;
     
     /**
-     * Der Zugehörige Lernstatus des Benutzers.
+     * Der Zugehoerige Lernstatus des Benutzers.
      */
     @Id
     @ManyToOne

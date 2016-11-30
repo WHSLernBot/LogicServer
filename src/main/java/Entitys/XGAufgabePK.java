@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Primary Key Klasse von XGAufgabe.
- * @author Betül
+ * @author Betuel
  */
 @Embeddable
 public class XGAufgabePK implements Serializable {

@@ -34,13 +34,13 @@ public class Plattform implements Serializable {
     private short pfNr;
     
     /**
-     * Der zugehörige Benutzer dieser Plattform.
+     * Der zugehoerige Benutzer dieser Plattform.
      */
     @OneToOne
     private Benutzer benutzer;
     
     /**
-     * Die witSession (Falls nötig)
+     * Die witSession (Falls noetig)
      */
     @Column(length = 100)
     private String witSession;

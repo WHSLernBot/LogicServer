@@ -5,7 +5,7 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- * Die Primary Key Klasse von BeAufgabe. Für mehr Infos siehe BeAufgabe.
+ * Die Primary Key Klasse von BeAufgabe. Fuer mehr Infos siehe BeAufgabe.
  * 
  * @author Seve
  */

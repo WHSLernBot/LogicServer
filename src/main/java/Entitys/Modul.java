@@ -31,14 +31,14 @@ public class Modul implements Serializable {
     private Uni uni;
     
     /**
-     * Das Kürzel des Moduls.
+     * Das Kuerzel des Moduls.
      */
     @Id
     @Column(length = 10)
     private String kuerzel;
     
     /**
-     * Der vollständige Name des Moduls.
+     * Der vollstaendige Name des Moduls.
      */
     @Column(length = 50)
     private String name;
@@ -56,7 +56,7 @@ public class Modul implements Serializable {
     private Collection<Klausur> klausuren;
     
     /**
-     * Die statistiken über dieses Modul, die zeigen wie sehr sich die Zeit
+     * Die statistiken ueber dieses Modul, die zeigen wie sehr sich die Zeit
      * auf die einzelnen Punktzahlen einer Aufgabe auswirkt.
      */
     @OneToMany(mappedBy="modul", cascade=CascadeType.ALL,orphanRemoval = true)

@@ -25,7 +25,7 @@ public class Klausur implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Das Modul über das die Klausur geht.
+     * Das Modul ueber das die Klausur geht.
      */
     @Id
     @ManyToOne
@@ -38,7 +38,7 @@ public class Klausur implements Serializable {
     private Date datum;
     
     /**
-     * Die Prüfungsperiode in der die Klausur liegt.
+     * Die Pruefungsperiode in der die Klausur liegt.
      */
     @Id
     @ManyToOne
@@ -74,8 +74,8 @@ public class Klausur implements Serializable {
     private short durchschnitt;
     
     /**
-     * Die Hilfsmittel die in der Klausur benutzer werden können,
-     * wie Taschenrechner, Bücher etc.
+     * Die Hilfsmittel die in der Klausur benutzer werden koennen,
+     * wie Taschenrechner, Buecher etc.
      */
     @Column(length = 200)
     private String hilfsmittel;

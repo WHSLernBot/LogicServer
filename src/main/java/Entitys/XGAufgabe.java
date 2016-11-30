@@ -8,9 +8,9 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 
 /**
- * Diese Klasse stellt eine eXtra Gelöste Aufgabe dar, die auserhalb der
+ * Diese Klasse stellt eine eXtra Geloeste Aufgabe dar, die auserhalb der
  * ausgedachten Reihenfolge bearbeitet wurde.
- * @author Betül
+ * @author Betuel
  */
 @Entity
 @IdClass(XGAufgabePK.class)
@@ -26,7 +26,7 @@ public class XGAufgabe implements Serializable {
     private Aufgabe aufgabe;
     
     /**
-     * Zugehöriger Lernstatus der diese Aufgabe bearbeitet hat.
+     * Zugehoeriger Lernstatus der diese Aufgabe bearbeitet hat.
      */
     @Id
     @ManyToOne

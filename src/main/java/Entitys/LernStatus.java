@@ -26,7 +26,7 @@ public class LernStatus implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Der Benutzer dem der LernStatus gehöhrt.
+     * Der Benutzer dem der LernStatus gehoehrt.
      */
     @Id
     @ManyToOne
@@ -55,13 +55,13 @@ public class LernStatus implements Serializable {
     private int geloest;
     
     /**
-     * Summe der Punkte die alle Aufgaben abzüglich der Häufigkeit und 
+     * Summe der Punkte die alle Aufgaben abzueglich der Haeufigkeit und 
      * Richtigkeit eingebracht haben. Maximal 100.
      */
     private int sumPunkte;
     
     /**
-     * Das Datum an dem der Benutzer zuletzt Aufgaben zu diesem Thema gelöst hat.
+     * Das Datum an dem der Benutzer zuletzt Aufgaben zu diesem Thema geloest hat.
      */
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date letztesDatum;
@@ -73,15 +73,15 @@ public class LernStatus implements Serializable {
     private Collection<BeAufgabe> beAufgaben;
 
     /**
-     * Die Aufgabe, die der Benutzer als nächstes zu bearbeitet hat.
+     * Die Aufgabe, die der Benutzer als naechstes zu bearbeitet hat.
      */
     @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drï¿½ber sprechen
     private ZuAufgabe zuAufgaben;
     
     /**
-     * Die Aufgaben die der Benutzer zusätzlich gelöst hat, die aber nicht
-     * in der Reihe der zu lösenden Aufgaben war. z.b. durch spezielle suche
-     * gelöste Aufgaben. XG = eXtra Gelöst
+     * Die Aufgaben die der Benutzer zusaetzlich geloest hat, die aber nicht
+     * in der Reihe der zu loesenden Aufgaben war. z.b. durch spezielle suche
+     * geloeste Aufgaben. XG = eXtra Geloest
      */
     @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<XGAufgabe> xgAufgaben;
@@ -187,7 +187,7 @@ public class LernStatus implements Serializable {
     }
     
     /**
-     * Zu verwenden falls eine Aufgabe zu diesem LernStatus gelöst wurde.
+     * Zu verwenden falls eine Aufgabe zu diesem LernStatus geloest wurde.
      */
     public void neueGeloest() {
         geloest++;

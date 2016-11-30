@@ -30,7 +30,7 @@ public class Aufgabe implements Serializable {
     private Long aufgabenID;
     
     /**
-     * Das Thema, zu dem die Antwort gehöhrt.
+     * Das Thema, zu dem die Antwort gehoehrt.
      */
     @ManyToOne
     private Thema thema;
@@ -47,14 +47,14 @@ public class Aufgabe implements Serializable {
     private int schwierigkeit;
     
     /**
-     * Ein Hinweistext zur Lösung der Aufgabe.
+     * Ein Hinweistext zur Loesung der Aufgabe.
      */
     @Column(length = 2000)
     private String hinweis;
     
     /**
      * Die Bewertung einer Aufgabe. Falls dieser Wert bei 0 liegt,
-     * muss die Aufgabe gelöscht oder geprüft werden.
+     * muss die Aufgabe geloescht oder geprueft werden.
      */
     private int bewertung;
     
@@ -66,8 +66,8 @@ public class Aufgabe implements Serializable {
     private String verweis;
     
     /**
-     * Die Punktzahl die die Aufgabe gibt. So wichtiger die Aufgabe für eine
-     * Klausur, desto höher auch dieser Wert.
+     * Die Punktzahl die die Aufgabe gibt. So wichtiger die Aufgabe fuer eine
+     * Klausur, desto hoeher auch dieser Wert.
      */
     private int punkte;
     
@@ -93,7 +93,7 @@ public class Aufgabe implements Serializable {
     
     /**
      * 
-     * @param thema Das zugehörige Thema der Frage.
+     * @param thema Das zugehoerige Thema der Frage.
      * @param frage Der Fragetext.
      * @param schwierigkeit Der schwierigkeitsgrad.
      * @param hinweis Ein Hinweistext.
@@ -112,7 +112,7 @@ public class Aufgabe implements Serializable {
     }
     
     /**
-     * Fügt eine neue Antwort dieser Aufgabe hinzu.
+     * Fuegt eine neue Antwort dieser Aufgabe hinzu.
      * 
      * @param antwort Der Antworttext.
      * @param richtig true, falls diese Antwort richtig ist.
@@ -125,14 +125,14 @@ public class Aufgabe implements Serializable {
     
     /**
      * 
-     * @return Alle Antwortmöglichkeiten dieser Frage.
+     * @return Alle Antwortmoeglichkeiten dieser Frage.
      */
     public Collection<Antwort> getAntworten(){
         return this.antworten;
     }
     
     /**
-     * Fügt der Aufgabe einen neuen Token hinzu.
+     * Fuegt der Aufgabe einen neuen Token hinzu.
      * @param tok Der Token.
      */
     public void addToken(String tok){

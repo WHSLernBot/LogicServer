@@ -14,7 +14,7 @@ import javax.persistence.Temporal;
 
 /**
  *
- * @author Betül
+ * @author Betuel
  */
 @Entity
 @IdClass(PruefungsperiodePK.class)
@@ -23,7 +23,7 @@ public class Pruefungsperiode implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Das Jahr der Prüfungsperiode.
+     * Das Jahr der Pruefungsperiode.
      */
     @Id
     private short jahr;
@@ -35,7 +35,7 @@ public class Pruefungsperiode implements Serializable {
     private short phase;
     
     /**
-     * Der anmeldebeginn zu dieser Prüfunsphase.
+     * Der anmeldebeginn zu dieser Pruefunsphase.
      */
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date anmeldebeginn;
@@ -53,7 +53,7 @@ public class Pruefungsperiode implements Serializable {
     private Date ende;
     
     /**
-     * Die zugehörige Uni dieser Prüfungsperiode.
+     * Die zugehoerige Uni dieser Pruefungsperiode.
      */
     @Id
     @ManyToOne 
