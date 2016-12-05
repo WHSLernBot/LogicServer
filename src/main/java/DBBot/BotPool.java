@@ -37,13 +37,6 @@ public class BotPool {
     }
     
     public void berechneNeu(CBBenutzer benutzer) {
-        Timestamp heute = ChatBotManager.getInstance().jetzt();
-        benutzerBots.submit(new BenutzerBot(benutzer,heute));
-        
-    }
-    
-    public void neueAufgaben(CBBenutzer benutzer) {
-        
         aufgabenBots.submit(new AufgabenBot(benutzer));
         
     }

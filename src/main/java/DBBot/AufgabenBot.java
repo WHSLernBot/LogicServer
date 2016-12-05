@@ -16,7 +16,9 @@ import main.CBBenutzer;
 import main.ChatBotManager;
 
 /**
- *
+ * Dieser Thread laeuft entweder ueber alle Lernstadi eines Benutzers oder
+ * eines Moduls, wertet sie aus und legt neue zu bearbeitende Aufgaben an.
+ * 
  * @author Seve
  */
 public class AufgabenBot implements Runnable {
@@ -27,6 +29,12 @@ public class AufgabenBot implements Runnable {
     
     private final Timestamp heute;
     
+    /**
+     * Erstellt einen neuen Aufgabenbot, der ueber die Lernstadi eines Benutzers
+     * laeuft.
+     * 
+     * @param benutzer 
+     */
     public AufgabenBot(CBBenutzer benutzer) {
         this.benutzer = benutzer;
         this.modul = null;
@@ -34,6 +42,12 @@ public class AufgabenBot implements Runnable {
         heute = ChatBotManager.getInstance().jetzt();
     }
      
+    /**
+     * Erstellt einen neuen Aufgabenbot, der ueber die Lernstadi eines Moduls
+     * laeuft.
+     * 
+     * @param modul 
+     */
     public AufgabenBot(Modul modul) {
         this.benutzer = null;
         this.modul = modul;
@@ -41,6 +55,9 @@ public class AufgabenBot implements Runnable {
         heute = ChatBotManager.getInstance().jetzt();
     }
     
+    /**
+     * Startet den Bot.
+     */
     @Override
     public void run() {
         
@@ -62,6 +79,15 @@ public class AufgabenBot implements Runnable {
         }
     }
     
+    /**
+     * Berechnet zu den Angegebenen Lernstadi die entsprechenden Aufgaben und
+     * setzt die Punkte des Lernstatus.
+     * 
+     * @param stadi Die zu berechnendnen Lernstadi.
+     * @param rechner Der zu verwendende DeepThoughtPrio rechner. Dieser sollte
+     * angegeben werden, wenn die Lernstadi alle vom selben Modul sind. 
+     * Ansonsten null eintragen.
+     */
     private void berechne(Collection<LernStatus> stadi, DeepThoughtPrio rechner) {
         Collection<Aufgabe> aufgaben;
         

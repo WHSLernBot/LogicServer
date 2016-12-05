@@ -3,7 +3,8 @@ package DBBot;
 import java.sql.Date;
 
 /**
- *
+ * Diese Klasse stellt eine Antwort auf eine Aufgabe dar.
+ * 
  * @author Seve
  */
 public class beantwortetItem {
