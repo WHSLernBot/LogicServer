@@ -1,6 +1,5 @@
 package main;
 
-import Controller.ControllerPool;
 import DBBot.BotPool;
 import Message.MessageHandler;
 import Message.Nachricht;
@@ -22,9 +21,7 @@ public class ChatBotManager {
     private static ChatBotManager manager;
     
     private final BotPool botPool;
-    
-    private final ControllerPool contPool;
-    
+        
     private final HashMap<CBPlattform,CBBenutzer> benutzer;
     
     private LinkedList<Nachricht> nachrichten;
@@ -40,7 +37,6 @@ public class ChatBotManager {
     private ChatBotManager() {
         
         this.botPool = new BotPool();
-        this.contPool = new ControllerPool();
         benutzer = new HashMap<>();
         this.calendar = Calendar.getInstance();
         
@@ -71,14 +67,6 @@ public class ChatBotManager {
      */
     public BotPool gibBotPool() {
         return botPool;
-    }
-
-    /**
-     * Gibt den ControllerPool zurück.
-     * @return 
-     */
-    public ControllerPool gibContPool() {
-        return contPool;
     }
     
     /**

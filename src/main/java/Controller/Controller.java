@@ -5,6 +5,7 @@ import Entitys.Aufgabe;
 import Entitys.Klausur;
 import Entitys.Uni;
 import Message.MessageCreator;
+import Message.Nachricht;
 import com.google.gson.JsonObject;
 import java.util.Collection;
 import main.CBBenutzer;
@@ -15,33 +16,29 @@ import main.ChatBotManager;
  * Diese Klasse stellt Methoden zur Verfügung, um ein JsonObject zu verarbeiten.
  * 
  */
-public class ControllerThread implements Runnable {
-
-    private final JsonObject json;
+public class Controller {
 
     private final ChatBotManager manager;
 
     private CBBenutzer benutzer;
 
     private final MessageCreator messCreator;
-
-    private String witSession;
-
     /**
-     * Konstruktor, dem ein JsonObjekt übergeben wird.
-     * @param json Enthält alle wichtigen Informationen.
+     * Initialisiert alle Objekte.
      */
-    public ControllerThread(JsonObject json) {
-        this.json = json;
+    public Controller() {
         manager = ChatBotManager.getInstance();
         messCreator = new MessageCreator();
-        witSession = "";
     }
     /**
-     * Führt den Thread aus.
+     * Diese Methode wird verwendet um das übergebene JsonObject auzulesen
+     * und entsprechende Aktionen auszuführen.
+     * @param json In dem Json sollten alle relevanten Informationen vorhanden sein,
+     *      die für das weitere vorgehen benötigt werden.
+     * @return Nachricht mit den geforderten Informationen.
      */
-    @Override
-    public void run() {
+    public Nachricht loese(JsonObject json) {
+        Nachricht nachricht = null;
         long id = json.get("id").getAsLong();
         short plattform = json.get("plattform").getAsShort();
 
@@ -56,52 +53,58 @@ public class ControllerThread implements Runnable {
             benutzer = new CBBenutzer(DAO.sucheBenutzer(pt));
         } 
         
-        witSession = benutzer.getBenutzer().getPlattform().getWitSession();
-        
-        
-        //Es wird kontrolliert welche Methode im Json übergeben wurde und
-        //dem entsprächend ausgeführt.
+        String witSession = benutzer.getBenutzer().getPlattform().getWitSession();
+                
+        /*Es wird kontrolliert welche Methode im Json übergeben wurde und
+        dem entsprächend ausgeführt.*/
         switch (json.get("methode").getAsString()) {
             case "gibAufgabe":
                 Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
                          json.get("modul").getAsString(),
                          json.get("thema").getAsString());
-
-                messCreator.erstelleAufgabenJson(id, plattform,witSession, aufgabe);
+                
+                nachricht = messCreator.erstelleAufgabenJson(id, 
+                        plattform,witSession, aufgabe, null);
                 break;
             case "setzeName":
                 DAO.setzeName(benutzer, json.get("name").getAsString());
                 break;
             case "speichereAntwort":
-                DAO.speichereAntwort(id, plattform, json.get("antwort").getAsString());
+                DAO.speichereAntwort(id, plattform, 
+                        json.get("antwort").getAsString());
                 break;
             case "speichereNote":
                 DAO.speichereNote(id, plattform, json.get("note").getAsShort());
                 break;
             case "gibInfos":
-                this.messCreator.erstelleBenutzerInfoNachricht(benutzer);
+                nachricht = this.messCreator.erstelleBenutzerInfoNachricht(benutzer, null);
                 break;
             case "setzeUni":
                 DAO.setzeUni(benutzer, json.get("uni").getAsShort());
                 break;
             case "gibUnis":
                 Collection<Uni> cUnis = DAO.gibUnis();
-                this.messCreator.erstelleUniJason(id, plattform,witSession, cUnis);
+                nachricht = this.messCreator.erstelleUniJason(id, 
+                        plattform,witSession, cUnis, null);
                 break;
             case "setzePruefung":
-                DAO.setzePruefung(id, plattform, json.get("modul").getAsString());
+                DAO.setzePruefung(id, plattform, 
+                        json.get("modul").getAsString());
                 break;
             case "neueAufgabe":
                 DAO.neueAufgabe(id, plattform, witSession, witSession);
                 break;
             case "gibKlausurInfos":
-                Klausur klausur = DAO.gibKlausur(id, plattform, json.get("modul").getAsString());
-                this.messCreator.erstelleKlausurInfoJson(id, plattform,witSession, klausur);
+                Klausur klausur = DAO.gibKlausur(id, plattform, 
+                        json.get("modul").getAsString());
+                
+                nachricht = this.messCreator.erstelleKlausurInfoJson(id, 
+                        plattform,witSession, klausur, null);
                 break;
             case "bewerteAufgabe":
                 DAO.bewerteAufgabe(id, json.get("bewerte").getAsInt());
                 break;
-
-        }
+        }     
+        return nachricht;
     }
 }

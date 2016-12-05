@@ -1,16 +1,15 @@
 package Message;
 
 
+import Entitys.Antwort;
 import Entitys.Klausur;
 import Entitys.Aufgabe;
 import Entitys.LernStatus;
-import Entitys.Modul;
-import Entitys.Thema;
 import Entitys.Uni;
 import com.google.gson.JsonObject;
+import java.sql.Timestamp;
 import java.util.Collection;
 import main.CBBenutzer;
-import main.ChatBotManager;
 /**
  * Die Klasse MessageCreator stellt Methoden zur Verfügung, um aus Objekten,
  * ein JsonObject zu erzeugen.
@@ -48,8 +47,11 @@ public class MessageCreator {
      * @param plattform Plattform des Nutzers.
      * @param witSession
      * @param aufgabe Aufgabe für den Nutzer.
+     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
+     * @return Gibt ein Nachrichtenobject, mit Aufgabe und Antwort zurueck.
      */
-    public void erstelleAufgabenJson(long id,long plattform,String witSession, Aufgabe aufgabe) {
+    public Nachricht erstelleAufgabenJson(long id,long plattform,String witSession, Aufgabe aufgabe,Timestamp time) {
+        
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
         jUser.addProperty("witsession", witSession);
@@ -58,10 +60,18 @@ public class MessageCreator {
         jAufgabe.addProperty("hinweis", aufgabe.getHinweis());
         jAufgabe.addProperty("verweis", aufgabe.getVerweis());
         
+        Collection<Antwort> ant = aufgabe.getAntworten();
+        int i=0;
+        for(Antwort antworten: ant){
+            jAufgabe.addProperty("antwort"+i,antworten.getAntwort());
+            jAufgabe.addProperty("richtigeAntwort"+i,antworten.getRichtig());
+            i++;
+        }
+            
         jResponse.add("user", jUser);
         jResponse.add("aufgabe",jAufgabe);
         jResponse.addProperty("nachricht", gibText("aufgabe"));
-        erzeugeNachricht(jResponse);
+        return erzeugeNachricht(jResponse, time);
     }
     
     /**
@@ -70,8 +80,10 @@ public class MessageCreator {
      * @param plattform Plattform des Nutzers.
      * @param witSession
      * @param unis Enthält alle Unis, die zur auswahl stehen.
+     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
+     * @return Gibt eine Nachricht mit allen Unis zurueck;
      */
-    public void erstelleUniJason(long id, long plattform,String witSession,Collection<Uni> unis){
+    public Nachricht erstelleUniJason(long id, long plattform,String witSession,Collection<Uni> unis,Timestamp time){
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
         jUser.addProperty("witsession", witSession);
@@ -84,7 +96,7 @@ public class MessageCreator {
         jResponse.add("user", jUser);
         jResponse.add("uni", jUni);
         jResponse.addProperty("nachricht", gibText("uni"));
-        erzeugeNachricht(jResponse);
+        return erzeugeNachricht(jResponse, time);
     }
     
     /**
@@ -94,27 +106,34 @@ public class MessageCreator {
      * @param plattform Plattform des Nutzers.     
      * @param witSession     
      * @param klausur Enthält alle Informatonen zur Klausur.
+     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
+     * @return Gibt ein Nachrichtenobjekt mit allen Klausurinfos zurueck.
      */
-    public void erstelleKlausurInfoJson(long id, long plattform,String witSession, Klausur klausur) {
+    public Nachricht erstelleKlausurInfoJson(long id, long plattform,String witSession, Klausur klausur,Timestamp time) {
         jUser.addProperty("id", id);
         jUser.addProperty("plattform", plattform);
         jUser.addProperty("witsession", witSession);
         
         jKlausurinfo.addProperty("hilfsmittel",klausur.getHilfsmittel());
         jKlausurinfo.addProperty("ort",klausur.getOrt());
+        jKlausurinfo.addProperty("dauer",klausur.getDauer());
+        jKlausurinfo.addProperty("periode",klausur.getPruefungsperiode().getAnfang().toString());
+        jKlausurinfo.addProperty("uhrzeit",klausur.getUhrzeit().toString());
         
         jResponse.add("user", jUser);
         jResponse.add("klausurinfo", jKlausurinfo);     
         jResponse.addProperty("nachricht", gibText("info"));
-        erzeugeNachricht(jResponse);
+        return erzeugeNachricht(jResponse, time);
     }
     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Informationen, 
      * die zu dem Benutzer vorhanden sind.
      * @param benutzer 
+     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
+     * @return Gibt ein Nachrichtenobjekt mit allen Benutzerinfos zurueck.
      */
-    public void erstelleBenutzerInfoNachricht(CBBenutzer benutzer) {
+    public Nachricht erstelleBenutzerInfoNachricht(CBBenutzer benutzer,Timestamp time) {
         jUser.addProperty("id", benutzer.getBenutzer().getId());
         jUser.addProperty("plattform", benutzer.getBenutzer().getPlattform().getPfID());
         jUser.addProperty("witsession", benutzer.getBenutzer().getPlattform().getWitSession());
@@ -127,7 +146,7 @@ public class MessageCreator {
         jResponse.add("user", jUser);
         jResponse.add("info", jInfo);     
         jResponse.addProperty("nachricht", gibText("info"));
-        erzeugeNachricht(jResponse);
+        return erzeugeNachricht(jResponse, time);
     }
     
     
@@ -155,10 +174,16 @@ public class MessageCreator {
     /**
      * Fügt eine Nachricht dem ChatBotManager hinzu.
      * @param json Enthält alle wichtigen Informationen.
+     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
      */
-    private void erzeugeNachricht(JsonObject json){
-        ChatBotManager cbm = ChatBotManager.getInstance();
-        Nachricht nachricht = new Nachricht(json,null);
-        cbm.addNachricht(nachricht);
+    private Nachricht erzeugeNachricht(JsonObject json,Timestamp time){
+        /*
+        time ist wichtig, damit die Nachricht auch noch zu einem späteren 
+        Zeitpunkt abgeschickt werden kann.
+        */
+        Nachricht nachricht = new Nachricht(json,time);
+        return nachricht;
     }
+    
+    
 }
