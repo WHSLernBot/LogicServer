@@ -17,8 +17,8 @@ import main.CBBenutzer;
 import main.CBPlattform;
 
 /**
- *
- * @author Seve
+ * Diese Klasse stellt Methoden zur verfügung, die zum Zugriff auf einzelne persistente Entitäten
+ * erlauben. 
  */
 public class DAO {
     
@@ -40,7 +40,7 @@ public class DAO {
             + "and l.klausur = k and b.id := ID";
     
     private static final String GIB_KLAUSUR = "select object(k)"
-            + "from Klausur k where";
+            + "from Klausur k, Modul m where k.kuerzel = m";
     
     
     public static Date gibDatum() {
@@ -48,8 +48,7 @@ public class DAO {
     }
     
     public static Aufgabe gibAufgabe(CBBenutzer benutzer, String modul, String thema) {
-               
-        return null;
+           return null;
         
     }
 
@@ -77,13 +76,14 @@ public class DAO {
         Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
         
         q.setParameter("ID", id);
+        q.setParameter("Plattform", plattform);
         
-        Antwort antw = (Antwort) q.getResultList().get(plattform);
+        Antwort a = (Antwort) q.getResultList().get(0);
         
         try{
             EMH.beginTransaction();
-            antw.setAntwort(antwort);
-            EMH.getEntityManager().persist(antw);
+            a.setAntwort(antwort);
+            EMH.getEntityManager().persist(a);
             EMH.commit();  
         } catch (Exception e){
             EMH.rollback();
@@ -91,13 +91,18 @@ public class DAO {
         
     }
 
-    public static void speichereNote(long id, short plattform, short asShort) {
+    public static void speichereNote(long id, short plattform, short note) {
+        
         Query q = EMH.getEntityManager().createQuery(GIB_NOTE);
+        
         q.setParameter("ID", id);
-        Teilnahme t = (Teilnahme) q.getResultList().get(plattform);
+        q.setParameter("Plattform", plattform);
+        
+        Teilnahme t = (Teilnahme) q.getResultList().get(0);
+        
         try{
             EMH.beginTransaction();
-            t.setNote(asShort);
+            t.setNote(note);
             EMH.getEntityManager().persist(t);
             EMH.commit();  
         } catch (Exception e){
@@ -120,7 +125,7 @@ public class DAO {
                 
                 
                 
-//                benutzer.getBenutzer().setUni(u);
+                benutzer.getBenutzer().setUni(u);
             
                 EMH.getEntityManager().merge(benutzer.getBenutzer());
             }
@@ -146,21 +151,7 @@ public class DAO {
         
         return unis;
     }
-    // uni wiedergeben mit find() Methode. Query kann weg.
-//    public static Collection<Uni> gibUni(short id) {
-//        
-//        ArrayList<Uni> unis = new ArrayList<>();
-//        
-//        Query q = EMH.getEntityManager().createQuery(ALLE_UNIS);
-//        
-//        List rs = q.getResultList();
-//        
-//        for(Object o : rs) {
-//            unis.add((Uni) o);
-//        }
-//        
-//        return unis;
-//    }
+    
     
     public static Uni gibUni(short id){
         
@@ -168,8 +159,9 @@ public class DAO {
         
     }
 
-    public static void setzePruefung(long id, short plattform, String asString) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static void setzePruefung(long id, short plattform, String modul) {
+        
+
     }
 
     public static void neueAufgabe(long id, short plattform, String modul, String thema) {
@@ -212,9 +204,27 @@ public class DAO {
             EMH.rollback();
         }
     }
-
-    public static Klausur gibKlausur(long id, short plattform, String asString) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+  
+    public static Klausur gibKlausur(long id, short plattform, String modul) {
+        
+        Query q = EMH.getEntityManager().createQuery(GIB_KLAUSUR);
+        
+        q.setParameter("ID", id);
+        q.setParameter("Plattform", plattform);
+        
+        Klausur k = (Klausur) q.getResultList().get(0);
+        
+        try{
+            EMH.beginTransaction();
+            EMH.getEntityManager().persist(k);
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
+        
+          return k;     
     }
 
     public static void bewerteAufgabe(long id, int like) {
@@ -228,7 +238,7 @@ public class DAO {
         try {
             EMH.beginTransaction();
             
-//            aufgabe.setLike(like);
+
             if(like <= 0){
                 
                 aufgabe.negativBewertet();
