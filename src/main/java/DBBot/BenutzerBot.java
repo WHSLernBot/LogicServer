@@ -1,8 +1,12 @@
 package DBBot;
 
+import DAO.DAO;
 import Entitys.Benutzer;
+import Entitys.Klausur;
 import Entitys.LernStatus;
+import Entitys.Modul;
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 /**
  *
@@ -12,8 +16,15 @@ public class BenutzerBot implements Runnable {
     
     private final Benutzer benutzer;
     
+    private final Timestamp heute;
+    
+    private final HashMap<Modul,lsItem> module;
+    
     public BenutzerBot(Benutzer benutzer, Timestamp heute) {
         this.benutzer = benutzer;
+        this.heute = heute;
+        
+        module = new HashMap<>();
     }
     
     
@@ -21,17 +32,31 @@ public class BenutzerBot implements Runnable {
     public void run() {
         
         for(LernStatus ls : benutzer.getLernStadi()) {
-            berechne(ls);
+            
+            fuegeLSEin(ls);
+        }
+        
+        for(lsItem item : module.values()) {
+            item.erstelleNachricht(heute);
         }
     }
     
-    private void berechne(LernStatus ls) {
+    private void fuegeLSEin(LernStatus ls) {
         
-        if(ls.isVeraendert()) {
+        Modul m = ls.getThema().getModul();
+
+        lsItem item = module.get(m);
+        
+        if(item == null) {
+            Klausur k = DAO.gibKlausur(benutzer.getPlattform().getPfID(),benutzer.getPlattform().getPfNr() , ""); // Mal drueber gehen
             
-            //ne garnicht .. nur gucken ob angeschrieben werden muss
+            item = new lsItem(k);
             
+            module.put(m, item);
         }
+        
+        item.addLs(ls);
+            
     }
     
 }
