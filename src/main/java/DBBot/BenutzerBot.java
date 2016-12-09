@@ -35,9 +35,10 @@ public class BenutzerBot implements Runnable {
             
             fuegeLSEin(ls);
         }
+        PersonaleNachricht pn = new PersonaleNachricht();
         
         for(lsItem item : module.values()) {
-            item.erstelleNachricht(heute);
+            item.erstelleNachricht(pn, heute);
         }
     }
     

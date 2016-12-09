@@ -27,11 +27,14 @@ public class lsItem {
     
     /**
      * Erstellt Nachrichten die an den Benutzer geschrieben werden muessen.
-     * 1. 
+     * 1. Anmeldebeginn fuer Klausur
+     * 2. Klausur morgen
+     * 3. 
      * 
+     * @param pn
      * @param heute 
      */
-    public void erstelleNachricht(Timestamp heute) {
+    public void erstelleNachricht(PersonaleNachricht pn, Timestamp heute) {
         
         long tag = 1000 * 60 * 60 * 24;
         
@@ -41,11 +44,10 @@ public class lsItem {
         
         long tageVK = (kDate - heuteDate) / tag;
         
-        
-        
-        if(heuteDate - klausur.getDatum().getTime() == 0) {
+        if(heuteDate - klausur.getDatum().getTime() == tag) {
             //Klausur heute
-        } else if () {
+            pn.addNachricht(klausur.getModul().getName(), PersonaleNachricht.MORGEN_KLAUSUR);
+        } else if (true) {
             
         }
         

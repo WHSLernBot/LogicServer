@@ -169,8 +169,11 @@ public class Klausur implements Serializable {
     public Pruefungsperiode getPruefungsperiode() {
         return periode;
     }
- 
-    
+
+    public Modul getModul() {
+        return modul;
+    }
+      
     @Override
     public int hashCode() {
         int hash = 5;

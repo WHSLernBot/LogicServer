@@ -58,7 +58,7 @@ public class Plattform implements Serializable {
         return pfID;
     }
     
-    public int getPfNr(){
+    public short getPfNr(){
         return pfNr;
     }
     
