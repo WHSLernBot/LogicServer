@@ -170,6 +170,11 @@ public class Benutzer implements Serializable {
         return uni;
     }
 
+    public void setUni(Uni uni) {
+        this.uni = uni;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 0;
