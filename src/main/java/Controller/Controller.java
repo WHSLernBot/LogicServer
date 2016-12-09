@@ -39,8 +39,7 @@ public class Controller {
      */
     public Nachricht loese(JsonObject json) {
         Nachricht nachricht = null;
-        long id = json.get("id").getAsLong();
-        short plattform = json.get("plattform").getAsShort();
+        
 
         CBPlattform pt = new CBPlattform(json.get("id").getAsString(),
                 json.get("plattform").getAsShort());
@@ -52,7 +51,8 @@ public class Controller {
             //ChatBotManager als aktiv aufgelistet wird.
             benutzer = new CBBenutzer(DAO.sucheBenutzer(pt));
         } 
-        
+        long id = benutzer.getBenutzer().getId();
+        short plattform = (short) benutzer.getBenutzer().getPlattform().getPfNr();
         String witSession = benutzer.getBenutzer().getPlattform().getWitSession();
                 
         /*Es wird kontrolliert welche Methode im Json übergeben wurde und
