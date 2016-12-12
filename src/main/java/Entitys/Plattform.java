@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
@@ -31,7 +32,8 @@ public class Plattform implements Serializable {
      * Rest nicht verwendet
      */
     @Id
-    private short pfNr;
+    @ManyToOne
+    private Adresse pfNr;
     
     /**
      * Der zugehoerige Benutzer dieser Plattform.
@@ -47,7 +49,7 @@ public class Plattform implements Serializable {
 
     public Plattform() {}
   
-    public Plattform(String pfID, short pfNr,Benutzer benutzer, String witSession){
+    public Plattform(String pfID, Adresse pfNr,Benutzer benutzer, String witSession){
         this.pfID = pfID;
         this.pfNr = pfNr;
         this.benutzer = benutzer;
@@ -58,7 +60,7 @@ public class Plattform implements Serializable {
         return pfID;
     }
     
-    public short getPfNr(){
+    public Adresse getAdresse(){
         return pfNr;
     }
     
@@ -73,12 +75,12 @@ public class Plattform implements Serializable {
     public Benutzer getBenutzer() {
         return benutzer;
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.pfID);
-        hash = 97 * hash + this.pfNr;
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.pfID);
+        hash = 17 * hash + Objects.hashCode(this.pfNr);
         return hash;
     }
 

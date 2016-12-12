@@ -3,6 +3,7 @@ package Controller;
 import DAO.DAO;
 import Entitys.Aufgabe;
 import Entitys.Klausur;
+import Entitys.LernStatus;
 import Entitys.Uni;
 import Message.MessageCreator;
 import Message.Nachricht;
@@ -46,22 +47,24 @@ public class Controller {
 
         benutzer = manager.gibBenutzer(pt);
 
-        if (benutzer == null) {
-            //sucht den Benutzer in der Datenbank, falls er noch nicht im
-            //ChatBotManager als aktiv aufgelistet wird.
-            benutzer = new CBBenutzer(DAO.sucheBenutzer(pt));
-        } 
+        //Hier nochmal mit synchronitaet gucken!----------------
+        
         long id = benutzer.getBenutzer().getId();
-        short plattform = (short) benutzer.getBenutzer().getPlattform().getPfNr();
+        short plattform = benutzer.getBenutzer().getPlattform().getAdresse().getId();
         String witSession = benutzer.getBenutzer().getPlattform().getWitSession();
                 
         /*Es wird kontrolliert welche Methode im Json übergeben wurde und
         dem entsprächend ausgeführt.*/
         switch (json.get("methode").getAsString()) {
             case "gibAufgabe":
-                Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
-                         json.get("modul").getAsString(),
-                         json.get("thema").getAsString());
+                
+                LernStatus ls = DAO.gibLernstatus(benutzer, json.get("thema").getAsLong());
+                
+//                Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
+//                         json.get("modul").getAsString(),
+//                         json.get("thema").getAsString());
+                
+                Aufgabe aufgabe = DAO.gibAufgabe(ls);
                 
                 nachricht = messCreator.erstelleAufgabenJson(id, 
                         plattform,witSession, aufgabe, null);
@@ -92,7 +95,7 @@ public class Controller {
                         json.get("modul").getAsString());
                 break;
             case "neueAufgabe":
-                DAO.neueAufgabe(id, plattform, witSession, witSession);
+//                DAO.neueAufgabe(id, plattform, witSession, witSession);
                 break;
             case "gibKlausurInfos":
                 Klausur klausur = DAO.gibKlausur(id, plattform, 
@@ -103,6 +106,9 @@ public class Controller {
                 break;
             case "bewerteAufgabe":
                 DAO.bewerteAufgabe(id, json.get("bewerte").getAsInt());
+                break;
+            default:
+                
                 break;
         }     
         return nachricht;

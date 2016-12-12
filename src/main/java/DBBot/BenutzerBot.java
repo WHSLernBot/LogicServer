@@ -49,14 +49,14 @@ public class BenutzerBot implements Runnable {
         lsItem item = module.get(m);
         
         if(item == null) {
-            Klausur k = DAO.gibKlausur(benutzer.getPlattform().getPfID(),benutzer.getPlattform().getPfNr() , ""); // Mal drueber gehen
+//            Klausur k = DAO.gibKlausur(benutzer.getPlattform().getPfID(),benutzer.getPlattform().getPfNr() , ""); // Mal drueber gehen
             
-            item = new lsItem(k);
-            
-            module.put(m, item);
+//            item = new lsItem(k);
+//            
+//            module.put(m, item);
         }
         
-        item.addLs(ls);
+//        item.addLs(ls);
             
     }
     

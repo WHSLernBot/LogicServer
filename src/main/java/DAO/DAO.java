@@ -1,19 +1,12 @@
 package DAO;
 
-import DBBot.aufgabenItem;
-import Entitys.Antwort;
-import Entitys.Aufgabe;
-import Entitys.Benutzer;
-import Entitys.Klausur;
-import Entitys.LernStatus;
-import Entitys.Teilnahme;
-import Entitys.Thema;
-import Entitys.Uni;
+import DBBot.AufgabenItem;
+import Entitys.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import javax.persistence.LockModeType;
 import javax.persistence.Query;
 import main.CBBenutzer;
 import main.CBPlattform;
@@ -30,56 +23,70 @@ public class DAO {
     private static final String GIB_AUFGABE = "select object(a) "
             + "from Aufgabe a where a.aufgabenID := ID";
     
-    private static final String GIB_LERNSTATUS = "select object(l) from "
-            + "Benutzer b, LernStatus l, Thema t, Modul m"
-            + "where b.id := ID and l.benutzer = b and b.uni = m.uni and Thema";
-    
-   private static final String GIB_ANTWORT = "select object(aw)"
+   private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a where aw.antwort = a";
     
-    private static final String GIB_NOTE = "select object(t)"
-            + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b"
+    private static final String GIB_NOTE = "select object(t) "
+            + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b "
             + "and l.klausur = k and b.id := ID";
     
-    private static final String GIB_KLAUSUR = "select object(k)"
+    private static final String GIB_KLAUSUR = "select object(k) "
             + "from Klausur k, Modul m where k.kuerzel = m";
     
-    private static final String GIB_MODUL = "select object(m)"
+    private static final String GIB_MODUL = "select object(m) "
             + "from Modul m where m.kuerzel";
+    
+    private static final String GIB_ZUAUFGABEN = "select object(z) "
+            + "from ZuAufgabe z where z.lernStatus := LS";
     
     /**
      * Gibt das Datum zurück.
+     * @return 
      */
     public static Date gibDatum() {
         return new Date(new java.util.Date().getTime());
     }
     
     /**
-     * Gibt dem Benutzer nach Angabe des Moduls und des Themas eine Aufgabe.
+     * Gibt die naechste zu loesende Aufgabe eines Lernstatus aus und traegt diese
+     * in die bearebeitenden Aufgaben ein.
      * 
-     * @param benutzer Der ChatBot-Benutzer.
-     * @param modul Das angegebene Modul.
-     * @param thema Das angegebene Thema.
+     * @param ls 
      * @return 
      */
-    public static Aufgabe gibAufgabe(CBBenutzer benutzer, String modul, String thema) {
+    public static Aufgabe gibAufgabe(LernStatus ls) {
         
-        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, thema);
-        Thema t = EMH.getEntityManager().find(Thema.class, modul);
+        Aufgabe a = null;
         
-        synchronized(benutzer) {
-                Benutzer b = benutzer.getBenutzer();
-               
-                b.getLernStadi();
+        try {
             
-                EMH.getEntityManager().merge(benutzer.getBenutzer());
-                
-                a.getThema();
-            }
+            EMH.beginTransaction();
+    
+            ZuAufgabe za = ls.getZuAufgaben();
+            
+            a = za.getAufgabe();
+            
+            ls.setZuAufgaben(za.getNaechsteAufgabe());
+            
+            ls.addBeAufgaben(a, false, gibDatum(), false, false);
+            
+            EMH.getEntityManager().remove(za);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
         
+        return a;
         
-           return null;
+    }
+    
+    public static Aufgabe gibAufgabe(CBBenutzer be, String token) {
         
+        Aufgabe a = null;
+        
+        return a;
     }
 
     /**
@@ -98,7 +105,7 @@ public class DAO {
                 
                 b.setName(name);
                 
-                EMH.getEntityManager().persist(b);
+                EMH.getEntityManager().merge(b);
             }
             EMH.commit();
             
@@ -109,7 +116,7 @@ public class DAO {
 
     /**
      * Diese Methode speichert die Antwort, die der Benutzer gegeben hat. 
-     * 
+     * -------------------------------------------Was soll das?
      * @param id Id der Plattform.
      * @param plattform Plattform, die der Benutzer nutzt.
      * @param antwort Antwort, die der Benutzer gegeben hat.
@@ -135,7 +142,7 @@ public class DAO {
 
     /**
      * Hier wird die Note des Benutzer im System gespeichert.
-     * 
+     * ------------------------------------------DAFUQ?
      * @param id Id der Plattform.
      * @param plattform Plattform, die der Benutzer nutzt.
      * @param note Die Note, die der Benutzer geschrieben hat.
@@ -152,7 +159,7 @@ public class DAO {
         try{
             EMH.beginTransaction();
             t.setNote(note);
-            EMH.getEntityManager().persist(t);
+            EMH.getEntityManager().merge(t);
             EMH.commit();  
         } catch (Exception e){
             EMH.rollback();
@@ -160,14 +167,22 @@ public class DAO {
     }
 
     /**
-     * Gibt den lernstatus des Benutzers zurück.
+     * Gibt den entsprechenden Lernstatus des Benutzers zurück.
      * 
      * @param benutzer Der ChatBot-Benutzer.
      * @param themenId ID des Themas
      * @return 
      */
     public static LernStatus gibLernstatus(CBBenutzer benutzer, Long themenId) {
-        return benutzer.getBenutzer().getStatus(themenId);
+        
+        LernStatus ls;
+        
+        synchronized(benutzer) {
+            LernStatusPK pk = new LernStatusPK(benutzer.getBenutzer().getId(), themenId);
+            
+            ls = EMH.getEntityManager().find(LernStatus.class, pk);
+        }
+        return ls;
     }
 
     /**
@@ -186,7 +201,6 @@ public class DAO {
             synchronized(benutzer) {
                 Benutzer b = benutzer.getBenutzer();
                
-//                benutzer.getBenutzer().setUni(u);
                 b.setUni(u);
             
                 EMH.getEntityManager().merge(benutzer.getBenutzer());
@@ -234,7 +248,7 @@ public class DAO {
     /**
      * Diese Methode legt das Datum der entsprechende Modulprüfung fest, um dem
      * Benutzer für die Prüfung zu erinnern.
-     * 
+     * ----------------------------------
      * @param id ID der Plattform.
      * @param plattform
      * @param modul Das entsprechende Modul.
@@ -264,41 +278,41 @@ public class DAO {
         }
     }
 
-    /**
-     * Diese Methode gibt zu einem bestimmten Modul und zu einem bestimmten Thema 
-     * eine neue Aufgabe.
-     * 
-     * @param id id der Plattform.
-     * @param plattform Plattform, die der Benutzer nutzt.
-     * @param modul Das angegebene Modul.
-     * @param thema Das angegebene Thema.
-     */
-    public static void neueAufgabe(long id, short plattform, String modul, String thema) {
- 
-        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, thema);
-        Thema t = EMH.getEntityManager().find(Thema.class, modul);
-        
-        Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
-        q.setParameter("ID", id);
-        q.setParameter("Plattform", plattform);
-        
-        try {
-            EMH.beginTransaction();
-            Aufgabe aufgabe = new Aufgabe(a.getThema(), a.getFrage(), a.getSchwierigkeit(), a.getHinweis(), a.getVerweis());
-            EMH.getEntityManager().persist(aufgabe); 
-                 
-            
-            EMH.commit();
-            
-        } catch (Exception e) {
-            EMH.rollback();
-        }
-        
-       
-    }
+//    /**
+//     * Diese Methode gibt zu einem bestimmten Modul und zu einem bestimmten Thema 
+//     * eine neue Aufgabe.
+//     * ------------------------------------------- Dafuer gibt es doch schon gibAufgabe
+//     * @param id id der Plattform.
+//     * @param plattform Plattform, die der Benutzer nutzt.
+//     * @param modul Das angegebene Modul.
+//     * @param thema Das angegebene Thema.
+//     */
+//    public static void neueAufgabe(long id, short plattform, String modul, String thema) {
+// 
+//        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, thema);
+//        Thema t = EMH.getEntityManager().find(Thema.class, modul);
+//        
+//        Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
+//        q.setParameter("ID", id);
+//        q.setParameter("Plattform", plattform);
+//        
+//        try {
+//            EMH.beginTransaction();
+//            Aufgabe aufgabe = new Aufgabe(a.getThema(), a.getFrage(), a.getSchwierigkeit(), a.getHinweis(), a.getVerweis());
+//            EMH.getEntityManager().persist(aufgabe); 
+//                 
+//            
+//            EMH.commit();
+//            
+//        } catch (Exception e) {
+//            EMH.rollback();
+//        }
+//        
+//       
+//    }
 
     /**
-     * Diese Methode nimmt neuer Benutzer auf.
+     * Diese Methode nimmt einen neuen Benutzer auf.
      * 
      * @param pt die Plattform mit der der Benutzer den ChatBot aufruft.
      * @param name Name des Benutzers.
@@ -309,12 +323,11 @@ public class DAO {
         try {
             EMH.beginTransaction();
            
+            Adresse ad = EMH.getEntityManager().find(Adresse.class, pt.getPlattform());
             
-            Benutzer be = new Benutzer(pt.getId(),pt.getPlattform(),witSession,name,gibDatum());
+            Benutzer be = new Benutzer(pt.getId(),ad,witSession,name,gibDatum());
             
             EMH.getEntityManager().persist(be); 
-                 
-            EMH.getEntityManager().persist(pt);
             
             EMH.commit();
             
@@ -324,7 +337,15 @@ public class DAO {
     }
     
   
-    
+    /**
+     * 
+     * ----------------------------
+     * 
+     * @param id
+     * @param plattform
+     * @param modul
+     * @return 
+     */
     public static Klausur gibKlausur(long id, short plattform, String modul) {
         
         Query q = EMH.getEntityManager().createQuery(GIB_KLAUSUR);
@@ -343,7 +364,7 @@ public class DAO {
             EMH.rollback();
         }
         
-          return k;     
+        return k;     
     }
 
     /**
@@ -372,7 +393,7 @@ public class DAO {
                 aufgabe.positivBewertet();
                 
             }
-            EMH.getEntityManager().persist(aufgabe); 
+            EMH.getEntityManager().merge(aufgabe); 
             
             
             EMH.commit();
@@ -389,9 +410,11 @@ public class DAO {
      * @param pt die Plattform mit der der Benutzer den ChatBot aufruft.
      * @return 
      */
-    public static Benutzer sucheBenutzer(CBPlattform pt) {
+    public static CBBenutzer sucheBenutzer(CBPlattform pt) {
         
-        return EMH.getEntityManager().find(Benutzer.class, pt.getId());
+        Benutzer be = EMH.getEntityManager().find(Benutzer.class, pt.getId());
+        
+        return new CBBenutzer(be);
     }
     
     /**
@@ -399,7 +422,75 @@ public class DAO {
      * @param ls
      * @param aufgaben 
      */
-    public static void setztZuAufgaben(LernStatus ls,Collection<aufgabenItem> aufgaben) {
+    public static void setztZuAufgaben(LernStatus ls,Collection<AufgabenItem> aufgaben) {
+           
+        
+
+        try{
+            EMH.beginTransaction();
+            
+            Iterator it = aufgaben.iterator();
+            Aufgabe a = ((AufgabenItem) it.next()).getAufgabe();
+            
+            ZuAufgabe zu = new ZuAufgabe(ls,a,true);
+            
+            ZuAufgabe zua = zu;
+        
+            ls.setZuAufgaben(zu);
+            
+            while(it.hasNext()) {
+            
+                a = ((AufgabenItem) it.next()).getAufgabe();
+                
+                zua = zua.setNaechsteAufgabe(a);
+            
+            }
+            EMH.getEntityManager().persist(zu);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
+        
+    }
+    
+    public static void loescheZuAufgaben(LernStatus ls) {
+        
+        Query q = EMH.getEntityManager().createQuery(GIB_ZUAUFGABEN);
+        
+//        q.setParameter("ZU", ls.get);
+        
+        try {
+            EMH.beginTransaction();
+            
+            for(Object zu : q.getResultList()) {
+                
+                EMH.getEntityManager().remove((ZuAufgabe) zu); 
+                
+            } 
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
+        
+        
+    }
+    
+    public static void  setzeLSPunkte(LernStatus ls,int punkte) {
+        
+        try {
+            EMH.beginTransaction();
+            
+            ls.setSumPunkte(punkte);
+            
+            EMH.getEntityManager().persist(ls);
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
         
     }
 }

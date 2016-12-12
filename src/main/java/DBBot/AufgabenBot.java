@@ -93,9 +93,9 @@ public class AufgabenBot implements Runnable {
         
         Collection<BeAufgabe> beAufgaben;
         
-        List<aufgabenItem> zuAufgaben = new LinkedList<>();
+        List<AufgabenItem> zuAufgaben = new LinkedList<>();
         
-        HashMap<Long,aufgabenItem> infos = new HashMap<>();
+        HashMap<Long,AufgabenItem> infos = new HashMap<>();
         
         Thema thema;
         
@@ -113,7 +113,7 @@ public class AufgabenBot implements Runnable {
                 for(Aufgabe a : aufgaben) {
                     sumPunkte += a.getPunkte();
                     
-                    infos.put(a.getAufgabenID(), new aufgabenItem(a));             
+                    infos.put(a.getAufgabenID(), new AufgabenItem(a));             
                     
                 }
                 
@@ -123,7 +123,7 @@ public class AufgabenBot implements Runnable {
                 for(BeAufgabe b : beAufgaben) {
                     if(b.istBeantwortet()) {
                         long id = b.getAufgabe().getAufgabenID();
-                        aufgabenItem item = infos.get(id);
+                        AufgabenItem item = infos.get(id);
                         
                         item.addAntwort(b.getDatum(), b.istRichtig(), b.getHinweis());
                     }                   
@@ -149,7 +149,7 @@ public class AufgabenBot implements Runnable {
                     
                 DAO.setztZuAufgaben(ls,zuAufgaben);
                 
-                DAO.setzteLSPunkte(ls,punkteLs);
+                DAO.setzeLSPunkte(ls,punkteLs);
                 
                 //loeschen
                 

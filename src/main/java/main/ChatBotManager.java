@@ -1,5 +1,6 @@
 package main;
 
+import DAO.DAO;
 import DBBot.BotPool;
 import Message.MessageHandler;
 import Message.Nachricht;
@@ -81,6 +82,12 @@ public class ChatBotManager {
         benutzerLock.lock();
         try {
            be = benutzer.get(pt); 
+           if(be == null) {
+               be = DAO.sucheBenutzer(pt);
+               
+               benutzer.put(pt, be);
+           }
+           
            be.gain();
         } catch (Exception e) {
             //Error 

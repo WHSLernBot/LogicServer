@@ -36,7 +36,7 @@ public class DeepThoughtPrio {
      * @param aufgaben alle Aufgaben und wie sie beantwortet wurden
      * @return Der Erfolgswert des Lernstatus. Wert zwischen 0 und 1000.
      */
-    public int berechnePrioritaet(List<aufgabenItem> aufgaben) {
+    public int berechnePrioritaet(List<AufgabenItem> aufgaben) {
         
         long eineWoche = (1000 * 60 * 60 * 24 * 7);
         
@@ -44,7 +44,7 @@ public class DeepThoughtPrio {
         
         long lsPunkte = 0;
         
-        for(aufgabenItem item : aufgaben) {
+        for(AufgabenItem item : aufgaben) {
             
             int punkte = item.getAufgabe().getPunkte();
             
@@ -52,7 +52,7 @@ public class DeepThoughtPrio {
             
             long beantwortetPunkte = 0;
             
-            for(beantwortetItem beItem : item.gibBeantwortet()) {
+            for(BeantwortetItem beItem : item.gibBeantwortet()) {
                 
                 long woche = (heuteMs - beItem.getDatum().getTime()) / eineWoche;
                 

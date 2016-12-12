@@ -86,7 +86,7 @@ public class Benutzer implements Serializable {
      * @param name Name des Benutzers.
      * @param letzteAntwort Datum der letzten Antwort (hier erstelldatum).
      */
-    public Benutzer(String pfID, short pfNr, String witSession,String name, Date letzteAntwort){
+    public Benutzer(String pfID, Adresse pfNr, String witSession,String name, Date letzteAntwort){
         this.name = name;
         this.letzteAntwort = letzteAntwort;
         plattform = new Plattform(pfID,pfNr,this,witSession);

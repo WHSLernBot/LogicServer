@@ -18,6 +18,7 @@
     <class>Entitys.Statistik</class>
     <class>Entitys.ZuAufgabe</class>
     <class>Entitys.XGAufgabe</class>
+    <class>Entitys.Adresse</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/BotData"/>
       <property name="javax.persistence.jdbc.password" value=""/>
