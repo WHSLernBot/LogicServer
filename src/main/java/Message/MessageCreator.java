@@ -150,6 +150,13 @@ public class MessageCreator {
     }
     
     
+    public Nachricht exception(Exception e) {
+        
+        jResponse.addProperty("Exception", "Fehler: " + e.getMessage());
+        
+        return erzeugeNachricht(jResponse, null);
+    } 
+    
     /**
      * Erzeugt einen Text, für die entsprechende Methode.
      * @param methode Gibt an, für welche Methode der Text erzeugt werden soll.
