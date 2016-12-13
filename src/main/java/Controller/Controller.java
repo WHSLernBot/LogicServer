@@ -55,62 +55,72 @@ public class Controller {
                 
         /*Es wird kontrolliert welche Methode im Json übergeben wurde und
         dem entsprächend ausgeführt.*/
-        switch (json.get("methode").getAsString()) {
-            case "gibAufgabe":
-                
-                LernStatus ls = DAO.gibLernstatus(benutzer, json.get("thema").getAsLong());
-                
-//                Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
-//                         json.get("modul").getAsString(),
-//                         json.get("thema").getAsString());
-                
-                Aufgabe aufgabe = DAO.gibAufgabe(ls);
-                
-                nachricht = messCreator.erstelleAufgabenJson(id, 
-                        plattform,witSession, aufgabe, null);
-                break;
-            case "setzeName":
-                DAO.setzeName(benutzer, json.get("name").getAsString());
-                break;
-            case "speichereAntwort":
-                DAO.speichereAntwort(id, plattform, 
-                        json.get("antwort").getAsString());
-                break;
-            case "speichereNote":
-                DAO.speichereNote(id, plattform, json.get("note").getAsShort());
-                break;
-            case "gibInfos":
-                nachricht = this.messCreator.erstelleBenutzerInfoNachricht(benutzer, null);
-                break;
-            case "setzeUni":
-                DAO.setzeUni(benutzer, json.get("uni").getAsShort());
-                break;
-            case "gibUnis":
-                Collection<Uni> cUnis = DAO.gibUnis();
-                nachricht = this.messCreator.erstelleUniJason(id, 
-                        plattform,witSession, cUnis, null);
-                break;
-            case "setzePruefung":
-                DAO.setzePruefung(id, plattform, 
-                        json.get("modul").getAsString());
-                break;
-            case "neueAufgabe":
-//                DAO.neueAufgabe(id, plattform, witSession, witSession);
-                break;
-            case "gibKlausurInfos":
-                Klausur klausur = DAO.gibKlausur(id, plattform, 
-                        json.get("modul").getAsString());
-                
-                nachricht = this.messCreator.erstelleKlausurInfoJson(id, 
-                        plattform,witSession, klausur, null);
-                break;
-            case "bewerteAufgabe":
-                DAO.bewerteAufgabe(id, json.get("bewerte").getAsInt());
-                break;
-            default:
-                
-                break;
-        }     
+        try {
+            switch (json.get("methode").getAsString()) {
+                case "gibAufgabe":
+
+                    LernStatus ls = DAO.gibLernstatus(benutzer, json.get("thema").getAsLong());
+
+    //                Aufgabe aufgabe = DAO.gibAufgabe(benutzer,
+    //                         json.get("modul").getAsString(),
+    //                         json.get("thema").getAsString());
+
+                    Aufgabe aufgabe = DAO.gibAufgabe(ls);
+
+                    nachricht = messCreator.erstelleAufgabenJson(id, 
+                            plattform,witSession, aufgabe, null);
+                    break;
+                case "setzeName":
+                    DAO.setzeName(benutzer, json.get("name").getAsString());
+                    break;
+                case "speichereAntwort":
+                    DAO.speichereAntwort(id, plattform, 
+                            json.get("antwort").getAsString());
+                    break;
+                case "speichereNote":
+                    DAO.speichereNote(id, plattform, json.get("note").getAsShort());
+                    break;
+                case "gibInfos":
+                    nachricht = this.messCreator.erstelleBenutzerInfoNachricht(benutzer, null);
+                    break;
+                case "setzeUni":
+                    DAO.setzeUni(benutzer, json.get("uni").getAsShort());
+                    break;
+                case "gibUnis":
+                    Collection<Uni> cUnis = DAO.gibUnis();
+                    nachricht = this.messCreator.erstelleUniJason(id, 
+                            plattform,witSession, cUnis, null);
+                    break;
+                case "gibSelektoren":
+                    nachricht = new Nachricht(DAO.gibSelektoren(benutzer),null);
+                    break;
+                case "setzePruefung":
+                    DAO.setzePruefung(id, plattform, 
+                            json.get("modul").getAsString());
+                    break;
+                case "neueAufgabe":
+    //                DAO.neueAufgabe(id, plattform, witSession, witSession);
+                    break;
+                case "gibKlausurInfos":
+                    Klausur klausur = DAO.gibKlausur(id, plattform, 
+                            json.get("modul").getAsString());
+
+                    nachricht = this.messCreator.erstelleKlausurInfoJson(id, 
+                            plattform,witSession, klausur, null);
+                    break;
+                case "bewerteAufgabe":
+                    DAO.bewerteAufgabe(id, json.get("bewerte").getAsInt());
+                    break;
+                    
+                    
+                default:
+                    throw new Exception("Methode konnte nicht ausgewertet werden.");
+            }     
+        } catch (Exception e) {
+//            nachricht = messCreator.
+        }
+        benutzer.release();
+        
         return nachricht;
     }
 }
