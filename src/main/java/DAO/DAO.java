@@ -2,6 +2,7 @@ package DAO;
 
 import DBBot.AufgabenItem;
 import Entitys.*;
+import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,11 +18,10 @@ import main.CBPlattform;
  */
 public class DAO {
     
-    
     private static final String ALLE_UNIS = "select object(u) from Uni u";
     
     private static final String GIB_AUFGABE = "select object(a) "
-            + "from Aufgabe a where a.aufgabenID := ID";
+            + "from Aufgabe a where a.AUFGABENID := ID";
     
    private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a where aw.antwort = a";
@@ -39,6 +39,10 @@ public class DAO {
     private static final String GIB_ZUAUFGABEN = "select object(z) "
             + "from ZuAufgabe z where z.lernStatus := LS";
     
+    private static final String GIB_SELEKTOREN = "select object(t) "
+            + "from Benutzer b, LernStatus l, Thema t "
+            + "where b.ID := BID and  b.ID = l.BENUTZER_ID and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
+    
     /**
      * Gibt das Datum zurück.
      * @return 
@@ -53,8 +57,9 @@ public class DAO {
      * 
      * @param ls 
      * @return 
+     * @throws java.lang.Exception 
      */
-    public static Aufgabe gibAufgabe(LernStatus ls) {
+    public static Aufgabe gibAufgabe(LernStatus ls) throws Exception {
         
         Aufgabe a = null;
         
@@ -76,6 +81,7 @@ public class DAO {
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Aufgabe konnte nicht gefunden werden.");
         }
         
         return a;
@@ -94,8 +100,9 @@ public class DAO {
      * 
      * @param benutzer Der ChatBot-Benutzer.
      * @param name Name, die gesetzt werden soll.
+     * @throws java.lang.Exception
      */
-    public static void setzeName(CBBenutzer benutzer, String name) {
+    public static void setzeName(CBBenutzer benutzer, String name) throws Exception {
         try {
             
             EMH.beginTransaction();
@@ -111,6 +118,7 @@ public class DAO {
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Der Name konnte nicht gaendert werden.");
         }
     }
 
@@ -190,8 +198,9 @@ public class DAO {
      * 
      * @param benutzer Der ChatBot-Benutzer.
      * @param uni Uni, die gesetzt werden soll.
+     * @throws java.lang.Exception
      */
-    public static void setzeUni(CBBenutzer benutzer, short uni) {
+    public static void setzeUni(CBBenutzer benutzer, short uni) throws Exception {
         
         try {
             
@@ -209,6 +218,7 @@ public class DAO {
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Die Uni konnte nicht zugewiesen werden");
         }
     
     }
@@ -243,6 +253,56 @@ public class DAO {
         
         return EMH.getEntityManager().find(Uni.class, id);
         
+    }
+    
+    public static JsonObject gibSelektoren(CBBenutzer b) {
+        
+        JsonObject ob = new JsonObject();
+        
+        Query q = EMH.getEntityManager().createQuery(GIB_SELEKTOREN);
+        
+        q.setParameter("BID", b.getBenutzer().getId());
+        
+        List ls = q.getResultList();
+        
+        String modul = "";
+        
+        JsonObject mod = new JsonObject();
+        
+        int i = 0;
+        int j = 0;
+        
+        for(Object o: ls) {
+            
+            Thema t = (Thema) o;
+            
+            if(t.getModul().getKuerzel().equals(modul)) {
+                
+                JsonObject thema = new JsonObject();
+                
+                thema.addProperty("name", t.getName());
+                thema.addProperty("id", t.getId());
+                
+                mod.add("thema" + i, thema);
+                
+                i++;
+                
+            } else {
+                if(!modul.equals("")) {
+                    ob.add("modul" + j, mod);
+                    j++;
+                    mod = new JsonObject();
+                    i = 0;
+                }
+                
+                modul = t.getModul().getKuerzel();
+                mod.addProperty("name", modul);     
+                
+            }
+             
+        }
+        
+        return ob;
     }
 
     /**
@@ -317,8 +377,9 @@ public class DAO {
      * @param pt die Plattform mit der der Benutzer den ChatBot aufruft.
      * @param name Name des Benutzers.
      * @param witSession 
+     * @throws java.lang.Exception 
      */
-    public static void neuerBenutzer(CBPlattform pt, String name, String witSession) {
+    public static void neuerBenutzer(CBPlattform pt, String name, String witSession) throws Exception {
         
         try {
             EMH.beginTransaction();
@@ -333,6 +394,7 @@ public class DAO {
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Der Benutzer konnte nicht angelegt werden.");
         }
     }
     
@@ -423,8 +485,6 @@ public class DAO {
      * @param aufgaben 
      */
     public static void setztZuAufgaben(LernStatus ls,Collection<AufgabenItem> aufgaben) {
-           
-        
 
         try{
             EMH.beginTransaction();
