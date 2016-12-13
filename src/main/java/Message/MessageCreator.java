@@ -171,6 +171,11 @@ public class MessageCreator {
         return text;
     }
     
+    public Nachricht exception(Exception e) {
+        jResponse.addProperty("Exception", "Fehler: " + e.getMessage());
+        return erzeugeNachricht(jResponse, null);
+    }
+    
     /**
      * Fügt eine Nachricht dem ChatBotManager hinzu.
      * @param json Enthält alle wichtigen Informationen.
