@@ -92,7 +92,9 @@ public class Controller {
                             plattform,witSession, cUnis, null);
                     break;
                 case "gibSelektoren":
-                    nachricht = new Nachricht(DAO.gibSelektoren(benutzer),null);
+                    JsonObject selek = DAO.gibSelektoren(benutzer);
+//                    nachricht = messCreator.
+                    //Nachricht erstellen
                     break;
                 case "setzePruefung":
                     DAO.setzePruefung(id, plattform, 
@@ -117,7 +119,7 @@ public class Controller {
                     throw new Exception("Methode konnte nicht ausgewertet werden.");
             }     
         } catch (Exception e) {
-//            nachricht = messCreator.
+            nachricht = messCreator.exception(e);
         }
         benutzer.release();
         

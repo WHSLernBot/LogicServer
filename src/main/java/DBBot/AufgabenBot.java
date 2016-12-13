@@ -93,9 +93,9 @@ public class AufgabenBot implements Runnable {
         
         Collection<BeAufgabe> beAufgaben;
         
-        List<AufgabenItem> zuAufgaben = new LinkedList<>();
+        List<aufgabenItem> zuAufgaben = new LinkedList<>();
         
-        HashMap<Long,AufgabenItem> infos = new HashMap<>();
+        HashMap<Long,aufgabenItem> infos = new HashMap<>();
         
         Thema thema;
         
@@ -113,7 +113,7 @@ public class AufgabenBot implements Runnable {
                 for(Aufgabe a : aufgaben) {
                     sumPunkte += a.getPunkte();
                     
-                    infos.put(a.getAufgabenID(), new AufgabenItem(a));             
+                    infos.put(a.getAufgabenID(), new aufgabenItem(a));             
                     
                 }
                 
@@ -123,7 +123,7 @@ public class AufgabenBot implements Runnable {
                 for(BeAufgabe b : beAufgaben) {
                     if(b.istBeantwortet()) {
                         long id = b.getAufgabe().getAufgabenID();
-                        AufgabenItem item = infos.get(id);
+                        aufgabenItem item = infos.get(id);
                         
                         item.addAntwort(b.getDatum(), b.istRichtig(), b.getHinweis());
                     }                   

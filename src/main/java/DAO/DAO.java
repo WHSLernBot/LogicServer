@@ -1,6 +1,6 @@
 package DAO;
 
-import DBBot.AufgabenItem;
+import DBBot.aufgabenItem;
 import Entitys.*;
 import com.google.gson.JsonObject;
 import java.sql.Date;
@@ -484,7 +484,7 @@ public class DAO {
      * @param ls
      * @param aufgaben 
      */
-    public static void setztZuAufgaben(LernStatus ls,Collection<AufgabenItem> aufgaben) {
+    public static void setztZuAufgaben(LernStatus ls,Collection<aufgabenItem> aufgaben) {
 
         try{
             EMH.beginTransaction();
