@@ -37,7 +37,7 @@ public class BeAufgabe implements Serializable {
     /**
      * Ist true, falls die Aufgabe richtig beantwortet wurde.
      */
-    private Boolean richtig;
+    private boolean richtig;
     
     /**
      * Das Datum, an dem die Aufgabe bearbeitet wurde.
@@ -48,7 +48,7 @@ public class BeAufgabe implements Serializable {
     /**
      * Ist true, falls ein Hinweis benutzt wurde.
      */
-    private Boolean hinweis;
+    private boolean hinweis;
     
     /**
      * Ist true, falls die Aufgabe beantwortet wurde,
@@ -71,7 +71,7 @@ public class BeAufgabe implements Serializable {
         this.beantwortet = beantwortet;
     }
     
-    public Boolean istRichtig(){
+    public boolean istRichtig(){
         return richtig;
     }
     
@@ -79,11 +79,11 @@ public class BeAufgabe implements Serializable {
         return datum;
     }
     
-    public Boolean getHinweis(){
+    public boolean getHinweis(){
         return hinweis;
     }
     
-    public Boolean istBeantwortet(){
+    public boolean istBeantwortet(){
         return beantwortet;
     }
 
@@ -93,6 +93,13 @@ public class BeAufgabe implements Serializable {
 
     public LernStatus getLernStatus() {
         return lernStatus;
+    }
+    
+    public void setzeAntwort(boolean richtig, boolean hinweis, Date datum) {
+        this.datum = datum;
+        this.beantwortet = true;
+        this.richtig = richtig;
+        this.hinweis = hinweis;
     }
     
     @Override

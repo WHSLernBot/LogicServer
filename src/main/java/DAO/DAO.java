@@ -24,7 +24,13 @@ public class DAO {
             + "from Aufgabe a where a.AUFGABENID := ID";
     
    private static final String GIB_ANTWORT = "select object(aw) "
-            + "from Antwort aw, Aufgabe a where aw.antwort = a";
+            + "from Antwort aw, Aufgabe a where aw.antwort = a and aw.NUMMER := NR";
+   
+   private static final String GIB_BEAUFGABE = "select object(b) "
+           + "from Beaufgabe b, Aufgabe a"
+           + "where a.AufgabenID := AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
+           + "and b.LERNSTATUS_THEMA_THEMENID = a.THEMA_THEMENID "
+           + "and a.LERNSTATUS_BENUTZER_ID := BID";
     
     private static final String GIB_NOTE = "select object(t) "
             + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b "
@@ -41,7 +47,8 @@ public class DAO {
     
     private static final String GIB_SELEKTOREN = "select object(t) "
             + "from Benutzer b, LernStatus l, Thema t "
-            + "where b.ID := BID and  b.ID = l.BENUTZER_ID and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
+            + "where b.ID := BID and  b.ID = l.BENUTZER_ID "
+            + "and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
     
     /**
      * Gibt das Datum zurück.
@@ -122,30 +129,70 @@ public class DAO {
         }
     }
 
-    /**
-     * Diese Methode speichert die Antwort, die der Benutzer gegeben hat. 
-     * -------------------------------------------Was soll das?
-     * @param id Id der Plattform.
-     * @param plattform Plattform, die der Benutzer nutzt.
-     * @param antwort Antwort, die der Benutzer gegeben hat.
-     */
-    public static void speichereAntwort(long id, short plattform, String antwort) {
+//    /**
+//     * Diese Methode speichert die Antwort, die der Benutzer gegeben hat. 
+//     * -------------------------------------------Was soll das?
+//     * @param id Id der Plattform.
+//     * @param plattform Plattform, die der Benutzer nutzt.
+//     * @param antwort Antwort, die der Benutzer gegeben hat.
+//     */
+//    public static void speichereAntwort(long id, short plattform, String antwort) {
+//        
+//        Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
+//        
+//        q.setParameter("ID", id);
+//        q.setParameter("Plattform", plattform);
+//        
+//        Aufgabe a = (Aufgabe) q.getResultList().get(0);
+//        try{
+//            EMH.beginTransaction();
+//            a.addAntwort(antwort, Boolean.TRUE);
+//            EMH.getEntityManager().persist(a);
+//            EMH.commit();  
+//        } catch (Exception e){
+//            EMH.rollback();
+//        }
+//        
+//    }
+    
+    public static void speichereAntwort(long id, long aufgabe,
+            short antwort, boolean hinweis) throws Exception {
         
-        Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
-        
-        q.setParameter("ID", id);
-        q.setParameter("Plattform", plattform);
-        
-        Aufgabe a = (Aufgabe) q.getResultList().get(0);
-        try{
+        try {
+            
             EMH.beginTransaction();
-            a.addAntwort(antwort, Boolean.TRUE);
-            EMH.getEntityManager().persist(a);
-            EMH.commit();  
-        } catch (Exception e){
+    
+            Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
+            q.setParameter("NR", antwort);
+            
+            Antwort aw = (Antwort) q.getResultList().get(0);
+            
+            aw.wurdeGewaehlt();
+            
+            boolean richtig = aw.getRichtig();
+            
+            EMH.getEntityManager().merge(aw);
+            
+            q = EMH.getEntityManager().createQuery(GIB_BEAUFGABE);
+            
+            BeAufgabe be = (BeAufgabe) q.getResultList();
+            
+            LernStatus ls = be.getLernStatus();
+            
+            ls.neueGeloest(gibDatum());
+            
+            be.setzeAntwort(richtig, hinweis, gibDatum());
+            
+            EMH.getEntityManager().merge(be);
+            EMH.getEntityManager().merge(ls);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Die Antwort konnte nicht gespeichert werden.");
         }
-        
+         
     }
 
     /**
@@ -490,7 +537,7 @@ public class DAO {
             EMH.beginTransaction();
             
             Iterator it = aufgaben.iterator();
-            Aufgabe a = ((AufgabenItem) it.next()).getAufgabe();
+            Aufgabe a = ((aufgabenItem) it.next()).getAufgabe();
             
             ZuAufgabe zu = new ZuAufgabe(ls,a,true);
             
@@ -500,7 +547,7 @@ public class DAO {
             
             while(it.hasNext()) {
             
-                a = ((AufgabenItem) it.next()).getAufgabe();
+                a = ((aufgabenItem) it.next()).getAufgabe();
                 
                 zua = zua.setNaechsteAufgabe(a);
             

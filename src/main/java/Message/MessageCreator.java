@@ -59,13 +59,16 @@ public class MessageCreator {
         jAufgabe.addProperty("frage", aufgabe.getFrage());
         jAufgabe.addProperty("hinweis", aufgabe.getHinweis());
         jAufgabe.addProperty("verweis", aufgabe.getVerweis());
+        jAufgabe.addProperty("id", aufgabe.getAufgabenID());
         
         Collection<Antwort> ant = aufgabe.getAntworten();
-        int i=0;
+        //Muss hier das ganze durcheinander gemacht werden?
+        
+//        int i=0;
         for(Antwort antworten: ant){
-            jAufgabe.addProperty("antwort"+i,antworten.getAntwort());
-            jAufgabe.addProperty("richtigeAntwort"+i,antworten.getRichtig());
-            i++;
+            jAufgabe.addProperty("antwort" + antworten.getNummer(),antworten.getAntwort());
+            jAufgabe.addProperty("richtigeAntwort" + antworten.getNummer(),antworten.getRichtig());
+//            i++;
         }
             
         jResponse.add("user", jUser);

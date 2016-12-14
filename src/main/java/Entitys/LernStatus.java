@@ -188,9 +188,12 @@ public class LernStatus implements Serializable {
     
     /**
      * Zu verwenden falls eine Aufgabe zu diesem LernStatus geloest wurde.
+     * @param datum Das aktuelle Datum
      */
-    public void neueGeloest() {
+    public void neueGeloest(Date datum) {
         geloest++;
+        this.letztesDatum = datum;
+        this.veraendert = true;
     }
      
     @Override
