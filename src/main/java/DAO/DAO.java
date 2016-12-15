@@ -194,7 +194,7 @@ public class DAO {
         }
          
     }
-
+    
     /**
      * Hier wird die Note des Benutzer im System gespeichert.
      * ------------------------------------------DAFUQ?
