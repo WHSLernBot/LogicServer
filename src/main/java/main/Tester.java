@@ -1,8 +1,11 @@
 package main;
 
+import static Controller.Controller.loese;
 import DAO.EMH;
 import Entitys.*;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.Map.Entry;
 
 /**
  *
@@ -14,6 +17,7 @@ public class Tester {
         
         System.out.println("start");
         
+        long id = 0;
         ChatBotManager manager = ChatBotManager.getInstance();
         
         try {
@@ -25,12 +29,15 @@ public class Tester {
             
             Thema t = new Thema(m,"XML",100);
             
+            id = t.getId();
             Aufgabe a = new Aufgabe(t,"Wie gros bin ich?",1,"NE","nope");
             
             a.addAntwort("184", true);
             a.addAntwort("180", false);
             a.addAntwort("190", false);
             
+            short nr = 0;
+            EMH.getEntityManager().persist(new Adresse(nr,"54234"));
             EMH.getEntityManager().persist(u);
             EMH.getEntityManager().persist(m);
             EMH.getEntityManager().persist(t);
@@ -48,8 +55,19 @@ public class Tester {
         user.addProperty("witSession", 124242324);
         
         obj.add("user", user);
-
-        System.out.println();
+        obj.addProperty("methode", "gibAufgabe");
+        
+        JsonObject thema = new JsonObject();
+        thema.addProperty("id", id);
+        
+        
+        JsonObject loesung = loese(obj).getJson();
+        
+        for(Entry<String,JsonElement> en : loesung.entrySet()) {
+            System.out.println(en.getKey() + " : " + en.getValue());
+        }
+        
+        System.out.println(loese(obj).getJson().entrySet());
         
     }
     
