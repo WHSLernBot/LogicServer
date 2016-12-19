@@ -61,6 +61,11 @@ public class LernStatus implements Serializable {
     private int sumPunkte;
     
     /**
+     * Die naechste Kennnummer fuer eine beantwortete Aufgabe.
+     */
+    private int kennung;
+    
+    /**
      * Das Datum an dem der Benutzer zuletzt Aufgaben zu diesem Thema geloest hat.
      */
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -103,6 +108,7 @@ public class LernStatus implements Serializable {
         this.geloest = 0;
         this.letztesDatum = letztesDatum;
         veraendert = false;
+        kennung = 0;
     }
     
     public void setAktiv(Boolean aktiv){
@@ -143,7 +149,11 @@ public class LernStatus implements Serializable {
 
     public void addBeAufgaben(Aufgabe aufgabe, Boolean richtig, 
             Date datum, Boolean hinweis, Boolean beantwortet) {
-        this.beAufgaben.add(new BeAufgabe(aufgabe,this,richtig,datum,hinweis,beantwortet));
+        
+        
+        this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennung,richtig,datum,
+                hinweis,beantwortet));    
+        this.kennung++;
     }
 
     public ZuAufgabe getZuAufgaben() {

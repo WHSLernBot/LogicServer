@@ -71,7 +71,7 @@ public class ChatBotManager {
     }
     
     /**
-     * Gibt den Benutzer zur zugehörigen Plattform zurück.
+     * Gibt den Benutzer zur zugehoerigen Plattform zurück.
      * 
      * @param pt
      * @return 
@@ -101,7 +101,7 @@ public class ChatBotManager {
     }
     
     /**
-     * Fügt eine Nachricht in die zu sendende Nachrichten hinzu. Falls der 
+     * Fuegt eine Nachricht in die zu sendende Nachrichten hinzu. Falls der 
      * Timestamp null ist wird die Nachricht sofort verschickt.
      * 
      * @param n Die zu verschieckende Nachricht.
@@ -192,12 +192,15 @@ public class ChatBotManager {
         try {
             dauer = nachrichten.getFirst().getZeit().getTime() - now.getTime();
 
-            //Server nach 28 min wecken (falls nötig)
+            //Server nach 28 min wecken (falls noetig)
 
             if(dauer > 1680000) {
                 dauer = 1680000;
 
-                    nachrichten.addFirst(new Nachricht(null,now));  
+                Nachricht nachricht = new Nachricht(null);
+                
+                nachricht.setZeit(now);// Da muss was
+                nachrichten.addFirst(new Nachricht(null));  
             }
 
         } catch (Exception e) {

@@ -34,6 +34,9 @@ public class BeAufgabe implements Serializable {
     @ManyToOne
     private LernStatus lernStatus;
     
+    @Id
+    private int kennung;
+    
     /**
      * Ist true, falls die Aufgabe richtig beantwortet wurde.
      */
@@ -60,7 +63,7 @@ public class BeAufgabe implements Serializable {
         
     }
     
-    public BeAufgabe(Aufgabe aufgabe, LernStatus lernStatus, Boolean richtig, 
+    public BeAufgabe(Aufgabe aufgabe, LernStatus lernStatus,int kennung, Boolean richtig, 
             Date datum, Boolean hinweis, Boolean beantwortet) {
         
         this.aufgabe = aufgabe;
@@ -69,6 +72,7 @@ public class BeAufgabe implements Serializable {
         this.datum = datum;
         this.hinweis = hinweis;
         this.beantwortet = beantwortet;
+        this.kennung = kennung;
     }
     
     public boolean istRichtig(){
@@ -93,6 +97,10 @@ public class BeAufgabe implements Serializable {
 
     public LernStatus getLernStatus() {
         return lernStatus;
+    }
+
+    public int getKennung() {
+        return kennung;
     }
     
     public void setzeAntwort(boolean richtig, boolean hinweis, Date datum) {

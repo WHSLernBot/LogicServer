@@ -16,21 +16,25 @@ public class BeAufgabePK implements Serializable {
     
     private Long aufgabe;
     
-    private LernStatusPK lernStatus; //pr�fen
+    private LernStatusPK lernStatus;
+    
+    private int kennung;
 
     public BeAufgabePK() {
     }
 
-    public BeAufgabePK(Long aufgabenID, LernStatusPK lernStatus) {
-        this.aufgabe = aufgabenID;
+    public BeAufgabePK(Long aufgabe, LernStatusPK lernStatus, int kennung) {
+        this.aufgabe = aufgabe;
         this.lernStatus = lernStatus;
+        this.kennung = kennung;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.aufgabe);
-        hash = 97 * hash + Objects.hashCode(this.lernStatus);
+        hash = 89 * hash + Objects.hashCode(this.aufgabe);
+        hash = 89 * hash + Objects.hashCode(this.lernStatus);
+        hash = 89 * hash + this.kennung;
         return hash;
     }
 
@@ -46,6 +50,9 @@ public class BeAufgabePK implements Serializable {
             return false;
         }
         final BeAufgabePK other = (BeAufgabePK) obj;
+        if (this.kennung != other.kennung) {
+            return false;
+        }
         if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
@@ -54,6 +61,8 @@ public class BeAufgabePK implements Serializable {
         }
         return true;
     }
+
+
 
    
 }

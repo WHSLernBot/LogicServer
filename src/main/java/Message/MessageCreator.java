@@ -6,9 +6,11 @@ import Entitys.Klausur;
 import Entitys.Aufgabe;
 import Entitys.LernStatus;
 import Entitys.Uni;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.LinkedList;
 import main.CBBenutzer;
 /**
  * Die Klasse MessageCreator stellt Methoden zur Verfügung, um aus Objekten,
@@ -16,140 +18,152 @@ import main.CBBenutzer;
  */
 public class MessageCreator {
 
-    private final JsonObject jResponse;
     
-    private final JsonObject jUser;
+//    private static final String USER_OBJEKT = "user";
+//    private static final String USER_ID = "id";
+//    private static final String USER_PLATTFORM = "plattformID"; //Sinnvoll? Oder Adresse?
+//    private static final String USER_SESSION = "witSession";
     
-    private final JsonObject jAufgabe;
+    private static final String AUFGABE_OBJEKT = "aufgabe";
+    private static final String AUFGABE_FRAGE = "frage";
+    private static final String AUFGABE_VERWEIS = "verweis";
+    private static final String AUFGABE_HINWEIS = "hinweis";
+    private static final String AUFGABE_ID = "id";
+    private static final String AUFGABE_ANTWORT_ARRAY = "antworten";
     
-    private final JsonObject jInfo;
+    private static final String AUFGABE_ANTWORT_ANTWORT = "antwort";
+    private static final String AUFGABE_ANTWORT_RICHTIG = "richtig";
+    private static final String AUFGABE_ANTWORT_NUMMER = "nummer";
     
-    private final JsonObject jUni;
+    private static final String UNIS_ARRAY = "unis";
+    private static final String UNIS_NAME = "name";
+    private static final String UNIS_ID = "uniID";
     
-    private final JsonObject jKlausurinfo;
+    private static final String KLAUSUR_OBJEKT = "klausur";
+    private static final String KLAUSUR_HILFSMITTEL = "hilfsmittel";
+    private static final String KLAUSUR_ORT = "ort";
+    private static final String KLAUSUR_DAUER = "dauer";
+    private static final String KLAUSUR_PERIODE = "periode";
+    private static final String KLAUSUR_UHRZEIT = "uhrzeit";
     
-    /**
-     * Initialisiert alle Objekte.
-     */
-    public MessageCreator() {
-        jResponse = new JsonObject();
-        jUser = new JsonObject();
-        jAufgabe = new JsonObject();
-        jInfo = new JsonObject();
-        jUni = new JsonObject();
-        jKlausurinfo = new JsonObject();
-    }
+    private static final String NACHRICHT = "nachricht";
+    private static final String FEHLER = "nachricht";
+    
+    private static enum TEXTE {
+        AUFGABE,KLAUSUR,UNI,INFO
+    };
     
     /**
      * Die Methode erstellt ein JsonObject, für eine übergebene Aufgabe, mit 
      * entsprechenen Aufgabentext.
-     * @param id Id des Nutzers.
-     * @param plattform Plattform des Nutzers.
-     * @param witSession
+     * 
+     * @param nachricht
      * @param aufgabe Aufgabe für den Nutzer.
-     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
-     * @return Gibt ein Nachrichtenobject, mit Aufgabe und Antwort zurueck.
      */
-    public Nachricht erstelleAufgabenJson(long id,long plattform,String witSession, Aufgabe aufgabe,Timestamp time) {
+    public static void erstelleAufgabenJson(JsonObject nachricht, Aufgabe aufgabe) {
         
-        jUser.addProperty("id", id);
-        jUser.addProperty("plattform", plattform);
-        jUser.addProperty("witsession", witSession);
+        JsonObject jAufgabe = new JsonObject();
         
-        jAufgabe.addProperty("frage", aufgabe.getFrage());
-        jAufgabe.addProperty("hinweis", aufgabe.getHinweis());
-        jAufgabe.addProperty("verweis", aufgabe.getVerweis());
-        jAufgabe.addProperty("id", aufgabe.getAufgabenID());
+        jAufgabe.addProperty(AUFGABE_FRAGE, aufgabe.getFrage());
+        jAufgabe.addProperty(AUFGABE_VERWEIS, aufgabe.getVerweis());
+        jAufgabe.addProperty(AUFGABE_HINWEIS, aufgabe.getHinweis());
+        jAufgabe.addProperty(AUFGABE_ID, aufgabe.getAufgabenID());
         
-        Collection<Antwort> ant = aufgabe.getAntworten();
-        //Muss hier das ganze durcheinander gemacht werden?
+        Collection<Antwort> antworten = aufgabe.getAntworten();
         
-//        int i=0;
-        for(Antwort antworten: ant){
-            jAufgabe.addProperty("antwort" + antworten.getNummer(),antworten.getAntwort());
-            jAufgabe.addProperty("richtigeAntwort" + antworten.getNummer(),antworten.getRichtig());
-//            i++;
+        JsonArray jAnt = new JsonArray();
+        LinkedList<JsonObject> antObj = new LinkedList<>();
+        
+        for(Antwort antwort: antworten){
+            
+            JsonObject a = new JsonObject();
+            a.addProperty(AUFGABE_ANTWORT_ANTWORT,antwort.getAntwort());
+            a.addProperty(AUFGABE_ANTWORT_RICHTIG,antwort.getRichtig());
+            a.addProperty(AUFGABE_ANTWORT_NUMMER,antwort.getNummer());
+            antObj.add(a);
+        }
+        
+        //Durcheinander machen
+        while(!antObj.isEmpty()) {
+            
+            int i = (int) (Math.random() * (antObj.size() - 1));
+            jAnt.add(antObj.get(i));
+            antObj.remove(i);
+            
         }
             
-        jResponse.add("user", jUser);
-        jResponse.add("aufgabe",jAufgabe);
-        jResponse.addProperty("nachricht", gibText("aufgabe"));
-        return erzeugeNachricht(jResponse, time);
+        jAufgabe.add(AUFGABE_ANTWORT_ARRAY, jAnt);
+        
+        nachricht.add(AUFGABE_OBJEKT,jAufgabe);
+        nachricht.addProperty(NACHRICHT, gibText(TEXTE.AUFGABE));
     }
     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die übergeben werden.
-     * @param id Id des Nutzers.
-     * @param plattform Plattform des Nutzers.
-     * @param witSession
+     * 
+     * @param nachricht
      * @param unis Enthält alle Unis, die zur auswahl stehen.
-     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
-     * @return Gibt eine Nachricht mit allen Unis zurueck;
      */
-    public Nachricht erstelleUniJason(long id, long plattform,String witSession,Collection<Uni> unis,Timestamp time){
-        jUser.addProperty("id", id);
-        jUser.addProperty("plattform", plattform);
-        jUser.addProperty("witsession", witSession);
-        int i = 0;
-        for (Uni name : unis) {
-            this.jUni.addProperty("name" + i, name.getName());
-            this.jUni.addProperty("nameid", name.getId());
-            i++;
+    public static void erstelleUniJson(JsonObject nachricht,Collection<Uni> unis) {
+        
+        JsonArray jUnis = new JsonArray();
+        
+        for (Uni u : unis) {
+            JsonObject uni = new JsonObject();
+            
+            uni.addProperty(UNIS_NAME, u.getName());
+            uni.addProperty(UNIS_ID, u.getId());
+            
+            jUnis.add(uni);
         }
-        jResponse.add("user", jUser);
-        jResponse.add("uni", jUni);
-        jResponse.addProperty("nachricht", gibText("uni"));
-        return erzeugeNachricht(jResponse, time);
+           
+        nachricht.add(UNIS_ARRAY, jUnis);
+        nachricht.addProperty(NACHRICHT, gibText(TEXTE.UNI));
     }
     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Informationen, 
      * die zur Klausur vorhanden sind.
-     * @param id Id des Nutzers.
-     * @param plattform Plattform des Nutzers.     
-     * @param witSession     
+     * ---------------------------Das alles nicht schoener als fertiegn text?
+     * 
+     * @param nachricht
      * @param klausur Enthält alle Informatonen zur Klausur.
-     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
-     * @return Gibt ein Nachrichtenobjekt mit allen Klausurinfos zurueck.
      */
-    public Nachricht erstelleKlausurInfoJson(long id, long plattform,String witSession, Klausur klausur,Timestamp time) {
-        jUser.addProperty("id", id);
-        jUser.addProperty("plattform", plattform);
-        jUser.addProperty("witsession", witSession);
+    public static void erstelleKlausurInfoJson(JsonObject nachricht, Klausur klausur) {
+        JsonObject jKlausurinfo = new JsonObject();
         
-        jKlausurinfo.addProperty("hilfsmittel",klausur.getHilfsmittel());
-        jKlausurinfo.addProperty("ort",klausur.getOrt());
-        jKlausurinfo.addProperty("dauer",klausur.getDauer());
-        jKlausurinfo.addProperty("periode",klausur.getPruefungsperiode().getAnfang().toString());
-        jKlausurinfo.addProperty("uhrzeit",klausur.getUhrzeit().toString());
         
-        jResponse.add("user", jUser);
-        jResponse.add("klausurinfo", jKlausurinfo);     
-        jResponse.addProperty("nachricht", gibText("info"));
-        return erzeugeNachricht(jResponse, time);
+        jKlausurinfo.addProperty(KLAUSUR_HILFSMITTEL,klausur.getHilfsmittel());
+        jKlausurinfo.addProperty(KLAUSUR_ORT,klausur.getOrt());
+        jKlausurinfo.addProperty(KLAUSUR_DAUER,klausur.getDauer());
+        //Periode vielleicht als Objet mit infos
+        jKlausurinfo.addProperty(KLAUSUR_PERIODE,klausur.getPruefungsperiode().getAnfang().toString());
+        jKlausurinfo.addProperty(KLAUSUR_UHRZEIT,klausur.getUhrzeit().toString());
+        
+        nachricht.add(KLAUSUR_OBJEKT, jKlausurinfo);     
+        nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
     }
     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Informationen, 
      * die zu dem Benutzer vorhanden sind.
-     * @param benutzer 
-     * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
-     * @return Gibt ein Nachrichtenobjekt mit allen Benutzerinfos zurueck.
+     * --------------------Vielleicht den text dynamischer erstellen
+     *
+     * @param nachricht
+     * @param benutzer
      */
-    public Nachricht erstelleBenutzerInfoNachricht(CBBenutzer benutzer,Timestamp time) {
-        jUser.addProperty("id", benutzer.getBenutzer().getId());
-        jUser.addProperty("plattform", benutzer.getBenutzer().getPlattform().getPfID());
-        jUser.addProperty("witsession", benutzer.getBenutzer().getPlattform().getWitSession());
+    public static void erstelleBenutzerInfoNachricht(JsonObject nachricht, CBBenutzer benutzer) {
+        JsonObject jInfo = new JsonObject();
+        JsonObject jUni = new JsonObject();
+        
         Collection<LernStatus> stadi = benutzer.getBenutzer().getLernStadi();
         int i = 0;
         for (LernStatus status : stadi) {
-            this.jUni.addProperty("status" + i, status.getSumPunkte());
+            jUni.addProperty("status" + i, status.getSumPunkte());
             i++;
         }
-        jResponse.add("user", jUser);
-        jResponse.add("info", jInfo);     
-        jResponse.addProperty("nachricht", gibText("info"));
-        return erzeugeNachricht(jResponse, time);
+        nachricht.add("info", jInfo);     
+        nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
     }
     
     
@@ -158,25 +172,26 @@ public class MessageCreator {
      * @param methode Gibt an, für welche Methode der Text erzeugt werden soll.
      * @return Gibt den entsprechenden Text zurück.
      */
-    private String gibText(String methode) {
+    private static String gibText(TEXTE methode) {
         String text = "Ups... da ist ein fehler unterlaufen!";
         switch(methode) {
-            case "aufgabe":
+            case AUFGABE:
                 text = "Hier ist eine neue Aufage: ";
                 break;
-            case "uni":
+            case UNI:
                 text = "Das sind alle verfügbaren Uni's";
                 break;
-            case "info":
+            case INFO:
                 text = "Hier hast du die gewünschten Info's!";
                 break;
         }
         return text;
     }
     
-    public Nachricht exception(Exception e) {
-        jResponse.addProperty("Exception", "Fehler: " + e.getMessage());
-        return erzeugeNachricht(jResponse, null);
+    public static void exception(JsonObject nachricht, Exception e) {
+        JsonObject jResponse = new JsonObject();
+        
+        nachricht.addProperty(FEHLER, "Fehler: " + e.getMessage());
     }
     
     /**
@@ -184,14 +199,14 @@ public class MessageCreator {
      * @param json Enthält alle wichtigen Informationen.
      * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
      */
-    private Nachricht erzeugeNachricht(JsonObject json,Timestamp time){
-        /*
-        time ist wichtig, damit die Nachricht auch noch zu einem späteren 
-        Zeitpunkt abgeschickt werden kann.
-        */
-        Nachricht nachricht = new Nachricht(json,time);
-        return nachricht;
-    }
+//    private static Nachricht erzeugeNachricht(JsonObject json,Timestamp time){
+//        /*
+//        time ist wichtig, damit die Nachricht auch noch zu einem späteren 
+//        Zeitpunkt abgeschickt werden kann.
+//        */
+//        Nachricht nachricht = new Nachricht(json,time);
+//        return nachricht;
+//    }
     
     
 }

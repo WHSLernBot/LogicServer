@@ -2,6 +2,8 @@ package DAO;
 
 import DBBot.aufgabenItem;
 import Entitys.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -18,15 +20,34 @@ import main.CBPlattform;
  */
 public class DAO {
     
+    private static final String MODULE_ARRAY = "module";
+    private static final String MODULE_NAME = "name";
+    private static final String MODULE_KUERZEL = "kuerzel";
+    private static final String MODULE_THEMEN_ARRAY = "themen";
+    private static final String MODULE_THEMEN_NAME = "name";
+    private static final String MODULE_THEMEN_ID = "id";
+    
+    private static final String AUFGABE_OBJEKT = "aufgabe";
+    private static final String AUFGABE_FRAGE = "frage";
+    private static final String AUFGABE_VERWEIS = "verweis";
+    private static final String AUFGABE_HINWEIS = "hinweis";
+    private static final String AUFGABE_ID = "id";
+    private static final String AUFGABE_TOKEN_ARRAY = "token";
+    private static final String AUFGABE_ANTWORT_ARRAY = "antworten";
+    
+    private static final String AUFGABE_ANTWORT_ANTWORT = "antwort";
+    private static final String AUFGABE_ANTWORT_RICHTIG = "richtig";
+    private static final String AUFGABE_ANTWORT_NUMMER = "nummer";
+    
     private static final String ALLE_UNIS = "select object(u) from Uni u";
     
     private static final String GIB_AUFGABE = "select object(a) "
             + "from Aufgabe a where a.AUFGABENID := ID";
     
-   private static final String GIB_ANTWORT = "select object(aw) "
+    private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a where aw.antwort = a and aw.NUMMER := NR";
    
-   private static final String GIB_BEAUFGABE = "select object(b) "
+    private static final String GIB_BEAUFGABE = "select object(b) "
            + "from Beaufgabe b, Aufgabe a"
            + "where a.AufgabenID := AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
            + "and b.LERNSTATUS_THEMA_THEMENID = a.THEMA_THEMENID "
@@ -155,7 +176,7 @@ public class DAO {
 //        
 //    }
     
-    public static void speichereAntwort(long id, long aufgabe,
+    public static void speichereAntwort(long id, long aufgabe, int kennung,
             short antwort, boolean hinweis) throws Exception {
         
         try {
@@ -194,32 +215,32 @@ public class DAO {
         }
          
     }
-    
-    /**
-     * Hier wird die Note des Benutzer im System gespeichert.
-     * ------------------------------------------DAFUQ?
-     * @param id Id der Plattform.
-     * @param plattform Plattform, die der Benutzer nutzt.
-     * @param note Die Note, die der Benutzer geschrieben hat.
-     */
-    public static void speichereNote(long id, short plattform, short note) {
-        
-        Query q = EMH.getEntityManager().createQuery(GIB_NOTE);
-        
-        q.setParameter("ID", id);
-        q.setParameter("Plattform", plattform);
-        
-        Teilnahme t = (Teilnahme) q.getResultList().get(0);
-        
-        try{
-            EMH.beginTransaction();
-            t.setNote(note);
-            EMH.getEntityManager().merge(t);
-            EMH.commit();  
-        } catch (Exception e){
-            EMH.rollback();
-        }
-    }
+
+//    /**
+//     * Hier wird die Note des Benutzer im System gespeichert.
+//     * ------------------------------------------DAFUQ?
+//     * @param id Id der Plattform.
+//     * @param plattform Plattform, die der Benutzer nutzt.
+//     * @param note Die Note, die der Benutzer geschrieben hat.
+//     */
+//    public static void speichereNote(long id, short plattform, short note) {
+//
+//        Query q = EMH.getEntityManager().createQuery(GIB_NOTE);
+//        
+//        q.setParameter("ID", id);
+//        q.setParameter("Plattform", plattform);
+//        
+//        Teilnahme t = (Teilnahme) q.getResultList().get(0);
+//        
+//        try{
+//            EMH.beginTransaction();
+//            t.setNote(note);
+//            EMH.getEntityManager().merge(t);
+//            EMH.commit();  
+//        } catch (Exception e){
+//            EMH.rollback();
+//        }
+//    }
 
     /**
      * Gibt den entsprechenden Lernstatus des Benutzers zurück.
@@ -301,10 +322,8 @@ public class DAO {
         return EMH.getEntityManager().find(Uni.class, id);
         
     }
-    
-    public static JsonObject gibSelektoren(CBBenutzer b) {
-        
-        JsonObject ob = new JsonObject();
+     
+    public static void gibSelektoren(JsonObject nachricht, CBBenutzer b) {
         
         Query q = EMH.getEntityManager().createQuery(GIB_SELEKTOREN);
         
@@ -314,10 +333,8 @@ public class DAO {
         
         String modul = "";
         
-        JsonObject mod = new JsonObject();
-        
-        int i = 0;
-        int j = 0;
+        JsonArray module = new JsonArray();
+        JsonArray themen = new JsonArray();
         
         for(Object o: ls) {
             
@@ -327,29 +344,26 @@ public class DAO {
                 
                 JsonObject thema = new JsonObject();
                 
-                thema.addProperty("name", t.getName());
-                thema.addProperty("id", t.getId());
+                thema.addProperty(MODULE_THEMEN_NAME, t.getName());
+                thema.addProperty(MODULE_THEMEN_ID, t.getId());
                 
-                mod.add("thema" + i, thema);
-                
-                i++;
+                themen.add(thema);
                 
             } else {
                 if(!modul.equals("")) {
-                    ob.add("modul" + j, mod);
-                    j++;
-                    mod = new JsonObject();
-                    i = 0;
+                    JsonObject mod = new JsonObject();
+                    mod.addProperty(MODULE_KUERZEL, modul);  
+                    mod.addProperty(MODULE_NAME, t.getModul().getName());
+                    mod.add(MODULE_THEMEN_ARRAY, themen);
+                    
+                    themen = new JsonArray();
                 }
                 
                 modul = t.getModul().getKuerzel();
-                mod.addProperty("name", modul);     
-                
             }
              
         }
-        
-        return ob;
+        nachricht.add(MODULE_ARRAY, module);
     }
 
     /**
@@ -385,38 +399,49 @@ public class DAO {
         }
     }
 
-//    /**
-//     * Diese Methode gibt zu einem bestimmten Modul und zu einem bestimmten Thema 
-//     * eine neue Aufgabe.
-//     * ------------------------------------------- Dafuer gibt es doch schon gibAufgabe
-//     * @param id id der Plattform.
-//     * @param plattform Plattform, die der Benutzer nutzt.
-//     * @param modul Das angegebene Modul.
-//     * @param thema Das angegebene Thema.
-//     */
-//    public static void neueAufgabe(long id, short plattform, String modul, String thema) {
-// 
-//        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, thema);
-//        Thema t = EMH.getEntityManager().find(Thema.class, modul);
-//        
-//        Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
-//        q.setParameter("ID", id);
-//        q.setParameter("Plattform", plattform);
-//        
-//        try {
-//            EMH.beginTransaction();
-//            Aufgabe aufgabe = new Aufgabe(a.getThema(), a.getFrage(), a.getSchwierigkeit(), a.getHinweis(), a.getVerweis());
-//            EMH.getEntityManager().persist(aufgabe); 
-//                 
-//            
-//            EMH.commit();
-//            
-//        } catch (Exception e) {
-//            EMH.rollback();
-//        }
-//        
-//       
-//    }
+    /**
+     * Diese Methode stellt eine uebergebene Aufgabe in die Datenbank ein.
+     * 
+     * @param aufgabe Die Aufgabe als Json Objekt in definiertem aussehen.
+     */
+    public static void neueAufgabe(long thema, JsonObject aufgabe) {
+ 
+        try {
+            Thema t = EMH.getEntityManager().find(Thema.class, thema);
+            
+            String frage = aufgabe.get(AUFGABE_FRAGE).getAsString();
+            int schwierigkeit = 1; // Das kann man mal irgenwie machen
+            String hinweis = aufgabe.get(AUFGABE_HINWEIS).getAsString();
+            String verweis = aufgabe.get(AUFGABE_VERWEIS).getAsString();
+            
+            EMH.beginTransaction();
+            
+            Aufgabe a = new Aufgabe(t,frage,schwierigkeit,hinweis,verweis);
+            
+            for(JsonElement el : aufgabe.getAsJsonArray(AUFGABE_ANTWORT_ARRAY)) {
+                JsonObject obj = el.getAsJsonObject();
+                
+                String antwort = obj.get(AUFGABE_ANTWORT_ANTWORT).getAsString();
+                boolean richtig = obj.get(AUFGABE_ANTWORT_RICHTIG).getAsBoolean();
+                
+                a.addAntwort(antwort, richtig);
+            }
+            
+            for(JsonElement el : aufgabe.getAsJsonArray(AUFGABE_TOKEN_ARRAY)) {
+                a.addToken(el.getAsString());
+            }
+            
+            EMH.getEntityManager().persist(a); 
+                 
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
+        
+       
+    }
 
     /**
      * Diese Methode nimmt einen neuen Benutzer auf.
@@ -481,7 +506,7 @@ public class DAO {
      * @param id Aufgaben-ID
      * @param like Bewertung
      */
-    public static void bewerteAufgabe(long id, int like) {
+    public static void bewerteAufgabe(long id, boolean like) throws Exception {
          
         Query q = EMH.getEntityManager().createQuery(GIB_AUFGABE);
         
@@ -493,22 +518,24 @@ public class DAO {
             EMH.beginTransaction();
             
 
-            if(like <= 0){
-                
-                aufgabe.negativBewertet();
-                
-            }else{
-                
+            if(like) {
                 aufgabe.positivBewertet();
-                
+
+            } else {
+               aufgabe.negativBewertet();
             }
-            EMH.getEntityManager().merge(aufgabe); 
             
+            if(aufgabe.getBewertung() <= 0) {
+                EMH.getEntityManager().remove(aufgabe);
+            } else {
+                EMH.getEntityManager().merge(aufgabe);
+            }      
             
             EMH.commit();
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Aufgabe konnte nicht bewertet werden.");
         }
         
     }
@@ -527,6 +554,8 @@ public class DAO {
     }
     
     /**
+     * Setzt eine Liste von aufgaben als zu bearbeitenden Aufgaben eines 
+     * LernStatuses ein.
      * 
      * @param ls
      * @param aufgaben 
@@ -562,6 +591,11 @@ public class DAO {
         
     }
     
+    /**
+     * Loescht alle Aufgaben die ein lernStatus noch zu bearbeiten hat.
+     * 
+     * @param ls 
+     */
     public static void loescheZuAufgaben(LernStatus ls) {
         
         Query q = EMH.getEntityManager().createQuery(GIB_ZUAUFGABEN);
@@ -585,6 +619,12 @@ public class DAO {
         
     }
     
+    /**
+     * Setzt die Punkte die ein Lernstatus nach neuberechnung hat.
+     * 
+     * @param ls
+     * @param punkte 
+     */
     public static void  setzeLSPunkte(LernStatus ls,int punkte) {
         
         try {
