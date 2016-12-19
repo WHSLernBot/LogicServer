@@ -449,16 +449,19 @@ public class DAO {
      * @param pt die Plattform mit der der Benutzer den ChatBot aufruft.
      * @param name Name des Benutzers.
      * @param witSession 
+     * @return  
      * @throws java.lang.Exception 
      */
-    public static void neuerBenutzer(CBPlattform pt, String name, String witSession) throws Exception {
+    public static Benutzer neuerBenutzer(CBPlattform pt, String name, String witSession) throws Exception {
+        
+        Benutzer be;
         
         try {
             EMH.beginTransaction();
            
             Adresse ad = EMH.getEntityManager().find(Adresse.class, pt.getPlattform());
             
-            Benutzer be = new Benutzer(pt.getId(),ad,witSession,name,gibDatum());
+            be = new Benutzer(pt.getId(),ad,witSession,name,gibDatum());
             
             EMH.getEntityManager().persist(be); 
             
@@ -468,6 +471,8 @@ public class DAO {
             EMH.rollback();
             throw new Exception("Der Benutzer konnte nicht angelegt werden.");
         }
+        
+        return be;
     }
     
   
@@ -549,6 +554,10 @@ public class DAO {
     public static CBBenutzer sucheBenutzer(CBPlattform pt) {
         
         Benutzer be = EMH.getEntityManager().find(Benutzer.class, pt.getId());
+        
+        if(be == null) {
+            return null;
+        }
         
         return new CBBenutzer(be);
     }

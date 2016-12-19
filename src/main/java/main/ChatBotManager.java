@@ -2,6 +2,7 @@ package main;
 
 import DAO.DAO;
 import DBBot.BotPool;
+import Entitys.Benutzer;
 import Message.MessageHandler;
 import Message.Nachricht;
 import java.sql.Timestamp;
@@ -74,9 +75,11 @@ public class ChatBotManager {
      * Gibt den Benutzer zur zugehoerigen Plattform zurueck.
      * 
      * @param pt
+     * @param name
+     * @param session
      * @return 
      */
-    public CBBenutzer gibBenutzer(CBPlattform pt) {
+    public CBBenutzer gibBenutzer(CBPlattform pt, String name, String session) {
         
         CBBenutzer be = null;
         benutzerLock.lock();
@@ -84,6 +87,12 @@ public class ChatBotManager {
            be = benutzer.get(pt); 
            if(be == null) {
                be = DAO.sucheBenutzer(pt);
+               
+               if(be == null) {
+                   Benutzer b = DAO.neuerBenutzer(pt, name, session);
+                   
+                   be = new CBBenutzer(b);
+               }
                
                benutzer.put(pt, be);
            }

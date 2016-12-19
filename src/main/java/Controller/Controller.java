@@ -68,12 +68,13 @@ public class Controller {
     public static Nachricht loese(JsonObject json) {
         ChatBotManager manager = ChatBotManager.getInstance();
         
-         
+        JsonObject userOb = json.getAsJsonObject(USER_OBJEKT);
 
-        CBPlattform pt = new CBPlattform(json.getAsJsonObject(USER_OBJEKT).get(USER_ID).getAsString(),
-                json.getAsJsonObject(USER_OBJEKT).get(USER_PLATTFORM).getAsShort());
+        CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
+                userOb.get(USER_PLATTFORM).getAsShort());
 
-        CBBenutzer benutzer = manager.gibBenutzer(pt);
+        CBBenutzer benutzer = manager.gibBenutzer(pt, json.get(NAME).getAsString() ,userOb.get(USER_SESSION).getAsString());
+        
         Nachricht nachricht = new Nachricht(benutzer);
         
         
