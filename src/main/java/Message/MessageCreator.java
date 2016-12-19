@@ -8,12 +8,11 @@ import Entitys.LernStatus;
 import Entitys.Uni;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.LinkedList;
 import main.CBBenutzer;
 /**
- * Die Klasse MessageCreator stellt Methoden zur Verfügung, um aus Objekten,
+ * Die Klasse MessageCreator stellt Methoden zur Verfuegung, um aus Objekten,
  * ein JsonObject zu erzeugen.
  */
 public class MessageCreator {
@@ -54,7 +53,7 @@ public class MessageCreator {
     };
     
     /**
-     * Die Methode erstellt ein JsonObject, für eine übergebene Aufgabe, mit 
+     * Die Methode erstellt ein JsonObject, für eine uebergebene Aufgabe, mit 
      * entsprechenen Aufgabentext.
      * 
      * @param nachricht
@@ -99,7 +98,7 @@ public class MessageCreator {
     }
     
     /**
-     * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die übergeben werden.
+     * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die uebergeben werden.
      * 
      * @param nachricht
      * @param unis Enthält alle Unis, die zur auswahl stehen.
@@ -127,7 +126,7 @@ public class MessageCreator {
      * ---------------------------Das alles nicht schoener als fertiegn text?
      * 
      * @param nachricht
-     * @param klausur Enthält alle Informatonen zur Klausur.
+     * @param klausur Enthaelt alle Informatonen zur Klausur.
      */
     public static void erstelleKlausurInfoJson(JsonObject nachricht, Klausur klausur) {
         JsonObject jKlausurinfo = new JsonObject();
@@ -195,8 +194,8 @@ public class MessageCreator {
     }
     
     /**
-     * Fügt eine Nachricht dem ChatBotManager hinzu.
-     * @param json Enthält alle wichtigen Informationen.
+     * Fuegt eine Nachricht dem ChatBotManager hinzu.
+     * @param json Enthaelt alle wichtigen Informationen.
      * @param time Gibt an, wann eine Nachricht abgeschickt werden soll.
      */
 //    private static Nachricht erzeugeNachricht(JsonObject json,Timestamp time){

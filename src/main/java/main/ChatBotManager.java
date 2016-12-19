@@ -71,7 +71,7 @@ public class ChatBotManager {
     }
     
     /**
-     * Gibt den Benutzer zur zugehoerigen Plattform zurück.
+     * Gibt den Benutzer zur zugehoerigen Plattform zurueck.
      * 
      * @param pt
      * @return 
