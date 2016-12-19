@@ -53,11 +53,11 @@ public class MessageCreator {
     };
     
     /**
-     * Die Methode erstellt ein JsonObject, für eine uebergebene Aufgabe, mit 
+     * Die Methode erstellt ein JsonObject, fuer eine uebergebene Aufgabe, mit 
      * entsprechenen Aufgabentext.
      * 
      * @param nachricht
-     * @param aufgabe Aufgabe für den Nutzer.
+     * @param aufgabe Aufgabe fuer den Nutzer.
      */
     public static void erstelleAufgabenJson(JsonObject nachricht, Aufgabe aufgabe) {
         
@@ -101,7 +101,7 @@ public class MessageCreator {
      * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die uebergeben werden.
      * 
      * @param nachricht
-     * @param unis Enthält alle Unis, die zur auswahl stehen.
+     * @param unis Enthaelt alle Unis, die zur auswahl stehen.
      */
     public static void erstelleUniJson(JsonObject nachricht,Collection<Uni> unis) {
         
@@ -167,9 +167,9 @@ public class MessageCreator {
     
     
     /**
-     * Erzeugt einen Text, für die entsprechende Methode.
-     * @param methode Gibt an, für welche Methode der Text erzeugt werden soll.
-     * @return Gibt den entsprechenden Text zurück.
+     * Erzeugt einen Text, fuer die entsprechende Methode.
+     * @param methode Gibt an, fuer welche Methode der Text erzeugt werden soll.
+     * @return Gibt den entsprechenden Text zurueck.
      */
     private static String gibText(TEXTE methode) {
         String text = "Ups... da ist ein fehler unterlaufen!";
@@ -178,10 +178,10 @@ public class MessageCreator {
                 text = "Hier ist eine neue Aufage: ";
                 break;
             case UNI:
-                text = "Das sind alle verfügbaren Uni's";
+                text = "Das sind alle verfuegbaren Uni's";
                 break;
             case INFO:
-                text = "Hier hast du die gewünschten Info's!";
+                text = "Hier hast du die gewuenschten Info's!";
                 break;
         }
         return text;
@@ -200,7 +200,7 @@ public class MessageCreator {
      */
 //    private static Nachricht erzeugeNachricht(JsonObject json,Timestamp time){
 //        /*
-//        time ist wichtig, damit die Nachricht auch noch zu einem späteren 
+//        time ist wichtig, damit die Nachricht auch noch zu einem spaeteren 
 //        Zeitpunkt abgeschickt werden kann.
 //        */
 //        Nachricht nachricht = new Nachricht(json,time);

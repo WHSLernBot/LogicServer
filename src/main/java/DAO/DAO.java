@@ -15,7 +15,7 @@ import main.CBBenutzer;
 import main.CBPlattform;
 
 /**
- * Diese Klasse stellt Methoden zur verfuegung, die zum Zugriff auf einzelne persistente Entitäten
+ * Diese Klasse stellt Methoden zur verfuegung, die zum Zugriff auf einzelne persistente Entitaeten
  * erlauben. 
  */
 public class DAO {
@@ -72,7 +72,7 @@ public class DAO {
             + "and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
     
     /**
-     * Gibt das Datum zurück.
+     * Gibt das Datum zurueck.
      * @return 
      */
     public static Date gibDatum() {
@@ -294,7 +294,7 @@ public class DAO {
     /**
      * Die methode erstellt eine Liste von Unis.
      * 
-     * @return Gibt eine Liste von Unis zurück.
+     * @return Gibt eine Liste von Unis zurueck.
      */
     public static Collection<Uni> gibUnis() {
         
@@ -368,7 +368,7 @@ public class DAO {
 
     /**
      * Diese Methode legt das Datum der entsprechende Modulpruefung fest, um dem
-     * Benutzer für die Pruefung zu erinnern.
+     * Benutzer fuer die Pruefung zu erinnern.
      * ----------------------------------
      * @param id ID der Plattform.
      * @param plattform

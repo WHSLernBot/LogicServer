@@ -47,7 +47,7 @@ public class ChatBotManager {
     }
     
     /**
-     * Gibt das Singelton ChatBotManager zurück.
+     * Gibt das Singelton ChatBotManager zurueck.
      * @return 
      */
     public static ChatBotManager getInstance() {
@@ -63,7 +63,7 @@ public class ChatBotManager {
     }
     
     /**
-     * Gibt den BotPool zurück.
+     * Gibt den BotPool zurueck.
      * @return 
      */
     public BotPool gibBotPool() {

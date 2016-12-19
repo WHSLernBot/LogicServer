@@ -35,7 +35,7 @@ public class Main {
 //            res.status(200);
 //            res.type("application/json");
 
-            return "Läuft etwas";
+            return "Laeuft etwas";
         });
     
     

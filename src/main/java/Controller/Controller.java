@@ -60,9 +60,9 @@ public class Controller {
     
     /**
      * Diese Methode wird verwendet um das uebergebene JsonObject auzulesen
-     * und entsprechende Aktionen auszuführen.
+     * und entsprechende Aktionen auszufuehren.
      * @param json In dem Json sollten alle relevanten Informationen vorhanden sein,
-     *      die für das weitere vorgehen benötigt werden.
+     *      die fuer das weitere vorgehen benoetigt werden.
      * @return Nachricht mit den geforderten Informationen.
      */
     public static Nachricht loese(JsonObject json) {
@@ -84,7 +84,7 @@ public class Controller {
         
                 
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
-        dem entsprächend ausgefuehrt.*/
+        dem entsprechend ausgefuehrt.*/
         try {
             switch (json.get(METHODE).getAsString()) {
                 case METHODE_GIBAUFGABE:
