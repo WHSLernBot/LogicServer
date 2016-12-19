@@ -15,7 +15,7 @@ import main.CBBenutzer;
 import main.CBPlattform;
 
 /**
- * Diese Klasse stellt Methoden zur verfügung, die zum Zugriff auf einzelne persistente Entitäten
+ * Diese Klasse stellt Methoden zur verfuegung, die zum Zugriff auf einzelne persistente Entitäten
  * erlauben. 
  */
 public class DAO {
@@ -124,7 +124,7 @@ public class DAO {
     }
 
     /**
-     * Setzt dem Benutzer einen Namen, wie er angesprochen werden möchte.
+     * Setzt dem Benutzer einen Namen, wie er angesprochen werden moechte.
      * 
      * @param benutzer Der ChatBot-Benutzer.
      * @param name Name, die gesetzt werden soll.
@@ -243,7 +243,7 @@ public class DAO {
 //    }
 
     /**
-     * Gibt den entsprechenden Lernstatus des Benutzers zurück.
+     * Gibt den entsprechenden Lernstatus des Benutzers zurueck.
      * 
      * @param benutzer Der ChatBot-Benutzer.
      * @param themenId ID des Themas
@@ -312,7 +312,7 @@ public class DAO {
     }
     
     /**
-     * Die Methode gibt eine bestimmte Uni zurück.
+     * Die Methode gibt eine bestimmte Uni zurueck.
      * 
      * @param id Eideutige Id der Uni.
      * @return 
@@ -367,8 +367,8 @@ public class DAO {
     }
 
     /**
-     * Diese Methode legt das Datum der entsprechende Modulprüfung fest, um dem
-     * Benutzer für die Prüfung zu erinnern.
+     * Diese Methode legt das Datum der entsprechende Modulpruefung fest, um dem
+     * Benutzer für die Pruefung zu erinnern.
      * ----------------------------------
      * @param id ID der Plattform.
      * @param plattform

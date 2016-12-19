@@ -14,7 +14,7 @@ import main.CBPlattform;
 import main.ChatBotManager;
 
 /**
- * Diese Klasse stellt Methoden zur Verfügung, um ein JsonObject zu verarbeiten.
+ * Diese Klasse stellt Methoden zur Verfuegung, um ein JsonObject zu verarbeiten.
  * 
  */
 public class Controller {
@@ -59,7 +59,7 @@ public class Controller {
     
     
     /**
-     * Diese Methode wird verwendet um das übergebene JsonObject auzulesen
+     * Diese Methode wird verwendet um das uebergebene JsonObject auzulesen
      * und entsprechende Aktionen auszuführen.
      * @param json In dem Json sollten alle relevanten Informationen vorhanden sein,
      *      die für das weitere vorgehen benötigt werden.
@@ -83,8 +83,8 @@ public class Controller {
         }
         
                 
-        /*Es wird kontrolliert welche Methode im Json übergeben wurde und
-        dem entsprächend ausgeführt.*/
+        /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
+        dem entsprächend ausgefuehrt.*/
         try {
             switch (json.get(METHODE).getAsString()) {
                 case METHODE_GIBAUFGABE:
