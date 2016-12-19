@@ -51,7 +51,7 @@ public class Klausur implements Serializable {
     private Collection<Teilnahme> teilnahmen;
     
     /**
-     * Der Ort der Klausur, also Raum, Gebäude etc.
+     * Der Ort der Klausur, also Raum, Gebaeude etc.
      */
     @Column(length = 50)
     private String ort;
@@ -82,7 +82,7 @@ public class Klausur implements Serializable {
     
     /**
      * Der quoteint durch den die Punktzahl eines Benutzers geteil werden muss um
-     * ungefähr die Klausurnote zu bestimmen.
+     * ungefaehr die Klausurnote zu bestimmen.
      */
     private int quotient;
     
