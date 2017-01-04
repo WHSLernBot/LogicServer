@@ -2,33 +2,32 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
+import javax.persistence.MapsId;
 
 /**
  * Primary Key von Teilnahme.
  * @author Seve
  */
-@Embeddable
 public class TeilnahmePK implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     private Long benutzer;
     
-    private KlausurPK klausur;
+    private Long id;
 
     public TeilnahmePK() {}
 
-    public TeilnahmePK(Long benutzer, KlausurPK klausur) {
+    public TeilnahmePK(Long benutzer, Long id) {
         this.benutzer = benutzer;
-        this.klausur = klausur;
+        this.id = id;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + Objects.hashCode(this.benutzer);
-        hash = 79 * hash + Objects.hashCode(this.klausur);
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.benutzer);
+        hash = 53 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -47,10 +46,11 @@ public class TeilnahmePK implements Serializable {
         if (!Objects.equals(this.benutzer, other.benutzer)) {
             return false;
         }
-        if (!Objects.equals(this.klausur, other.klausur)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
+
     
 }

@@ -2,13 +2,11 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Primary Key zu Modul.
  * @author Seve
  */
-@Embeddable
 public class ModulPK implements Serializable {
     
     private static final long serialVersionUID = 1L;

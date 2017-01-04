@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
 
 /**
  * Diese Klasse stellt einen Benutzer des ChatBots dar.
@@ -46,7 +45,6 @@ public class Benutzer implements Serializable {
     /**
      * Das Datum der letzten Antwort.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date letzteAntwort;
     
     /**

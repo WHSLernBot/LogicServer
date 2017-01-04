@@ -37,19 +37,16 @@ public class Pruefungsperiode implements Serializable {
     /**
      * Der anmeldebeginn zu dieser Pruefunsphase.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date anmeldebeginn;
     
     /**
      * Das Anfangsdatum dieser Periode.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date anfang;
     
     /**
      * Das Enddatum dieser Periode.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date ende;
     
     /**

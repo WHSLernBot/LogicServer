@@ -2,33 +2,31 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Primary Key Klasse von ZuAufgabe.
  * @author Betuel
  */
-@Embeddable
 public class ZuAufgabePK implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    private Long aufgabe;
-    
     private LernStatusPK lernStatus;
+    
+    private int kennung;
 
     public ZuAufgabePK() {}
 
-    public ZuAufgabePK(Long aufgabe, LernStatusPK lernStatus) {
-        this.aufgabe = aufgabe;
+    public ZuAufgabePK(Long aufgabe, LernStatusPK lernStatus, int kennung) {
         this.lernStatus = lernStatus;
+        this.kennung = kennung;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.aufgabe);
-        hash = 41 * hash + Objects.hashCode(this.lernStatus);
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.lernStatus);
+        hash = 61 * hash + this.kennung;
         return hash;
     }
 
@@ -44,7 +42,7 @@ public class ZuAufgabePK implements Serializable {
             return false;
         }
         final ZuAufgabePK other = (ZuAufgabePK) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (this.kennung != other.kennung) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -52,4 +50,6 @@ public class ZuAufgabePK implements Serializable {
         }
         return true;
     }
+
+    
 }

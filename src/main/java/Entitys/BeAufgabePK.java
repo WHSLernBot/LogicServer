@@ -2,14 +2,12 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Die Primary Key Klasse von BeAufgabe. Fuer mehr Infos siehe BeAufgabe.
  * 
  * @author Seve
  */
-@Embeddable
 public class BeAufgabePK implements Serializable {
     
     private static final long serialVersionUID = 1L;

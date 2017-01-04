@@ -24,9 +24,9 @@ public class DeepThoughtPrio {
         this.heute = heute;
         modul = m;
         
-        m.getStatistiken().stream().forEach((s) -> {
+        for (Statistik s : m.getStatistiken()) {
             stats.put(s.getWoche(), s);
-        });
+        }
     }
     
     /**

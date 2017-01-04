@@ -2,13 +2,11 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Primary Key Klasse zu Pruefungsperiode.
  * @author Betuel
  */
-@Embeddable
 public class PruefungsperiodePK implements Serializable {
     
     private static final long serialVersionUID = 1L;

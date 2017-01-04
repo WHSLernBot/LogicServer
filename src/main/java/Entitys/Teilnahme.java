@@ -3,6 +3,8 @@ package Entitys;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
@@ -28,6 +30,9 @@ public class Teilnahme implements Serializable {
      * Die Klausur die der Benutzer schreibt.
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
     @ManyToOne
     private Klausur klausur;
     
@@ -57,11 +62,15 @@ public class Teilnahme implements Serializable {
         return note;
     }
 
+    public Klausur getKlausur() {
+        return klausur;
+    }
+    
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.benutzer);
-        hash = 37 * hash + Objects.hashCode(this.klausur);
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.benutzer);
+        hash = 67 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -80,17 +89,15 @@ public class Teilnahme implements Serializable {
         if (!Objects.equals(this.benutzer, other.benutzer)) {
             return false;
         }
-        if (!Objects.equals(this.klausur, other.klausur)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;
     }
 
-    
-    
     @Override
     public String toString() {
-        return klausur + " Klausur von " + benutzer;
+        return id + " Klausur von " + benutzer;
     }
     
 }

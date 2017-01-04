@@ -2,13 +2,11 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Der Primary Key von Plattform.
  * @author Seve
  */
-@Embeddable
 public class PlattformPK implements Serializable {
     
     private static final long serialVersionUID = 1L;

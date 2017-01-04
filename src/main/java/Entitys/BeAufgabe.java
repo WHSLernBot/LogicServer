@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
 
 /**
  * Diese Klasse stellt einer Aufgabe dar, die von einem Benutzer bearbeitet wurde.
@@ -45,7 +44,6 @@ public class BeAufgabe implements Serializable {
     /**
      * Das Datum, an dem die Aufgabe bearbeitet wurde.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date datum;
     
     /**

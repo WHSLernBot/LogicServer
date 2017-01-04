@@ -21,7 +21,6 @@ public class XGAufgabe implements Serializable {
     /**
      * Aufgabe die bearbeitet wurde.
      */
-    @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
@@ -32,11 +31,15 @@ public class XGAufgabe implements Serializable {
     @ManyToOne
     private LernStatus lernStatus;
     
+    @Id
+    private int kennung;
+    
     public XGAufgabe(){}
 
-    public XGAufgabe(Aufgabe aufgabe, LernStatus lernStatus) {
+    public XGAufgabe(Aufgabe aufgabe, LernStatus lernStatus, int kennung) {
         this.aufgabe = aufgabe;
         this.lernStatus = lernStatus;
+        this.kennung = kennung;
     }
 
     public Aufgabe getAufgabe() {
@@ -47,14 +50,19 @@ public class XGAufgabe implements Serializable {
         return lernStatus;
     }
 
+    public int getKennung() {
+        return kennung;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + Objects.hashCode(this.aufgabe);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.lernStatus);
+        hash = 71 * hash + this.kennung;
         return hash;
     }
 
-     @Override
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -66,7 +74,7 @@ public class XGAufgabe implements Serializable {
             return false;
         }
         final XGAufgabe other = (XGAufgabe) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (this.kennung != other.kennung) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -74,6 +82,8 @@ public class XGAufgabe implements Serializable {
         }
         return true;
     }
+
+
 
     @Override
     public String toString() {

@@ -22,14 +22,8 @@ public class ZuAufgabe implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Ist true, falls dies die letzte Aufgabe ist.
-     */
-    private boolean zuletzt;
-    
-    /**
      * Die zubearbeitende Aufgabe.
      */
-    @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
@@ -40,51 +34,35 @@ public class ZuAufgabe implements Serializable {
     @OneToOne
     private LernStatus lernStatus;
     
-    /**
-     * Die naechste zu bearbeitenden Aufgabe.
-     */
-    @OneToOne
-    private ZuAufgabe naechsteAufgabe;
+    @Id
+    private int kennung;
     
-    public ZuAufgabe(){
-        
-    }
+    public ZuAufgabe(){}
     
-    public ZuAufgabe(LernStatus status, Aufgabe aufgabe, boolean zuletzt){
+    public ZuAufgabe(LernStatus status, Aufgabe aufgabe,int kennung){
         this.lernStatus = status;
         this.aufgabe = aufgabe;
-        this.zuletzt = zuletzt;
+        this.kennung = kennung;
     }
     
     public LernStatus getStatus(){
         return lernStatus;
     }
     
-    public boolean istZuletzt(){
-        return zuletzt;
-    }
 
     public Aufgabe getAufgabe() {
         return aufgabe;
     }
 
-    public ZuAufgabe getNaechsteAufgabe() {
-        return naechsteAufgabe;
-    }
-
-    public ZuAufgabe setNaechsteAufgabe(Aufgabe aufgabe) {
-        this.naechsteAufgabe = new ZuAufgabe(lernStatus,aufgabe,true);
-        this.zuletzt = false;
-        
-        return naechsteAufgabe;
-    } 
-    
+    public int getKennung() {
+        return kennung;
+    }   
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.aufgabe);
+        int hash = 7;
         hash = 67 * hash + Objects.hashCode(this.lernStatus);
+        hash = 67 * hash + this.kennung;
         return hash;
     }
 
@@ -100,7 +78,7 @@ public class ZuAufgabe implements Serializable {
             return false;
         }
         final ZuAufgabe other = (ZuAufgabe) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (this.kennung != other.kennung) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -109,8 +87,7 @@ public class ZuAufgabe implements Serializable {
         return true;
     }
 
-
-    
+ 
 
     @Override
     public String toString() {

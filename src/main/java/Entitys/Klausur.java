@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
 
 /**
  * Diese Klasse stellt eine Klausur dar, an dem sich ein Benutzer anmelden kann. 
@@ -34,7 +33,6 @@ public class Klausur implements Serializable {
     /**
      * Das Datum der Klausur.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date datum;
     
     /**
@@ -59,7 +57,6 @@ public class Klausur implements Serializable {
     /**
      * Die Uhrzeit an dem die Klausur geschrieben wird.
      */
-    @Temporal(javax.persistence.TemporalType.TIME)
     private Time uhrzeit;
     
     /**
@@ -86,8 +83,7 @@ public class Klausur implements Serializable {
      */
     private int quotient;
     
-    public Klausur(){ 
-    }
+    public Klausur(){}
     
     public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel){
         

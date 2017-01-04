@@ -69,4 +69,17 @@ public class EMH {
     public static void commit() {
         getEntityManager().getTransaction().commit();
     }
+    
+    public static void persist(Object ent) {
+        getEntityManager().persist(ent);
+    }
+    
+    public static void merge(Object ent) {
+        getEntityManager().merge(ent);
+    }
+    
+    public static void remove(Object ent) {
+        getEntityManager().remove(ent);
+    }
+    
 }

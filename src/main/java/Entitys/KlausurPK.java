@@ -2,14 +2,12 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Die Primary Key Klasse zu Klausur.
  * 
  * @author Seve
  */
-@Embeddable
 public class KlausurPK implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -18,8 +16,7 @@ public class KlausurPK implements Serializable {
     
     private PruefungsperiodePK periode;
 
-    public KlausurPK() {
-    }
+    public KlausurPK() {}
 
     public KlausurPK(ModulPK modul, PruefungsperiodePK periode) {
         this.modul = modul;
@@ -55,6 +52,4 @@ public class KlausurPK implements Serializable {
         return true;
     }
 
-  
-    
 }

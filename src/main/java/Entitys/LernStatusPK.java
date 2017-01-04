@@ -2,13 +2,11 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Der Primary Key eines LernStatus.
  * @author Seve
  */
-@Embeddable
 public class LernStatusPK implements Serializable {
     
     private static final long serialVersionUID = 1L;

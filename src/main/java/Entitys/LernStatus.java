@@ -11,7 +11,6 @@ import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
 
 /**
  * Diese Klasse stellt einen LernStatus dar, der den Fortschritt eines Benutzers
@@ -63,12 +62,13 @@ public class LernStatus implements Serializable {
     /**
      * Die naechste Kennnummer fuer eine beantwortete Aufgabe.
      */
-    private int kennung;
+    private int kennungBe;
+    private int kennungZu;
+    private int kennungXG;
     
     /**
      * Das Datum an dem der Benutzer zuletzt Aufgaben zu diesem Thema geloest hat.
      */
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date letztesDatum;
     
     /**
@@ -80,8 +80,8 @@ public class LernStatus implements Serializable {
     /**
      * Die Aufgabe, die der Benutzer als naechstes zu bearbeitet hat.
      */
-    @OneToOne(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //dr�ber sprechen
-    private ZuAufgabe zuAufgaben;
+    @OneToMany(mappedBy="lernStatus", cascade=CascadeType.ALL,orphanRemoval = true) //drueber sprechen
+    private Collection<ZuAufgabe> zuAufgaben;
     
     /**
      * Die Aufgaben die der Benutzer zusaetzlich geloest hat, die aber nicht
@@ -108,7 +108,9 @@ public class LernStatus implements Serializable {
         this.geloest = 0;
         this.letztesDatum = letztesDatum;
         veraendert = false;
-        kennung = 0;
+        kennungBe = 0;
+        kennungXG = 0;
+        kennungZu = 0;
     }
     
     public void setAktiv(Boolean aktiv){
@@ -151,17 +153,13 @@ public class LernStatus implements Serializable {
             Date datum, Boolean hinweis, Boolean beantwortet) {
         
         
-        this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennung,richtig,datum,
+        this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennungBe,richtig,datum,
                 hinweis,beantwortet));    
-        this.kennung++;
+        this.kennungBe++;
     }
-
-    public ZuAufgabe getZuAufgaben() {
-        return zuAufgaben;
-    }
-
-    public void setZuAufgaben(ZuAufgabe zuAufgaben) {
-        this.zuAufgaben = zuAufgaben;
+    
+    public void addedBeAufgaben() {
+        this.kennungBe++;
     }
 
     public Collection<XGAufgabe> getXgAufgaben() {
@@ -169,7 +167,13 @@ public class LernStatus implements Serializable {
     }
 
     public void addXgAufgaben(Aufgabe aufgabe) {
-        this.xgAufgaben.add(new XGAufgabe(aufgabe,this));
+        this.xgAufgaben.add(new XGAufgabe(aufgabe,this,kennungXG));
+        
+        kennungXG++;
+    }
+
+    public Collection<ZuAufgabe> getZuAufgaben() {
+        return zuAufgaben;
     }
 
     public Benutzer getBenutzer() {
@@ -194,6 +198,34 @@ public class LernStatus implements Serializable {
 
     public void setVeraendert(boolean veraendert) {
         this.veraendert = veraendert;
+    }
+
+    public int getKennungBe() {
+        return kennungBe;
+    }
+
+    public void setKennungBe(int kennungBe) {
+        this.kennungBe = kennungBe;
+    }
+
+    public int getKennungZu() {
+        return kennungZu;
+    }
+
+    public void resetKennungZu() {
+        this.kennungZu = 0;
+    }
+    
+    public void gotZuAufgabe() {
+        kennungZu++;
+    }
+
+    public int getKennungXG() {
+        return kennungXG;
+    }
+
+    public void setKennungXG(int kennungXG) {
+        this.kennungXG = kennungXG;
     }
     
     /**

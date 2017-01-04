@@ -2,33 +2,31 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
 
 /**
  * Primary Key Klasse von XGAufgabe.
  * @author Betuel
  */
-@Embeddable
 public class XGAufgabePK implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    private Long aufgabe;
-    
     private LernStatusPK lernStatus;
+    
+    private int kennung;
 
     public XGAufgabePK() {}
 
-    public XGAufgabePK(Long aufgabe, LernStatusPK lernStatus) {
-        this.aufgabe = aufgabe;
+    public XGAufgabePK(LernStatusPK lernStatus, int kennung) {
         this.lernStatus = lernStatus;
+        this.kennung = kennung;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 41 * hash + Objects.hashCode(this.aufgabe);
-        hash = 41 * hash + Objects.hashCode(this.lernStatus);
+        hash = 97 * hash + Objects.hashCode(this.lernStatus);
+        hash = 97 * hash + this.kennung;
         return hash;
     }
 
@@ -44,7 +42,7 @@ public class XGAufgabePK implements Serializable {
             return false;
         }
         final XGAufgabePK other = (XGAufgabePK) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (this.kennung != other.kennung) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -53,4 +51,5 @@ public class XGAufgabePK implements Serializable {
         return true;
     }
     
+  
 }
