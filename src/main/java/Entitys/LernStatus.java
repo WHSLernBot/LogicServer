@@ -157,10 +157,6 @@ public class LernStatus implements Serializable {
                 hinweis,beantwortet));    
         this.kennungBe++;
     }
-    
-    public void addedBeAufgaben() {
-        this.kennungBe++;
-    }
 
     public Collection<XGAufgabe> getXgAufgaben() {
         return xgAufgaben;
@@ -204,8 +200,8 @@ public class LernStatus implements Serializable {
         return kennungBe;
     }
 
-    public void setKennungBe(int kennungBe) {
-        this.kennungBe = kennungBe;
+    public void addedBeAufgabe() {
+        this.kennungBe++;
     }
 
     public int getKennungZu() {
@@ -224,8 +220,12 @@ public class LernStatus implements Serializable {
         return kennungXG;
     }
 
-    public void setKennungXG(int kennungXG) {
-        this.kennungXG = kennungXG;
+    public void addedXGAufgabe() {
+        this.kennungXG++;
+    }
+    
+    public void resetXGAufgabe() {
+        this.kennungXG = 0;
     }
     
     /**

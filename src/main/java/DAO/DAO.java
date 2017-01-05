@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.Query;
 import main.CBBenutzer;
 import main.CBPlattform;
+import main.ChatBotManager;
 
 /**
  * Diese Klasse stellt Methoden zur verfuegung, die zum Zugriff auf einzelne persistente Entitaeten
@@ -42,19 +43,50 @@ public class DAO {
     
     private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a "
-            + "where aw.AUFGABE_AUFGABENID = a.AUFGABENID and aw.NUMMER := NR "
-            + "and a.AUFGABENID := ID";
+            + "where aw.AUFGABE_AUFGABENID = a.AUFGABENID and aw.NUMMER = :NR "
+            + "and a.AUFGABENID = :ID";
    
+    private static final String GIB_AUFGABEN_TOKEN = "select a.AUFGABENID "
+            + "from Aufgabe a, Token o, LernStatus l "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
+            + "and o.AUFGABE_AUFGABENID = a.AUFGABENID "
+            + "and o.TOKEN = :TOK";
+    
+    private static final String GIB_AUFGABEN_AUFGABENTEXT = "select a.AUFGABENID "
+            + "from Aufgabe a, LernStatus l "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID"
+            + "and (LOWER(a.FRAGE) like :TOK)";
+    
+    private static final String GIB_AUFGABEN_TEXT = "select a.AUFGABENID "
+            + "from Aufgabe a, LernStatus l "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID"
+            + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
+    
+    private static final String GIB_AUFGABEN_THEMA = "select object(l) "
+            + "from Aufgabe a, Thema t, LernStatus l"
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
+            + "t.THEMENID = a.THEMA_THEMENID and o.AUFGABE_AUFGABENID = a.AUFGABENID "
+            + "and (LOWER(t.NAME) like :TOK";
+    
     private static final String GIB_BEAUFGABE = "select object(b) "
             + "from Beaufgabe b, Aufgabe a "
-            + "where a.AufgabenID := AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
+            + "where a.AufgabenID = :AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
             + "and b.LERNSTATUS_THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and a.LERNSTATUS_BENUTZER_ID := BID "
-            + "and b.KENNUNG := K";
+            + "and a.LERNSTATUS_BENUTZER_ID = :BID "
+            + "and b.KENNUNG = :K";
+    
+    private static final String ALLE_XGAUFGAEBN = "select AUFGABE_AUFGABENID "
+            + "from XGAufgabe "
+            + "where LERNSTATUS_BENUTZER_ID = :BID";
+    
+    private static final String ALLE_ZUAUFGAEBN = "select AUFGABE_AUFGABENID "
+            + "from ZuAufgabe"
+            + "where LERNSTATUS_BENUTZER_ID = :BID "
+            + "order by KENNUNG ASC";
     
     private static final String GIB_NOTE = "select object(t) "
             + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b "
-            + "and l.klausur = k and b.id := ID";
+            + "and l.klausur = k and b.id = :ID";
     
     private static final String GIB_KLAUSUR = "select object(k) "
             + "from Klausur k, Modul m where k.kuerzel = m";
@@ -62,21 +94,25 @@ public class DAO {
     private static final String GIB_MODUL = "select object(m) "
             + "from Modul m where m.kuerzel";
     
-    private static final String GIB_ZUAUFGABEN = "select object(z) "
-            + "from ZuAufgabe z where z.LERNSTATUS_BENUTZER_ID := ID and "
-            + "z.LERNSTATUS_THEMA_THEMENID := THEMA and z.KENNUNG := K";
+    private static final String GIB_NOT_MODULE = "select object(mod) "
+            + "from Modul mod "
+            + "where mod.UNI_ID = :UID and NOT EXISTS( "
+            + "select m "
+            + "from Modul m, Thema t, LernStatus ls "
+            + "where ls.BENUTZER_ID = :BID and ls.THEMA_THEMENID = t.THEMENID "
+            + "and m.KUERZEL = t.MODUL_KUERZEL)";
     
     private static final String LOESCHE_ZUAUFGABEN = "delete from ZuAufgabe "
-            + "where LERNSTATUS_BENUTZER_ID := ID "
-            + "and LERNSTATUS_THEMA_THEMENID := THEMA";
+            + "where LERNSTATUS_BENUTZER_ID = :ID "
+            + "and LERNSTATUS_THEMA_THEMENID = :THEMA";
     
     private static final String GIB_SELEKTOREN = "select object(t) "
             + "from LernStatus l, Thema t "
-            + "where l.BENUTZER_ID := BID and l.AKTIV "
+            + "where l.BENUTZER_ID = :BID and l.AKTIV "
             + "and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
     
     private static final String ALLE_SELEKTOREN = "select object(t) "
-            + "from Thema t order by t.MODUL_KUERZEL";
+            + "from Thema t order by t.MODUL_KUERZEL ASC";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
@@ -92,9 +128,10 @@ public class DAO {
     
     /**
      * Gibt die naechste zu loesende Aufgabe eines Lernstatus aus und traegt diese
-     * in die bearebeitenden Aufgaben ein.
+     * in die bearebeitenden Aufgaben ein. Außerdem berechnet er die Aufgaben
+     * neu, falls keine mehr vorliegen.
      * 
-     * @param ls 
+     * @param ls
      * @return 
      * @throws java.lang.Exception 
      */
@@ -102,31 +139,169 @@ public class DAO {
         
         Aufgabe a = null;
         
-        Query q = EMH.getEntityManager().createQuery(GIB_ZUAUFGABEN);
+        long bid = ls.getBenutzer().getId();
+        long tid = ls.getThema().getId();
+        LernStatusPK pk = new LernStatusPK(bid,tid);
         
-        q.setParameter("ID", ls.getBenutzer().getId());
-        q.setParameter("THEMA", ls.getThema().getId());
-        q.setParameter("K", ls.getKennungZu()); 
+        ZuAufgabe zu = EMH.getEntityManager().find(ZuAufgabe.class, new ZuAufgabePK(pk,ls.getKennungZu()));
+        
+        if(zu == null) {
+            throw new Exception("Es liegen keine zu bearbeitenden Aufgaben vor.");
+        }
+        Collection<XGAufgabe> xgs = ls.getXgAufgaben();
         
         try {
             
             EMH.beginTransaction();
-    
-            ZuAufgabe za = (ZuAufgabe) q.getResultList().get(0);
             
-            if(za == null) {
-                return null;
+            boolean notinXG = true;
+            
+            while(notinXG) {
+                
+                a = zu.getAufgabe();
+
+                ls.gotZuAufgabe();
+                
+                EMH.remove(zu);
+                
+                notinXG = false;
+                for(XGAufgabe xg : xgs) {
+                    if(xg.getAufgabe().getAufgabenID() == a.getAufgabenID()) {
+                        notinXG = true;
+                        
+                        zu = EMH.getEntityManager().find(ZuAufgabe.class, new ZuAufgabePK(pk,ls.getKennungZu()));
+                        break;
+                    }
+                }
             }
             
-            a = za.getAufgabe();
+            EMH.persist(new BeAufgabe(a,ls,ls.getKennungBe(),false,gibDatum(),false,false));
+            ls.addedBeAufgabe();
+            EMH.merge(ls);
+               
+            EMH.commit();
             
-            ls.gotZuAufgabe();
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Zu bearbeitende Aufgabe konnte nicht gefunden werden.");
+        }
+        
+        //Pruefen auf naechste Aufgabe
+        zu = EMH.getEntityManager().find(ZuAufgabe.class, new ZuAufgabePK(pk,ls.getKennungZu()));
+        
+        if(zu == null) {
+            ChatBotManager.getInstance().gibBotPool().berechneLS(ls);
+        }
+        
+        return a;
+        
+    }
+    
+    /**
+     * Gibt eine Aufgabe, die einen bestimmten token entaelt aus.
+     * 
+     * @param be
+     * @param token
+     * @return 
+     * @throws java.lang.Exception 
+     */
+    public static Aufgabe gibAufgabe(CBBenutzer be, String token) throws Exception {
+        
+        Aufgabe a;
+        long aid = -1;
+        long bId = be.getBenutzer().getId();
+        
+        List result;
+        
+        token = "%" + token.toLowerCase() + "%";
+        
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_TOKEN);
+        
+        q.setParameter("BID", bId);
+        q.setParameter("TOK", token);
+        
+        result = q.getResultList();
+        
+        if(result.isEmpty()) {
+            q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_AUFGABENTEXT);
+        
+            q.setParameter("BID", bId);
+            q.setParameter("TOK", token);
+
+            result = q.getResultList();
+            
+            if(result.isEmpty()) {
+                q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_TEXT);
+
+                q.setParameter("BID", bId);
+                q.setParameter("TOK", token);
+
+                result = q.getResultList();
+                
+                if(result.isEmpty()) {
+                    q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_THEMA);
+
+                    q.setParameter("BID", bId);
+                    q.setParameter("TOK", token);
+
+                    //Achtung! Hier in der liste jetzt lernStadi und nicht long
+                    result = q.getResultList();
+                    if(!result.isEmpty()) {
+                        //Was bei mehreren moeglichkeiten?
+                        return gibAufgabe((LernStatus) result.get(0));
+                    }
+                }
+            }
+        }
+        
+        if(result.isEmpty()) {
+            return null;
+        } else if(result.size() >= 1) {
+            aid = (long) result.get(0);
+        } else {
+            
+            Query qzu = EMH.getEntityManager().createNamedQuery(ALLE_ZUAUFGAEBN);
+            Query qxg = EMH.getEntityManager().createNamedQuery(ALLE_XGAUFGAEBN);
+            
+            qxg.setParameter("BID", bId);
+            qzu.setParameter("BID", bId);
+            
+            List rxg = qxg.getResultList();
+            List rzu = qzu.getResultList();
+            
+            for(Object zu : rzu) {
+          
+                long id = (long) zu;
+                
+                if(result.contains(id)) {
+                    if(!rxg.contains(id)) {
+                        aid = id;
+                        break;
+                    }
+                }
+                
+            }
+            
+            
+        }
+        if(aid == -1) {
+            return null;
+        }
+        try {
+            
+            EMH.beginTransaction();
+            
+            a = EMH.getEntityManager().find(Aufgabe.class, aid);
+            
+            LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(bId,a.getThema().getId()));
             
             EMH.persist(new BeAufgabe(a,ls,ls.getKennungBe(),false,gibDatum(),false,false));
-            ls.addedBeAufgaben();
+            ls.addedBeAufgabe();
+            
+            EMH.persist(new XGAufgabe(a,ls,ls.getKennungXG()));
+            ls.addedXGAufgabe();
             
             EMH.merge(ls);
-            EMH.remove(za);
             
             EMH.commit();
             
@@ -136,15 +311,7 @@ public class DAO {
         }
         
         return a;
-        
-    }
-    
-    public static Aufgabe gibAufgabe(CBBenutzer be, String token) {
-        
-        Aufgabe a = null;
-        
-        return a;
-    }
+    }  
     
     /**
      * Diese Methode stellt eine uebergebene Aufgabe in die Datenbank ein.
@@ -176,7 +343,7 @@ public class DAO {
             }
             
             for(JsonElement el : aufgabe.getAsJsonArray(AUFGABE_TOKEN_ARRAY)) {
-                a.addToken(el.getAsString());
+                a.addToken(el.getAsString().toLowerCase());
             }
             
             EMH.persist(a); 
@@ -418,6 +585,73 @@ public class DAO {
             ls = EMH.getEntityManager().find(LernStatus.class, pk);
         }
         return ls;
+    }
+    
+    /**
+     * Diese Methode fuegt einem JSON alle Module hinzu, fuer die sich ein 
+     * Benutzer noch NICHT(!) angemeldet hat.
+     * 
+     * @param nachricht 
+     * @param b 
+     */
+    public static void gibNichtangemeldete(JsonObject nachricht, CBBenutzer b) {
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_NOT_MODULE);
+        
+        synchronized(b) {
+            q.setParameter("UID", b.getBenutzer().getUni().getId());
+            q.setParameter("BID", b.getBenutzer().getId());
+        }
+       
+        List result = q.getResultList();
+        
+        JsonArray module = new JsonArray();
+        for(Object o : result) {
+            Modul m = (Modul) o;
+            
+            JsonObject mod = new JsonObject();
+            
+            mod.addProperty(MODULE_KUERZEL, m.getKuerzel());
+            mod.addProperty(MODULE_NAME, m.getName());
+            
+            module.add(mod);
+            
+        }
+        nachricht.add(MODULE_ARRAY, module);
+    }
+    
+    /**
+     * Diese Methode meldet einen Benutzer bei einem Modul an und erstellt dort
+     * die entsprechenden LernStadi. Dannach berechnet er alle Aufgaben fuer
+     * den Benutzer neu.
+     * 
+     * @param b Der Benutzer der angemeldet werden soll.
+     * @param modul Das Kuerzel des Moduls.
+     * @throws java.lang.Exception
+     */
+    public static void meldeAn(CBBenutzer b, String modul) throws Exception {
+        
+        try {
+            EMH.beginTransaction();
+            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+
+            synchronized(b) {
+                Benutzer be = b.getBenutzer();
+                Date datum = gibDatum();
+                for(Thema t : m.getThemen()) {
+
+                    EMH.persist(new LernStatus(be,t,datum));
+
+                }
+            }
+            
+            EMH.commit();
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Modul konnte nicht angemeldet werden.");
+        }
+    
+        ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
+        
     }
     
     /**

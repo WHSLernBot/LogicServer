@@ -17,7 +17,7 @@ public class ZuAufgabePK implements Serializable {
 
     public ZuAufgabePK() {}
 
-    public ZuAufgabePK(Long aufgabe, LernStatusPK lernStatus, int kennung) {
+    public ZuAufgabePK(LernStatusPK lernStatus, int kennung) {
         this.lernStatus = lernStatus;
         this.kennung = kennung;
     }

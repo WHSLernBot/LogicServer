@@ -2,8 +2,8 @@ package DBBot;
 
 import DAO.DAO;
 import Entitys.Modul;
-import Entitys.Uni;
 import Entitys.Benutzer;
+import Entitys.LernStatus;
 import Entitys.Uni;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -39,6 +39,10 @@ public class BotPool {
     public void berechneNeu(CBBenutzer benutzer) {
         aufgabenBots.submit(new AufgabenBot(benutzer));
         
+    }
+    
+    public void berechneLS(LernStatus ls) {
+        aufgabenBots.submit(new AufgabenBot(ls));
     }
     
     private void berechneAlles() {

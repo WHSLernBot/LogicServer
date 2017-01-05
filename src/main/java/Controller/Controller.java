@@ -12,6 +12,9 @@ import java.util.Collection;
 import main.CBBenutzer;
 import main.CBPlattform;
 import main.ChatBotManager;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
 
 /**
  * Diese Klasse stellt Methoden zur Verfuegung, um ein JsonObject zu verarbeiten.
@@ -32,6 +35,8 @@ public class Controller {
     private static final String METHODE_NEUEAUFGABE = "neueAufgabe";
     private static final String METHODE_GIBKLAUSURINFOS = "gibKlausurInfos";
     private static final String METHODE_BEWERTEAUFGABE = "bewerteAufgabe";
+    private static final String METHODE_GIBMODULE = "gibModule";
+    private static final String METHODE_MELDEMODULAN = "meldeFuerModulAn";
 
     private static final String USER_OBJEKT = "user";
     private static final String USER_ID = "userID";
@@ -54,8 +59,11 @@ public class Controller {
     
     private static final String AUFGABE = "aufgabenID";
     
+    private static final String MODUL = "modul";
+    
     private static final String THEMA_OBJEKT = "thema";
     private static final String THEMA_ID = "id";
+    private static final String THEMA_TOKEN = "token";
     
     
     /**
@@ -89,19 +97,27 @@ public class Controller {
         try {
             switch (json.get(METHODE).getAsString()) {
                 case METHODE_GIBAUFGABE:
-
-                    LernStatus ls = DAO.gibLernstatus(benutzer, 
+                    Aufgabe aufgabe;
+                    if(!json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).isJsonNull()) {
+                        LernStatus ls = DAO.gibLernstatus(benutzer, 
                             json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong());
 
-                    Aufgabe aufgabe = DAO.gibAufgabe(ls);
-                    
-                    //Provisorisch
+                        aufgabe = DAO.gibAufgabe(ls);
+                    } else {
+                        
+                        aufgabe = DAO.gibAufgabe(benutzer, json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_TOKEN).getAsString());
+                        
+                    }
+ 
+                    //Provisorisch .. aber kommt das vor?
                     if(aufgabe == null) {
                         manager.gibBotPool().berechneNeu(benutzer);
                         sleep(1000 * 30);
+                    } else {
+                        
+                        MessageCreator.erstelleAufgabenJson(nachricht.getJson(), aufgabe);
                     }
 
-                    MessageCreator.erstelleAufgabenJson(nachricht.getJson(), aufgabe);
                     break;
                 case METHODE_SETZENAME:
                     DAO.setzeName(benutzer, json.get(NAME).getAsString());
@@ -152,6 +168,12 @@ public class Controller {
                     //Es gilt zu pruefen ob der benutzer das auch darf
                     
                     DAO.bewerteAufgabe(json.get(AUFGABE).getAsLong(), json.get("bewerte").getAsBoolean());
+                    break;
+                case METHODE_GIBMODULE:
+                    DAO.gibNichtangemeldete(json, benutzer);
+                    break;
+                case METHODE_MELDEMODULAN:
+                    DAO.meldeAn(benutzer,json.get(MODUL).getAsString());
                     break;
                 default:
                     throw new Exception("Methode konnte nicht ausgewertet werden.");

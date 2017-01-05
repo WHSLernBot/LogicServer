@@ -27,6 +27,8 @@ public class AufgabenBot implements Runnable {
     
     private final Modul modul;
     
+    private final LernStatus lernStatus;
+    
     private final Timestamp heute;
     
     /**
@@ -38,6 +40,7 @@ public class AufgabenBot implements Runnable {
     public AufgabenBot(CBBenutzer benutzer) {
         this.benutzer = benutzer;
         this.modul = null;
+        this.lernStatus = null;
         benutzer.gain();
         heute = ChatBotManager.getInstance().jetzt();
     }
@@ -51,7 +54,14 @@ public class AufgabenBot implements Runnable {
     public AufgabenBot(Modul modul) {
         this.benutzer = null;
         this.modul = modul;
-        
+        lernStatus = null;
+        heute = ChatBotManager.getInstance().jetzt();
+    }
+    
+    public AufgabenBot(LernStatus ls) {
+        this.lernStatus = ls;
+        this.benutzer = null;
+        this.modul = null;
         heute = ChatBotManager.getInstance().jetzt();
     }
     
@@ -63,7 +73,11 @@ public class AufgabenBot implements Runnable {
         
         Collection<LernStatus> stadi;
         
-        if(modul == null) {
+        if(lernStatus != null) {
+            stadi = new LinkedList<>();
+            stadi.add(lernStatus);
+            berechne(stadi,null);
+        } else if(benutzer != null) {
             stadi = benutzer.getBenutzer().getLernStadi();
             berechne(stadi,null);
         } else {
