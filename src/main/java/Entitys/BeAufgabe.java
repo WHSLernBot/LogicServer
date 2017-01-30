@@ -22,7 +22,6 @@ public class BeAufgabe implements Serializable {
     /**
      * Die bearbeitete Aufgabe.
      */
-    @Id
     @ManyToOne
     private Aufgabe aufgabe;
     
@@ -107,12 +106,12 @@ public class BeAufgabe implements Serializable {
         this.richtig = richtig;
         this.hinweis = hinweis;
     }
-    
+
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + Objects.hashCode(this.aufgabe);
-        hash = 79 * hash + Objects.hashCode(this.datum);
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.lernStatus);
+        hash = 83 * hash + this.kennung;
         return hash;
     }
 
@@ -128,7 +127,7 @@ public class BeAufgabe implements Serializable {
             return false;
         }
         final BeAufgabe other = (BeAufgabe) obj;
-        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
+        if (this.kennung != other.kennung) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -136,6 +135,8 @@ public class BeAufgabe implements Serializable {
         }
         return true;
     }
+    
+
     
 
     @Override

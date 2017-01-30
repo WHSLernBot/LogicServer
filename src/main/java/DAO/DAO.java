@@ -39,6 +39,9 @@ public class DAO {
     private static final String AUFGABE_ANTWORT_RICHTIG = "richtig";
     private static final String AUFGABE_ANTWORT_NUMMER = "nummer";
     
+    private static final int BEWERTUNS_GRENZE = 20;
+    private static final int AUFGABEN_HINZUFUEG_GRENZE = 30;
+    
     private static final String ALLE_UNIS = "select object(u) from Uni u";
     
     private static final String GIB_ANTWORT = "select object(aw) "
@@ -316,11 +319,24 @@ public class DAO {
     /**
      * Diese Methode stellt eine uebergebene Aufgabe in die Datenbank ein.
      * 
+     * @param b Der benutzer, der Die Aufgabe hiinzufuegen moechte
      * @param thema
      * @param aufgabe Die Aufgabe als Json Objekt in definiertem aussehen.
+     * @throws java.lang.Exception Wird geworfen, falls der Benutzer keine neue
+     * Aufgabe hinzufuegen darf.
      */
-    public static void neueAufgabe(long thema, JsonObject aufgabe) {
+    public static void neueAufgabe(CBBenutzer b, long thema, JsonObject aufgabe) throws Exception {
  
+        //moegliche sicherheitsluecke
+        if(b != null) {
+            LernStatus ls = DAO.gibLernstatus(b, thema);
+        
+            if(ls.getRichtige() <= AUFGABEN_HINZUFUEG_GRENZE) {
+                throw new Exception("Aktuell duerfen sie noch keien Aufgaben hinzufuegen.");
+            }
+        }
+        
+        
         try {
             Thema t = EMH.getEntityManager().find(Thema.class, thema);
             
@@ -358,18 +374,30 @@ public class DAO {
     
     /**
      * Diese Methode bewertet eine Aufgabe.
+     * 
+     * @param b Der Benutzer der Bewerten moechte.
      * @param id Aufgaben-ID
      * @param like falls true wurde die Aufgabe positiv bewertet
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception Wird geworfen, 
+     * falls der Benutzer die Aufgabe gar nicht bewerten darf.
      */
-    public static void bewerteAufgabe(long id, boolean like) throws Exception {
+    public static void bewerteAufgabe(CBBenutzer b, long id, boolean like) throws Exception {
          
         Aufgabe aufgabe = EMH.getEntityManager().find(Aufgabe.class, id);
+        
+        LernStatus ls = DAO.gibLernstatus(b, aufgabe.getThema().getId());
+            
+        if(ls.getRichtige() < BEWERTUNS_GRENZE) {
+            throw new Exception("Aktuell duerfen Sie in diesem Thema keine Aufgaben bewerten.");
+        }
+        
+        if(darfBewerten(aufgabe,b)) {
+            throw new Exception("Sie haben die Aufgabe schon bewertet.");
+        }
         
         try {
             EMH.beginTransaction();
             
-
             if(like) {
                 aufgabe.positivBewertet();
 
@@ -380,6 +408,8 @@ public class DAO {
             if(aufgabe.getBewertung() <= 0) {
                 EMH.remove(aufgabe);
             } else {
+                EMH.persist(new Bewertung(aufgabe,ls,like));
+                
                 EMH.merge(aufgabe);
             }      
             
@@ -390,6 +420,34 @@ public class DAO {
             throw new Exception("Aufgabe konnte nicht bewertet werden.");
         }
         
+    }
+    
+    /**
+     * Gibt true aus, falls ein Benutzer eine Aufgabe bewerten darf.
+     * 
+     * @param a Die Aufgabe.
+     * @param b Der Benutzer
+     * @return true, falls bewertet werden darf.
+     */
+    public static boolean darfBewerten(Aufgabe a, CBBenutzer b) {
+        
+        return gibBewertung(a,b) == null;
+    }
+    
+    /**
+     * Gibt die Bewertung einer Aufgabe eines Benutzers aus.
+     * 
+     * @param a Die Aufgabe.
+     * @param b Der Benutzer
+     * @return Die entsprechende Bewertug, falls nicht vorhanden null.
+     */
+    public static Bewertung gibBewertung(Aufgabe a, CBBenutzer b) {
+        
+        Bewertung bew = EMH.getEntityManager().find(Bewertung.class,
+                new BewertungPK(a.getAufgabenID(), 
+                        new LernStatusPK(b.getBenutzer().getId(), a.getThema().getId())));
+        
+        return bew;
     }
     
     /**
@@ -618,6 +676,15 @@ public class DAO {
         }
         nachricht.add(MODULE_ARRAY, module);
     }
+    
+    /**
+     * 
+     * @param b
+     * @return 
+     */
+//    public static boolean darfBearbeiten(CBBenutzer b) {
+//        return true;
+//    }
     
     /**
      * Diese Methode meldet einen Benutzer bei einem Modul an und erstellt dort

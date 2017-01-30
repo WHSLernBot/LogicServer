@@ -7,13 +7,10 @@ import Entitys.Uni;
 import Message.MessageCreator;
 import Message.Nachricht;
 import com.google.gson.JsonObject;
-import static java.lang.Thread.sleep;
 import java.util.Collection;
 import main.CBBenutzer;
 import main.CBPlattform;
 import main.ChatBotManager;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
 import static java.lang.Thread.sleep;
 
 /**
@@ -114,8 +111,7 @@ public class Controller {
                         manager.gibBotPool().berechneNeu(benutzer);
                         sleep(1000 * 30);
                     } else {
-                        
-                        MessageCreator.erstelleAufgabenJson(nachricht.getJson(), aufgabe);
+                        MessageCreator.erstelleAufgabenJson(nachricht.getJson(), aufgabe,benutzer);
                     }
 
                     break;
@@ -151,12 +147,12 @@ public class Controller {
 //                    DAO.setzePruefung(id, plattform, 
 //                            json.get("modul").getAsString());
                     break;
-                case METHODE_NEUEAUFGABE:
-                    //Hier gucken wer darf und wer nicht
-                    long thema = json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong();
-                    
-                    DAO.neueAufgabe(thema,json.getAsJsonObject(AUFGABE_OBJEKT));
-                    break;
+//                    --------- nicht mehr vorgesehen -----------
+//                case METHODE_NEUEAUFGABE:
+//                    long thema = json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong();
+//
+//                    DAO.neueAufgabe(benutzer,thema,json.getAsJsonObject(AUFGABE_OBJEKT));
+//                    break;
                 case METHODE_GIBKLAUSURINFOS:
 //                    Klausur klausur = DAO.gibKlausur(id, plattform, 
 //                            json.get("modul").getAsString());
@@ -165,9 +161,9 @@ public class Controller {
 //                            plattform,witSession, klausur, null);
                     break;
                 case METHODE_BEWERTEAUFGABE:
-                    //Es gilt zu pruefen ob der benutzer das auch darf
+                    DAO.bewerteAufgabe(benutzer,json.get(AUFGABE).getAsLong(),
+                                json.get("bewerte").getAsBoolean());
                     
-                    DAO.bewerteAufgabe(json.get(AUFGABE).getAsLong(), json.get("bewerte").getAsBoolean());
                     break;
                 case METHODE_GIBMODULE:
                     DAO.gibNichtangemeldete(json, benutzer);

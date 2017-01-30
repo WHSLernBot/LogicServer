@@ -4,31 +4,29 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Die Primary Key Klasse von BeAufgabe. Fuer mehr Infos siehe BeAufgabe.
+ * Primary Key Klasse von Bewertung.
  * 
  * @author Seve
  */
-public class BeAufgabePK implements Serializable {
+public class BewertungPK implements Serializable {
     
-    private static final long serialVersionUID = 1L;
+    private Long aufgabe;
     
     private LernStatusPK lernStatus;
-    
-    private int kennung;
 
-    public BeAufgabePK() {
+    public BewertungPK(Long aufgabe, LernStatusPK lernStatus) {
+        this.aufgabe = aufgabe;
+        this.lernStatus = lernStatus;
     }
 
-    public BeAufgabePK(LernStatusPK lernStatus, int kennung) {
-        this.lernStatus = lernStatus;
-        this.kennung = kennung;
+    public BewertungPK() {
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.lernStatus);
-        hash = 89 * hash + this.kennung;
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.aufgabe);
+        hash = 67 * hash + Objects.hashCode(this.lernStatus);
         return hash;
     }
 
@@ -43,8 +41,8 @@ public class BeAufgabePK implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final BeAufgabePK other = (BeAufgabePK) obj;
-        if (this.kennung != other.kennung) {
+        final BewertungPK other = (BewertungPK) obj;
+        if (!Objects.equals(this.aufgabe, other.aufgabe)) {
             return false;
         }
         if (!Objects.equals(this.lernStatus, other.lernStatus)) {
@@ -53,7 +51,8 @@ public class BeAufgabePK implements Serializable {
         return true;
     }
 
-
-
-   
+    
+    
+    
+    
 }

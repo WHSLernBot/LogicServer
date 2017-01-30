@@ -1,6 +1,7 @@
 package Message;
 
 
+import DAO.DAO;
 import Entitys.Antwort;
 import Entitys.Klausur;
 import Entitys.Aufgabe;
@@ -28,6 +29,8 @@ public class MessageCreator {
     private static final String AUFGABE_VERWEIS = "verweis";
     private static final String AUFGABE_HINWEIS = "hinweis";
     private static final String AUFGABE_ID = "id";
+    private static final String AUFGABE_BEWERTEN = "bewerten";
+    private static final String AUFGABE_DARFBEWERTEN = "darfBewerten";
     private static final String AUFGABE_ANTWORT_ARRAY = "antworten";
     
     private static final String AUFGABE_ANTWORT_ANTWORT = "antwort";
@@ -48,6 +51,8 @@ public class MessageCreator {
     private static final String NACHRICHT = "nachricht";
     private static final String FEHLER = "nachricht";
     
+    private static final int BEWERTUNG_ABFRAGE = 8;
+    
     private static enum TEXTE {
         AUFGABE,KLAUSUR,UNI,INFO
     };
@@ -58,15 +63,21 @@ public class MessageCreator {
      * 
      * @param nachricht
      * @param aufgabe Aufgabe fuer den Nutzer.
+     * @param b Der Benutzer, der die Aufgabe bekommt.
      */
-    public static void erstelleAufgabenJson(JsonObject nachricht, Aufgabe aufgabe) {
+    public static void erstelleAufgabenJson(JsonObject nachricht, Aufgabe aufgabe, CBBenutzer b) {
         
         JsonObject jAufgabe = new JsonObject();
+        
+        boolean darfBew = DAO.darfBewerten(aufgabe, b);
         
         jAufgabe.addProperty(AUFGABE_FRAGE, aufgabe.getFrage());
         jAufgabe.addProperty(AUFGABE_VERWEIS, aufgabe.getVerweis());
         jAufgabe.addProperty(AUFGABE_HINWEIS, aufgabe.getHinweis());
         jAufgabe.addProperty(AUFGABE_ID, aufgabe.getAufgabenID());
+        jAufgabe.addProperty(AUFGABE_DARFBEWERTEN, darfBew);
+        
+        jAufgabe.addProperty(AUFGABE_BEWERTEN, (darfBew && (aufgabe.getBewertung() <= BEWERTUNG_ABFRAGE)));
         
         Collection<Antwort> antworten = aufgabe.getAntworten();
         

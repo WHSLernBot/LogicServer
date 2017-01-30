@@ -87,6 +87,12 @@ public class Aufgabe implements Serializable {
      */
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Token> token;
+    
+    /**
+     * Alle Bewertungen der Aufgabe.
+     */
+    @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Collection<Bewertung> bewertungen;
 
     public Aufgabe(){    
     }
@@ -209,6 +215,10 @@ public class Aufgabe implements Serializable {
 
     public short getAnzAntworten() {
         return anzAntworten;
+    }
+
+    public Collection<Bewertung> getBewertungen() {
+        return bewertungen;
     }
     
     @Override
