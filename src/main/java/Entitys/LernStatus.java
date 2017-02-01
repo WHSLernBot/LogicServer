@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 /**
  * Diese Klasse stellt einen LernStatus dar, der den Fortschritt eines Benutzers
@@ -41,7 +40,13 @@ public class LernStatus implements Serializable {
     /**
      * Falls true, so hat der Benutzer dieses Thema noch nicht abgeschlossen.
      */
-    private Boolean aktiv;
+    private boolean aktiv;
+    
+    /**
+     * Falls true, wurde dieses Modul ervolgreich bearbeitet.
+     */
+    private boolean beendet;
+    
     
     /**
      * Summe der richtig beantowrteten Aufgaben.
@@ -103,6 +108,7 @@ public class LernStatus implements Serializable {
         this.benutzer = benutzer;
         this.thema = thema;
         this.aktiv = true;
+        this.beendet = false;
         this.richtige = 0;
         this.sumPunkte = 0;
         this.geloest = 0;
@@ -113,12 +119,20 @@ public class LernStatus implements Serializable {
         kennungZu = 0;
     }
     
-    public void setAktiv(Boolean aktiv){
+    public void setAktiv(boolean aktiv){
         this.aktiv = aktiv;
     }
     
     public boolean istAktiv(){
         return aktiv;
+    }
+
+    public boolean isBeendet() {
+        return beendet;
+    }
+
+    public void setAsBeendet() {
+        this.beendet = true;
     }
     
     public void richtigGeloest(){
@@ -149,8 +163,8 @@ public class LernStatus implements Serializable {
         return beAufgaben;
     }
 
-    public void addBeAufgaben(Aufgabe aufgabe, Boolean richtig, 
-            Date datum, Boolean hinweis, Boolean beantwortet) {
+    public void addBeAufgaben(Aufgabe aufgabe, boolean richtig, 
+            Date datum, boolean hinweis, boolean beantwortet) {
         
         
         this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennungBe,richtig,datum,

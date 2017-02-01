@@ -8,8 +8,10 @@ import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import main.CBBenutzer;
 import main.CBPlattform;
 import main.ChatBotManager;
@@ -20,13 +22,6 @@ import main.ChatBotManager;
  */
 public class DAO {
     
-    private static final String MODULE_ARRAY = "module";
-    private static final String MODULE_NAME = "name";
-    private static final String MODULE_KUERZEL = "kuerzel";
-    private static final String MODULE_THEMEN_ARRAY = "themen";
-    private static final String MODULE_THEMEN_NAME = "name";
-    private static final String MODULE_THEMEN_ID = "id";
-    
     private static final String AUFGABE_OBJEKT = "aufgabe";
     private static final String AUFGABE_FRAGE = "frage";
     private static final String AUFGABE_VERWEIS = "verweis";
@@ -34,6 +29,13 @@ public class DAO {
     private static final String AUFGABE_ID = "id";
     private static final String AUFGABE_TOKEN_ARRAY = "token";
     private static final String AUFGABE_ANTWORT_ARRAY = "antworten";
+    
+    private static final String MODULE_ARRAY = "module";
+    private static final String MODULE_NAME = "name";
+    private static final String MODULE_KUERZEL = "kuerzel";
+    private static final String MODULE_THEMEN_ARRAY = "themen";
+    private static final String MODULE_THEMEN_NAME = "name";
+    private static final String MODULE_THEMEN_ID = "id";
     
     private static final String AUFGABE_ANTWORT_ANTWORT = "antwort";
     private static final String AUFGABE_ANTWORT_RICHTIG = "richtig";
@@ -91,19 +93,48 @@ public class DAO {
             + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b "
             + "and l.klausur = k and b.id = :ID";
     
-    private static final String GIB_KLAUSUR = "select object(k) "
-            + "from Klausur k, Modul m where k.kuerzel = m";
+//    private static final String GIB_KLAUSUR = "select object(k) "
+//            + "from Klausur k, Modul m where k.kuerzel = m";
     
     private static final String GIB_MODUL = "select object(m) "
             + "from Modul m where m.kuerzel";
     
+    private static final String GIB_MODULE = "select object(m) "
+            + "from Modul m, LernStatus ls, Thema t "
+            + "where ls.BENUTZER_ID = :BID, and ls.AKTIV = true "
+            + "and ls.Beendet = false and ls.THEMA_THEMENID = t.THEMENID and "
+            + "t.Modul_Kuerzel = m.KUERZEL and t.MODUL_UNI_ID = m.UNI_ID";
+    
     private static final String GIB_NOT_MODULE = "select object(mod) "
             + "from Modul mod "
-            + "where mod.UNI_ID = :UID and NOT EXISTS( "
+            + "where mod.UNI_ID = :UID and (NOT EXISTS "
             + "select m "
             + "from Modul m, Thema t, LernStatus ls "
             + "where ls.BENUTZER_ID = :BID and ls.THEMA_THEMENID = t.THEMENID "
             + "and m.KUERZEL = t.MODUL_KUERZEL)";
+    
+    private static final String GIB_PRUEFUNGSPERIODEN = "select object(p) "
+            + "from Pruefungsperiode p"
+            + "where p.UNI_ID = :UID and p.ANFANG > :HEUTE";
+    
+    private static final String GIB_TEILNAHME = "select object (t) "
+            + "from Teilnahme t, Benutzer b "
+            + "where b.ID = :BID and t.Benutzer_ID = b.ID and "
+            + "t.MODUL_UNI_ID = b.UNI_ID and t.KLAUSUR_PERIODE_UNI_ID = b.UNI_ID and "
+            + "t.KLAUSUR_PERIODE_PHASE = :PHA and t.KLAUSUR_PERIODE_JAHR = :JAHR and "
+            + "t.KLAUSUR_PERIODE_KUERZEL = :KRZ and t.NOTE < 50";
+    
+    private static final String SUCHE_TEILNAHME = "select object (t) "
+            + "from Teilnahme t, Benutzer b "
+            + "where b.ID = :BID and t.Benutzer_ID = b.ID and "
+            + "t.MODUL_UNI_ID = b.UNI_ID and t.KLAUSUR_PERIODE_UNI_ID = b.UNI_ID and "
+            + "t.KLAUSUR_PERIODE_KUERZEL = :KRZ and t.NOTE = 0";
+    
+    private static final String GIB_INAKTIVE_MODULE = "select object(m) "
+            + "from Modul m, LernStatus ls, Thema t "
+            + "where ls.BENUTZER_ID = :BID, and ls.AKTIV = false "
+            + "and ls.Beendet = false and ls.THEMA_THEMENID = t.THEMENID and "
+            + "t.Modul_Kuerzel = m.KUERZEL and t.MODUL_UNI_ID = m.UNI_ID";
     
     private static final String LOESCHE_ZUAUFGABEN = "delete from ZuAufgabe "
             + "where LERNSTATUS_BENUTZER_ID = :ID "
@@ -131,7 +162,7 @@ public class DAO {
     
     /**
      * Gibt die naechste zu loesende Aufgabe eines Lernstatus aus und traegt diese
-     * in die bearebeitenden Aufgaben ein. Außerdem berechnet er die Aufgaben
+     * in die bearebeitenden Aufgaben ein. Ausserdem berechnet er die Aufgaben
      * neu, falls keine mehr vorliegen.
      * 
      * @param ls
@@ -596,34 +627,105 @@ public class DAO {
     }
     
     /**
-     * Diese Methode legt das Datum der entsprechende Modulpruefung fest, um dem
-     * Benutzer fuer die Pruefung zu erinnern.
-     * ---------------------------------- Nochmal ueberarbeiten
-     * @param id ID der Plattform.
+     * Diese Methode legt eine Klausurteilnahme an, falls der Benutzer 
+     * nicht schon angemeldet ist.
+     * 
+     * @param b Der Benutzer.
      * @param modul Das entsprechende Modul.
+     * @param periode Die Pruefungsperiode der Klausur.
+     * @param jahr Das Jahr der Klausur.
+     * @throws java.lang.Exception
      */
-    public static void setzePruefung(long id, String modul) {
+    public static void meldePruefungAn(CBBenutzer b, String modul, short periode, short jahr) throws Exception {
         
-        Query q = EMH.getEntityManager().createQuery(GIB_MODUL);
+        Teilnahme t;
+        Klausur k;
+        LernStatus ls;
+
+        //Pruefen ob anmeldent moeglich
         
-        q.setParameter("ID", id);
-        q.setParameter("Modul", modul);
+        try {
+            synchronized (b) {
+                PruefungsperiodePK pPK = new PruefungsperiodePK(jahr, b.getBenutzer().getUni().getId(), periode);
+                ModulPK mPK = new ModulPK(b.getBenutzer().getUni().getId(), modul);
+                k = EMH.getEntityManager().find(Klausur.class, new KlausurPK(mPK, pPK));
+
+                t = new Teilnahme(b.getBenutzer(), k);
+
+                Modul m = EMH.getEntityManager().find(Modul.class, mPK);
+                ls = EMH.getEntityManager().find(LernStatus.class,
+                        new LernStatusPK(b.getBenutzer().getId(), m.getThemen().iterator().next().getId()));
+            }
+        } catch(Exception e) {
+            throw new Exception("Fehlerhafte Angaben.");
+        }
+
+        if (ls == null) {
+            throw new Exception("Sie haben sich fuer das entsprechende Modul noch garnicht angemeldet.");
+        }
         
-        Klausur k = (Klausur) q.getResultList().get(0);
+        //Pruefen ob schon teilnahme existiert
+        
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_TEILNAHME);
+        
+        q.setParameter("BID", b.getBenutzer().getId());
+        q.setParameter("KRZ", modul);
+        q.setParameter("PHA", periode);
+        q.setParameter("JAHR", jahr);
+        
+        if(!q.getResultList().isEmpty()) {
+            throw new Exception("Sie sind schon an der Klausur angemeldet oder haben Sie schon bestanden.");
+        }
+        
+        //Teilnahme speichern
         
         try {
             EMH.beginTransaction();
             
-            k.setDatum(gibDatum());
-            
-            EMH.getEntityManager().persist(k); 
-            
-            
+            EMH.persist(t); 
+             
             EMH.commit();
             
         } catch (Exception e) {
             EMH.rollback();
+            throw new Exception("Die Klausurteilnahme konnte nicht angemldet werden.");
         }
+    }
+    
+    /**
+     * Diese Methode meldet einen Benutzer von einer Pruefungsteilnahme wieder ab.
+     * 
+     * @param b Der Benutzer.
+     * @param modul Das Modul dessen Pruefung abgemeldet werden soll.
+     * @throws java.lang.Exception 
+     */
+    public static void meldePruefungAb(CBBenutzer b, String modul) throws Exception {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        
+        synchronized(b) {
+            q.setParameter("BID", b.getBenutzer().getId());
+            q.setParameter("KRZ", modul);
+        }
+        
+        List result = q.getResultList();
+          
+        try {
+
+            EMH.beginTransaction();
+
+            //Normalerweise immer nur ein ergebniss, aber sicherheitshalber
+            for(Object o: result) {
+                Teilnahme t = (Teilnahme) o;
+                EMH.remove(t);  
+            }
+
+            EMH.commit();
+        } catch(Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Pruefung konnte nicht abgemeldet werden.");
+        }
+            
     }
     
     /**
@@ -645,46 +747,144 @@ public class DAO {
         return ls;
     }
     
-    /**
-     * Diese Methode fuegt einem JSON alle Module hinzu, fuer die sich ein 
-     * Benutzer noch NICHT(!) angemeldet hat.
+     /**
+     * Gibt alle Module als Liste aus, fuer die sich ein Benutzer angemeldet hat.
      * 
-     * @param nachricht 
      * @param b 
+     * @return  
      */
-    public static void gibNichtangemeldete(JsonObject nachricht, CBBenutzer b) {
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_NOT_MODULE);
+    public static List gibAngemeldete(CBBenutzer b) {
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_MODULE);
         
         synchronized(b) {
-            q.setParameter("UID", b.getBenutzer().getUni().getId());
             q.setParameter("BID", b.getBenutzer().getId());
         }
        
         List result = q.getResultList();
         
-        JsonArray module = new JsonArray();
-        for(Object o : result) {
-            Modul m = (Modul) o;
-            
-            JsonObject mod = new JsonObject();
-            
-            mod.addProperty(MODULE_KUERZEL, m.getKuerzel());
-            mod.addProperty(MODULE_NAME, m.getName());
-            
-            module.add(mod);
-            
-        }
-        nachricht.add(MODULE_ARRAY, module);
+        return result;
     }
     
     /**
+     * Gibt alle Module als Liste aus, fuer die sich ein Benutzer NICHT 
+     * angemeldet hat, oder die inaktiv sind.
+     * 
+     * @param b 
+     * @return  
+     */
+    public static List gibNichtangemeldete(CBBenutzer b) {
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_NOT_MODULE);
+        Query qu = EMH.getEntityManager().createNamedQuery(GIB_INAKTIVE_MODULE);
+        
+        synchronized(b) {
+            q.setParameter("UID", b.getBenutzer().getUni().getId());
+            q.setParameter("BID", b.getBenutzer().getId());
+            qu.setParameter("BID", b.getBenutzer().getId());
+        }
+       
+        List result = q.getResultList();
+        result.addAll(qu.getResultList());
+        
+        return result;
+    }
+    
+    /**
+     * Diese Methode gib eine Liste aller Klausuren aus, fuer die sich ein Benutezr 
+     * anmeldet kann.
      * 
      * @param b
+     * @param modul
      * @return 
+     * @throws java.lang.Exception 
      */
-//    public static boolean darfBearbeiten(CBBenutzer b) {
-//        return true;
-//    }
+    public static List<Klausur> gibPruefungen(CBBenutzer b, String modul) throws Exception {
+        
+        Query qPeriode = EMH.getEntityManager().createNamedQuery(GIB_PRUEFUNGSPERIODEN);
+        
+        Query qTeilnahme = EMH.getEntityManager().createNamedQuery(GIB_TEILNAHME);
+        
+        ModulPK mPK;
+        LernStatus ls;
+        synchronized(b) {
+            mPK = new ModulPK(b.getBenutzer().getUni().getId(),modul);   
+            qPeriode.setParameter("UID", b.getBenutzer().getUni().getId());
+            qPeriode.setParameter("HEUTE", gibDatum(),TemporalType.DATE);
+            qTeilnahme.setParameter("BID", b.getBenutzer().getId());
+            qTeilnahme.setParameter("KRZ", modul);
+            Modul m = EMH.getEntityManager().find(Modul.class, mPK);
+            ls = EMH.getEntityManager().find(LernStatus.class, 
+                    new LernStatusPK(b.getBenutzer().getId(), m.getThemen().iterator().next().getId()));
+        }
+        
+        if(ls == null) {
+            throw new Exception("Sie sind garnicht fuer das Modul angemeldet.");
+        }
+        
+        List result = qPeriode.getResultList();
+        List<Klausur> klausuren = new LinkedList<>();
+        
+        for(Object o : result) {
+            Pruefungsperiode p = (Pruefungsperiode) o;
+            
+            
+            
+            PruefungsperiodePK pPK = p.gibPK();
+            
+            Klausur k = EMH.getEntityManager().find(Klausur.class, new KlausurPK(mPK, pPK));
+            
+            qTeilnahme.setParameter("PHA", p.getPhase());
+            qTeilnahme.setParameter("JAHR", p.getJahr());
+            
+            if(qTeilnahme.getResultList().isEmpty()) {
+                klausuren.add(k);
+            }
+        }
+        
+        
+        return klausuren;
+        
+    }
+    
+    /**
+     * Diese Methode schreibt die Note eines Benutzers in die Datenbank.
+     * 
+     * @param b
+     * @param modul
+     * @param note
+     * @throws Exception 
+     */
+    public static void speichereNote(CBBenutzer b, String modul, short note) throws Exception {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        
+        synchronized(b) {
+            q.setParameter("BID", b.getBenutzer().getId());
+            q.setParameter("KRZ", modul);
+        }
+        
+        List result = q.getResultList();
+        
+        try {
+
+            EMH.beginTransaction();
+
+            Teilnahme t = (Teilnahme) result.get(0);
+            t.setNote(note);
+
+            EMH.merge(t);
+            EMH.commit();
+        } catch(Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Note konnte nicht gespeichert werden.");
+        }
+        
+        //Modul als inaktiv kennzeichnen
+        setzeInaktiv(b,modul);
+        
+        //Sollten weitere Anmeldungen (weshalb auch immer) exestieren.
+        meldePruefungAb(b,modul);
+        
+    }   
     
     /**
      * Diese Methode meldet einen Benutzer bei einem Modul an und erstellt dort
@@ -704,9 +904,19 @@ public class DAO {
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
                 Date datum = gibDatum();
+                
+                
                 for(Thema t : m.getThemen()) {
-
-                    EMH.persist(new LernStatus(be,t,datum));
+                    LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
+                    if(ls == null) {
+                        EMH.persist(new LernStatus(be,t,datum));  
+                    } else {
+                        if(ls.isBeendet()) {
+                            throw new Exception("Dieses Modul haben Sie schon erfolgreich absolviert.");
+                        }
+                        ls.setAktiv(true);
+                        EMH.merge(ls);
+                    }
 
                 }
             }
@@ -718,6 +928,70 @@ public class DAO {
         }
     
         ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
+        
+    }
+    
+    /**
+     * Setzt alle Lernstadi eines Moduls des Benutzers auf inaktiv.
+     * 
+     * @param b Der Benutzer.
+     * @param modul Das entsprechende Modul.
+     * @throws Exception 
+     */
+    public static void setzeInaktiv(CBBenutzer b, String modul) throws Exception {
+        
+        try {
+            EMH.beginTransaction();
+            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+
+            synchronized(b) {
+                Benutzer be = b.getBenutzer();
+                for(Thema t : m.getThemen()) {
+
+                    LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
+
+                    ls.setAktiv(false);
+                    EMH.merge(ls);
+                }
+            }
+            
+            EMH.commit();
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Modul konnte nicht als inaktiv gekennzeichent werden.");
+        }
+        
+    }
+    
+    /**
+     * Setzt alle Lernstadi eines Moduls des Benutzers auf beendet.
+     * 
+     * @param b Der Benutzer.
+     * @param modul Das entsprechende Modul.
+     * @throws Exception 
+     */
+    public static void setzeBeendet(CBBenutzer b, String modul) throws Exception {
+        
+        try {
+            EMH.beginTransaction();
+            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+
+            synchronized(b) {
+                Benutzer be = b.getBenutzer();
+                for(Thema t : m.getThemen()) {
+
+                    LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
+
+                    ls.setAsBeendet();
+                    EMH.merge(ls);
+                }
+            }
+            
+            EMH.commit();
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Modul konnte nicht als beendet gekennzeichent werden.");
+        }
         
     }
     
@@ -955,34 +1229,34 @@ public class DAO {
 //        }
 //    }
 
-    /**
-     * 
-     * ----------------------------
-     * 
-     * @param id
-     * @param plattform
-     * @param modul
-     * @return 
-     */
-    public static Klausur gibKlausur(long id, short plattform, String modul) {
-        
-        Query q = EMH.getEntityManager().createQuery(GIB_KLAUSUR);
-        
-        q.setParameter("ID", id);
-        q.setParameter("Plattform", plattform);
-        
-        Klausur k = (Klausur) q.getResultList().get(0);
-        
-        try{
-            EMH.beginTransaction();
-            EMH.getEntityManager().persist(k);
-            EMH.commit();
-            
-        } catch (Exception e) {
-            EMH.rollback();
-        }
-        
-        return k;     
-    }
+//    /**
+//     * 
+//     * ----------------------------
+//     * 
+//     * @param id
+//     * @param plattform
+//     * @param modul
+//     * @return 
+//     */
+//    public static Klausur gibKlausur(long id, short plattform, String modul) {
+//        
+//        Query q = EMH.getEntityManager().createQuery(GIB_KLAUSUR);
+//        
+//        q.setParameter("ID", id);
+//        q.setParameter("Plattform", plattform);
+//        
+//        Klausur k = (Klausur) q.getResultList().get(0);
+//        
+//        try{
+//            EMH.beginTransaction();
+//            EMH.getEntityManager().persist(k);
+//            EMH.commit();
+//            
+//        } catch (Exception e) {
+//            EMH.rollback();
+//        }
+//        
+//        return k;     
+//    }
    
 }

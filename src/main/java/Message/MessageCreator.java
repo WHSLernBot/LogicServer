@@ -6,11 +6,14 @@ import Entitys.Antwort;
 import Entitys.Klausur;
 import Entitys.Aufgabe;
 import Entitys.LernStatus;
+import Entitys.Modul;
 import Entitys.Uni;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import main.CBBenutzer;
 /**
  * Die Klasse MessageCreator stellt Methoden zur Verfuegung, um aus Objekten,
@@ -47,7 +50,22 @@ public class MessageCreator {
     private static final String KLAUSUR_DAUER = "dauer";
     private static final String KLAUSUR_PERIODE = "periode";
     private static final String KLAUSUR_UHRZEIT = "uhrzeit";
+    private static final String KLAUSUR_MODUL = "modul";
     
+    private static final String MODULE_ARRAY = "module";
+    private static final String MODULE_NAME = "name";
+    private static final String MODULE_KUERZEL = "kuerzel";
+    private static final String MODULE_THEMEN_ARRAY = "themen";
+    private static final String MODULE_THEMEN_NAME = "name";
+    private static final String MODULE_THEMEN_ID = "id";
+    
+    private static final String PRUEFUNG_ARRAY = "pruefungen";
+    private static final String PRUEFUNG_PERIODE = "periode";
+    private static final String PRUEFUNG_JAHR = "jahr";
+    private static final String PRUEFUNG_DATUM = "datum";
+    private static final String PRUEFUNG_UHRZEIT = "uhrzeit";
+    private static final String PRUEFUNG_TYP = "typ";
+            
     private static final String NACHRICHT = "nachricht";
     private static final String FEHLER = "nachricht";
     
@@ -176,6 +194,62 @@ public class MessageCreator {
         nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
     }
     
+    
+    /**
+     * Erstellt aus einer Liste aus Modulen alle Module fuer das JSON.
+     * 
+     * @param nachricht
+     * @param mo 
+     */
+    public static void erstlleModulListe(JsonObject nachricht, List mo) {
+        JsonArray module = new JsonArray();
+        for(Object o : mo) {
+            Modul m = (Modul) o;
+            
+            JsonObject mod = new JsonObject();
+            
+            mod.addProperty(MODULE_KUERZEL, m.getKuerzel());
+            mod.addProperty(MODULE_NAME, m.getName());
+            
+            module.add(mod);
+            
+        }
+        nachricht.add(MODULE_ARRAY, module);
+    }
+    
+    public static void erstlleKlausurListe(JsonObject nachricht, List<Klausur> klausuren) {
+        
+        JsonArray pruefungen = new JsonArray();
+        
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+        
+        String kuerzel = "";
+        
+        for(Klausur k : klausuren) {
+            
+            if(kuerzel.equals("")) {
+                kuerzel = k.getModul().getKuerzel();
+            }
+            
+            JsonObject p = new JsonObject();
+            
+            p.addProperty(PRUEFUNG_PERIODE, k.getPruefungsperiode().getPhase());
+            p.addProperty(PRUEFUNG_JAHR, k.getPruefungsperiode().getJahr());
+            p.addProperty(PRUEFUNG_DATUM, sdfDate.format(k.getDatum()));
+            p.addProperty(PRUEFUNG_UHRZEIT, sdfTime.format(k.getUhrzeit()));
+            p.addProperty(PRUEFUNG_TYP, k.getTyp());
+            
+            pruefungen.add(p);
+        }
+        
+        JsonObject klausur = new JsonObject();
+        klausur.addProperty(KLAUSUR_MODUL, kuerzel);
+        klausur.add(PRUEFUNG_ARRAY, pruefungen);
+        
+        nachricht.add(KLAUSUR_OBJEKT, klausur);
+        
+    }
     
     /**
      * Erzeugt einen Text, fuer die entsprechende Methode.

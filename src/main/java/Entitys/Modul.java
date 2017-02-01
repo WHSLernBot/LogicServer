@@ -94,8 +94,8 @@ public class Modul implements Serializable {
         return klausuren;
     }
 
-    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel) {
-        this.klausuren.add(new Klausur(this,pruefungsperiode,datum,uhrzeit,dauer,ort,hilfsmittel));
+    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel,String typ) {
+        this.klausuren.add(new Klausur(this,pruefungsperiode,datum,uhrzeit,dauer,ort,hilfsmittel,typ));
     }
 
     public Collection<Statistik> getStatistiken() {

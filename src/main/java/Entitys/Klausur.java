@@ -83,9 +83,14 @@ public class Klausur implements Serializable {
      */
     private int quotient;
     
+    /**
+     * Die art der klausur(muendlich,schriftlich, .. ).
+     */
+    private String typ;
+    
     public Klausur(){}
     
-    public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel){
+    public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel, String typ){
         
         this.modul = modul;
         this.periode = pruefungsperiode;
@@ -96,6 +101,11 @@ public class Klausur implements Serializable {
         this.durchschnitt = 0;
         this.hilfsmittel = hilfsmittel;
         this.quotient = 0;
+        this.typ = typ;
+    }
+
+    public String getTyp() {
+        return typ;
     }
     
     public void setDatum(Date datum){

@@ -77,7 +77,7 @@ public class Pruefungsperiode implements Serializable {
         return uni;
     }
     
-    public int getJahr(){
+    public short getJahr(){
         return jahr;
     }
     
@@ -119,6 +119,10 @@ public class Pruefungsperiode implements Serializable {
 
     public void setEnde(Date ende) {
         this.ende = ende;
+    }
+    
+    public PruefungsperiodePK gibPK() {
+        return new PruefungsperiodePK(jahr,uni.getId(),phase);
     }
 
     @Override
