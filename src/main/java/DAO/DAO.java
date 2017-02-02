@@ -89,15 +89,11 @@ public class DAO {
             + "where LERNSTATUS_BENUTZER_ID = :BID "
             + "order by KENNUNG ASC";
     
-    private static final String GIB_NOTE = "select object(t) "
-            + "from Teilnahme t, Klausur k, Benutzer b where t.benutzer = b "
-            + "and l.klausur = k and b.id = :ID";
-    
-//    private static final String GIB_KLAUSUR = "select object(k) "
-//            + "from Klausur k, Modul m where k.kuerzel = m";
-    
-    private static final String GIB_MODUL = "select object(m) "
-            + "from Modul m where m.kuerzel";
+    private static final String GIB_LERNSTADI = "select object(l) "
+            + "from Benutzer b, LernStatus l, Thema t, Modul m "
+            + "where b.ID = :BID and l.BENUTZER_ID = b.ID and "
+            + "l.THEMA_THEMENID = t.THEMENID and t.MODUL_KUERZEL = :KRZ and "
+            + "t.MODUL_UNI_ID = b.UNI_ID";
     
     private static final String GIB_MODULE = "select object(m) "
             + "from Modul m, LernStatus ls, Thema t "
@@ -484,14 +480,14 @@ public class DAO {
     /**
      * Diese Funktion speichert eine vom Benutzer gegebene Antwort ab.
      * 
-     * @param id des Benutzers
+     * @param b
      * @param aufgabe id der Aufgabe
      * @param kennung kennummer der beAufgabe
      * @param antwort nummer der Antwort
      * @param hinweis true falls ein hinweis benoetigt wurde
      * @throws Exception 
      */
-    public static void speichereAntwort(long id, long aufgabe, int kennung,
+    public static void speichereAntwort(CBBenutzer b, long aufgabe, int kennung,
             short antwort, boolean hinweis) throws Exception {
         
         try {
@@ -512,7 +508,7 @@ public class DAO {
             
             q = EMH.getEntityManager().createQuery(GIB_BEAUFGABE);
             q.setParameter("AID", aufgabe);
-            q.setParameter("BID", id);
+            q.setParameter("BID", b.getBenutzer().getId());
             q.setParameter("K", kennung);
             
             BeAufgabe be = (BeAufgabe) q.getResultList().get(0);
@@ -886,6 +882,21 @@ public class DAO {
         
     }   
     
+    public static Klausur gibKlausur(CBBenutzer b, String modul) {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        
+        synchronized(b) {
+            q.setParameter("BID", b.getBenutzer().getId());
+            q.setParameter("KRZ", modul);
+        }
+        
+        List result = q.getResultList();
+        
+        return ((Teilnahme) result.get(0)).getKlausur();
+        
+    }
+    
     /**
      * Diese Methode meldet einen Benutzer bei einem Modul an und erstellt dort
      * die entsprechenden LernStadi. Dannach berechnet er alle Aufgaben fuer
@@ -1139,6 +1150,18 @@ public class DAO {
         
         q.executeUpdate();
            
+    }
+    
+    public static List gibLernstadi(CBBenutzer b, String modul) {
+        
+         Query q = EMH.getEntityManager().createQuery(GIB_LERNSTADI);
+        
+         synchronized(b) {
+             q.setParameter("BID", b.getBenutzer().getId());
+             q.setParameter("KRZ", modul);
+         }
+         
+         return q.getResultList();
     }
     
     //------------ Methoden zur Auslese der Datenbank --------------------------

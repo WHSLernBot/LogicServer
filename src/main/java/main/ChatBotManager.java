@@ -6,10 +6,12 @@ import Entitys.Benutzer;
 import Message.MessageHandler;
 import Message.Nachricht;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,6 +21,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Seve
  */
 public class ChatBotManager {
+    
+    private static final int LOESCHPHASE_MINTUEN = 15;
     
     private static ChatBotManager manager;
     
@@ -30,7 +34,9 @@ public class ChatBotManager {
     
     private final Calendar calendar;
     
-    private Timer timer;
+    private final Timer nachrichtenTimer;
+    
+    private final Timer loeschTimer;
     
     private final Lock nachrichtenLock;
     
@@ -44,6 +50,13 @@ public class ChatBotManager {
         
         nachrichtenLock = new ReentrantLock();
         benutzerLock = new ReentrantLock();
+        
+        loeschTimer =  new Timer();
+        nachrichtenTimer = new Timer();
+        
+        long dauer = LOESCHPHASE_MINTUEN * 60 * 1000;
+        
+        loeschTimer.schedule(new CBBot(), dauer,dauer);
         
     }
     
@@ -107,6 +120,42 @@ public class ChatBotManager {
         
         return be;
         
+    }
+    
+    /**
+     * Diese Methode loescht alle CBBenutzer aus der Liste, die lange nicht mehr
+     * aktiv waren. Die Zeit wird in CBBenutzer bestimmt.
+     */
+    public void loesche() {
+        
+        benutzerLock.lock();
+        
+        try {
+            Timestamp jetzt = jetzt();
+
+            for(CBPlattform p : benutzer.keySet()) {
+
+                CBBenutzer b = benutzer.get(p);
+
+                boolean remove = false;
+
+                synchronized(b) {
+                    if(b.darfLoeschen(jetzt)) {
+                        remove = true;
+                    }
+                }
+
+                if(remove) {
+                    benutzer.remove(p);
+                }
+
+            }
+        } catch (Exception e) {
+            
+        } finally {
+            benutzerLock.unlock();
+        }
+
     }
     
     /**
@@ -194,7 +243,7 @@ public class ChatBotManager {
         
         Timestamp now = jetzt();
         
-        timer.cancel();
+        nachrichtenTimer.cancel();
         long dauer = 0;
         
         nachrichtenLock.lock();
@@ -218,7 +267,7 @@ public class ChatBotManager {
             nachrichtenLock.unlock();
         } 
         
-        timer.schedule(new MessageHandler(), dauer);
+        nachrichtenTimer.schedule(new MessageHandler(), dauer);
     }
      
 }

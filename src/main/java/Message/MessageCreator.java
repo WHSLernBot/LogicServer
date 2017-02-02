@@ -7,6 +7,7 @@ import Entitys.Klausur;
 import Entitys.Aufgabe;
 import Entitys.LernStatus;
 import Entitys.Modul;
+import Entitys.Thema;
 import Entitys.Uni;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -50,6 +51,7 @@ public class MessageCreator {
     private static final String KLAUSUR_DAUER = "dauer";
     private static final String KLAUSUR_PERIODE = "periode";
     private static final String KLAUSUR_UHRZEIT = "uhrzeit";
+    private static final String KLAUSUR_TYP = "typ";
     private static final String KLAUSUR_MODUL = "modul";
     
     private static final String MODULE_ARRAY = "module";
@@ -158,8 +160,9 @@ public class MessageCreator {
      * @param klausur Enthaelt alle Informatonen zur Klausur.
      */
     public static void erstelleKlausurInfoJson(JsonObject nachricht, Klausur klausur) {
-        JsonObject jKlausurinfo = new JsonObject();
         
+        
+        JsonObject jKlausurinfo = new JsonObject();   
         
         jKlausurinfo.addProperty(KLAUSUR_HILFSMITTEL,klausur.getHilfsmittel());
         jKlausurinfo.addProperty(KLAUSUR_ORT,klausur.getOrt());
@@ -167,6 +170,7 @@ public class MessageCreator {
         //Periode vielleicht als Objet mit infos
         jKlausurinfo.addProperty(KLAUSUR_PERIODE,klausur.getPruefungsperiode().getAnfang().toString());
         jKlausurinfo.addProperty(KLAUSUR_UHRZEIT,klausur.getUhrzeit().toString());
+        jKlausurinfo.addProperty(KLAUSUR_TYP, klausur.getTyp());
         
         nachricht.add(KLAUSUR_OBJEKT, jKlausurinfo);     
         nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
@@ -181,17 +185,55 @@ public class MessageCreator {
      * @param benutzer
      */
     public static void erstelleBenutzerInfoNachricht(JsonObject nachricht, CBBenutzer benutzer) {
-        JsonObject jInfo = new JsonObject();
-        JsonObject jUni = new JsonObject();
-        
-        Collection<LernStatus> stadi = benutzer.getBenutzer().getLernStadi();
-        int i = 0;
-        for (LernStatus status : stadi) {
-            jUni.addProperty("status" + i, status.getSumPunkte());
-            i++;
-        }
-        nachricht.add("info", jInfo);     
+//        JsonObject jInfo = new JsonObject();
+//        
+//        Collection<LernStatus> stadi = benutzer.getBenutzer().getLernStadi();
+//        int i = 0;
+//        for (LernStatus status : stadi) {
+//            jUni.addProperty("status" + i, status.getSumPunkte());
+//            i++;
+//        }
+//        nachricht.add("info", jInfo);     
         nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
+    }
+    
+    /**
+     * Diese Methode erstellt einen genauen ueberblick ueber alle Themen eines 
+     * Moduls und wie gut sie der Benutzer bearbeitet hat.
+     * 
+     * --------- Das ganze kann noch mehr infos beinhalten --------------
+     * 
+     * @param nachricht
+     * @param b
+     * @param modul 
+     */
+    public static void erstelleModulInfoNachricht(JsonObject nachricht, CBBenutzer b, String modul) {
+        
+        List stadi = DAO.gibLernstadi(b, modul);
+        
+        String textmodul = " -- " + modul + " -- \n";
+         
+        String text = "";
+        double prozent = 0.0;
+        
+        for(Object o : stadi) {
+            
+            LernStatus s = (LernStatus) o;
+            Thema t = s.getThema();
+            
+            text = text + t.getName() + ":\n\t" + s.getRichtige() 
+                    + "/" + s.getGeloest() + " richtig geloest\n\t"
+                    + "zu " + s.getSumPunkte() + "% bereit fuer die Klausur\n\n";
+            
+            prozent = s.getSumPunkte() * t.getAnteil();
+            
+        }
+        
+        prozent = prozent / 100;
+        
+        textmodul = textmodul + "Unseren Berechnungen nach sind sie zu" + prozent + "% bereit fuer die Klausur";
+        
+        nachricht.addProperty(NACHRICHT, textmodul + "\n\n" + text);
     }
     
     

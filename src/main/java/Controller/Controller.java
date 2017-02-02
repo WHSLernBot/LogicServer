@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.DAO;
 import Entitys.Aufgabe;
+import Entitys.Klausur;
 import Entitys.LernStatus;
 import Entitys.Uni;
 import Message.MessageCreator;
@@ -31,6 +32,7 @@ public class Controller {
     private static final String METHODE_PRUEFUNG_ABMELDEN = "pruefungAbmelden";
     private static final String METHODE_NEUE_AUFGABE = "neueAufgabe";
     private static final String METHODE_GIB_KLAUSUR_INFOS = "gibKlausurInfos";
+    private static final String METHODE_GIB_MODUL_INFOS = "gibModulInfos";
     private static final String METHODE_BEWERTE_AUFGABE = "bewerteAufgabe";
     private static final String METHODE_GIB_NICHT_ANGEMELDETE_MODULE = "gibNAModule";
     private static final String METHODE_GIB_ANGEMELDETE_MOULE = "gibAnModule";
@@ -126,7 +128,7 @@ public class Controller {
                 case METHODE_SPEICHERE_ANTWORT:
                     
                     JsonObject ant = json.getAsJsonObject(ANTWORT_OBJEKT);
-                    DAO.speichereAntwort(id,
+                    DAO.speichereAntwort(benutzer,
                             json.get(AUFGABE).getAsLong(),
                             ant.get(ANTWORT_KENNUNG).getAsInt(),
                             ant.get(ANTWORT_NUMMER).getAsShort(),
@@ -163,11 +165,14 @@ public class Controller {
 //                    DAO.neueAufgabe(benutzer,thema,json.getAsJsonObject(AUFGABE_OBJEKT));
 //                    break;
                 case METHODE_GIB_KLAUSUR_INFOS:
-//                    Klausur klausur = DAO.gibKlausur(id, plattform, 
-//                            json.get("modul").getAsString());
-//
-//                    nachricht = MessageCreator.erstelleKlausurInfoJson(id, 
-//                            plattform,witSession, klausur, null);
+                    Klausur klausur = DAO.gibKlausur(benutzer,
+                            json.get("modul").getAsString());
+
+                    MessageCreator.erstelleKlausurInfoJson(nachricht.getJson(), klausur);
+                    break;
+                case METHODE_GIB_MODUL_INFOS:
+                    
+                    MessageCreator.erstelleModulInfoNachricht(nachricht.getJson(), benutzer, json.get(MODUL).getAsString());
                     break;
                 case METHODE_BEWERTE_AUFGABE:
                     DAO.bewerteAufgabe(benutzer,json.get(AUFGABE).getAsLong(),
@@ -175,7 +180,7 @@ public class Controller {
                     
                     break;
                 case METHODE_GIB_NICHT_ANGEMELDETE_MODULE:
-                    MessageCreator.erstlleModulListe(json, DAO.gibNichtangemeldete(benutzer));
+                    MessageCreator.erstlleModulListe(nachricht.getJson(), DAO.gibNichtangemeldete(benutzer));
                     break;
                 case METHODE_MELDE_MODUL_AN:
                     DAO.meldeAn(benutzer,json.get(MODUL).getAsString());
@@ -184,10 +189,10 @@ public class Controller {
                     DAO.setzeInaktiv(benutzer,json.get(MODUL).getAsString());
                     break;
                 case METHODE_GIB_ANGEMELDETE_MOULE:
-                    MessageCreator.erstlleModulListe(json, DAO.gibAngemeldete(benutzer));
+                    MessageCreator.erstlleModulListe(nachricht.getJson(), DAO.gibAngemeldete(benutzer));
                     break;
                 case METHODE_GIB_PRUEFUNGEN:   
-                    MessageCreator.erstlleKlausurListe(json, 
+                    MessageCreator.erstlleKlausurListe(nachricht.getJson(), 
                             DAO.gibPruefungen(benutzer, json.get(MODUL).getAsString()));
                     break;
                 default:
