@@ -68,12 +68,14 @@ public class MessageCreator {
     private static final String PRUEFUNG_UHRZEIT = "uhrzeit";
     private static final String PRUEFUNG_TYP = "typ";
             
+    private static final String NAME = "username";
+    
     private static final String NACHRICHT = "nachricht";
     private static final String FEHLER = "nachricht";
     
     private static final int BEWERTUNG_ABFRAGE = 8;
     
-    private static enum TEXTE {
+    public static enum TEXTE {
         AUFGABE,KLAUSUR,UNI,INFO
     };
     
@@ -126,6 +128,22 @@ public class MessageCreator {
         
         nachricht.add(AUFGABE_OBJEKT,jAufgabe);
         nachricht.addProperty(NACHRICHT, gibText(TEXTE.AUFGABE));
+    }
+    
+    /**
+     * Diese Methode fuegt den Namen des Benutzers in die Nachricht ein.
+     * 
+     * @param nachricht Das Json.
+     * @param benutzer Der Benutzer.
+     */
+    public static void erstelleNameJson(JsonObject nachricht, CBBenutzer benutzer) {
+        
+        synchronized(benutzer) {
+            
+            nachricht.addProperty(NAME, benutzer.getBenutzer().getName());
+            
+        }
+        
     }
     
     /**

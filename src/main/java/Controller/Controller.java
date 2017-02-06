@@ -22,6 +22,7 @@ public class Controller {
     private static final String METHODE = "methode";
     private static final String METHODE_GIB_AUFGABE = "gibAufgabe";
     private static final String METHODE_SETZE_NAME = "setzeName";
+    private static final String METHODE_GIB_NAME = "gibName";
     private static final String METHODE_SPEICHERE_ANTWORT = "speichereAntwort";
     private static final String METHODE_GIB_SELEKTOREN = "gibSelektoren";
     private static final String METHODE_SPEICHERE_NOTE = "speichereNote";
@@ -124,6 +125,9 @@ public class Controller {
                     break;
                 case METHODE_SETZE_NAME:
                     DAO.setzeName(benutzer, json.get(NAME).getAsString());
+                    break;
+                case METHODE_GIB_NAME:
+                    MessageCreator.erstelleNameJson(nachricht.getJson(),benutzer);
                     break;
                 case METHODE_SPEICHERE_ANTWORT:
                     
