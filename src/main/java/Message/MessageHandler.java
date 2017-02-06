@@ -5,7 +5,9 @@ import main.ChatBotManager;
 
 
 /**
- *
+ * Diese Klasse wird vom Timer des MessageHandlers aufgerufen und startet den
+ * Sendevorgang der Nachrichten.
+ * 
  * @author Seve
  */
 public class MessageHandler extends TimerTask {

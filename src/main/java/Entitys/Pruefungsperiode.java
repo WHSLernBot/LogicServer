@@ -10,11 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
 
 /**
- *
- * @author Betuel
+ * Diese Klasse stellt eine Pruefungsperiode einer Uni dar, in der jede Klausur 
+ * eines Moduls einmal oder keinmal geschrieben wird.
+ * 
+ * @author Seve
  */
 @Entity
 @IdClass(PruefungsperiodePK.class)

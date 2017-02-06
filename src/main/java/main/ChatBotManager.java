@@ -1,6 +1,7 @@
 package main;
 
 import DAO.DAO;
+import DAO.EMH;
 import DBBot.BotPool;
 import Entitys.Benutzer;
 import Message.MessageHandler;
@@ -142,6 +143,18 @@ public class ChatBotManager {
                 synchronized(b) {
                     if(b.darfLoeschen(jetzt)) {
                         remove = true;
+                        try {
+                            EMH.beginTransaction();
+                            
+                            b.getBenutzer().setLetzteAntwort(DAO.gibDatum());
+                            
+                            EMH.persist(b.getBenutzer());
+                            
+                            EMH.commit();
+                            
+                        } catch (Exception e) {
+                            remove = false;
+                        }
                     }
                 }
 

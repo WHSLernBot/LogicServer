@@ -50,7 +50,7 @@ public class Benutzer implements Serializable {
     /**
      * Falls true moechte der Benutzer keine Daten ueber sich angeben.
      */
-    private Boolean datenschutz;
+    private boolean datenschutz;
     
     /**
      * Die entsprechenden Lern Stadi die der Benutzer zu jedem Thema 
@@ -111,11 +111,11 @@ public class Benutzer implements Serializable {
         return letzteAntwort;
     }
 
-    public Boolean istDatenschutz() {
+    public boolean istDatenschutz() {
         return datenschutz;
     }
 
-    public void setDatenschutz(Boolean datenschutz) {
+    public void setDatenschutz(boolean datenschutz) {
         this.datenschutz = datenschutz;
     }
     
