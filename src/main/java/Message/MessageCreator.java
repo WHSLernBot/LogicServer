@@ -22,7 +22,7 @@ import main.CBBenutzer;
  */
 public class MessageCreator {
 
-    
+    // Wird in Nachricht eingefuegt
 //    private static final String USER_OBJEKT = "user";
 //    private static final String USER_ID = "id";
 //    private static final String USER_PLATTFORM = "plattformID"; //Sinnvoll? Oder Adresse?
@@ -78,6 +78,7 @@ public class MessageCreator {
     public static enum TEXTE {
         AUFGABE,KLAUSUR,UNI,INFO
     };
+
     
     /**
      * Die Methode erstellt ein JsonObject, fuer eine uebergebene Aufgabe, mit 
@@ -137,6 +138,7 @@ public class MessageCreator {
      * @param benutzer Der Benutzer.
      */
     public static void erstelleNameJson(JsonObject nachricht, CBBenutzer benutzer) {
+
         
         synchronized(benutzer) {
             
@@ -146,6 +148,10 @@ public class MessageCreator {
         
     }
     
+    public static void erstlleTextNachricht(JsonObject nachricht, String text) {
+
+    }
+     
     /**
      * Die Methode erstellt ein JsonObject, mit allen Vorhandenen Unis, die uebergeben werden.
      * 
@@ -153,6 +159,7 @@ public class MessageCreator {
      * @param unis Enthaelt alle Unis, die zur auswahl stehen.
      */
     public static void erstelleUniJson(JsonObject nachricht,Collection<Uni> unis) {
+        
         
         JsonArray jUnis = new JsonArray();
         
@@ -178,7 +185,6 @@ public class MessageCreator {
      * @param klausur Enthaelt alle Informatonen zur Klausur.
      */
     public static void erstelleKlausurInfoJson(JsonObject nachricht, Klausur klausur) {
-        
         
         JsonObject jKlausurinfo = new JsonObject();   
         
@@ -277,8 +283,12 @@ public class MessageCreator {
         nachricht.add(MODULE_ARRAY, module);
     }
     
+    /**
+     *
+     * @param nachricht
+     * @param klausuren
+     */
     public static void erstlleKlausurListe(JsonObject nachricht, List<Klausur> klausuren) {
-        
         JsonArray pruefungen = new JsonArray();
         
         SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
@@ -333,7 +343,6 @@ public class MessageCreator {
     }
     
     public static void exception(JsonObject nachricht, Exception e) {
-        JsonObject jResponse = new JsonObject();
         
         nachricht.addProperty(FEHLER, "Fehler: " + e.getMessage());
     }
