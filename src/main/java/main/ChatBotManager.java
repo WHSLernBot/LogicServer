@@ -3,22 +3,23 @@ package main;
 import DAO.DAO;
 import DAO.EMH;
 import DBBot.BotPool;
+import DBBot.BotTimer;
 import Entitys.Benutzer;
 import Message.MessageHandler;
 import Message.Nachricht;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- *
+ * Diese Klasse Managt alle komponenten des LogikSerers, die zeitweise gespeichert 
+ * werden, sowie alle Bots.
+ * 
  * @author Seve
  */
 public class ChatBotManager {
@@ -39,10 +40,15 @@ public class ChatBotManager {
     
     private final Timer loeschTimer;
     
+    private final Timer berechnenTimer;
+    
     private final Lock nachrichtenLock;
     
     private final Lock benutzerLock;
 
+    /**
+     * Erstellt einen neunen ChatBotManager.
+     */
     private ChatBotManager() {
         
         this.botPool = new BotPool();
@@ -54,11 +60,21 @@ public class ChatBotManager {
         
         loeschTimer =  new Timer();
         nachrichtenTimer = new Timer();
+        berechnenTimer = new Timer();
         
         long dauer = LOESCHPHASE_MINTUEN * 60 * 1000;
         
         loeschTimer.schedule(new CBBot(), dauer,dauer);
         
+        long day = 24 * 60 * 60 * 1000;
+        
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.HOUR, 3);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.DAY_OF_YEAR, start.get(Calendar.DAY_OF_YEAR + 1));
+                
+        berechnenTimer.schedule(new BotTimer(), start.getTime(), day);
     }
     
     /**

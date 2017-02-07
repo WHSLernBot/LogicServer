@@ -1,8 +1,6 @@
 package DBBot;
 
-import DAO.DAO;
 import Entitys.Benutzer;
-import Entitys.Klausur;
 import Entitys.LernStatus;
 import Entitys.Modul;
 import java.sql.Timestamp;

@@ -45,14 +45,13 @@ public class BotPool {
         aufgabenBots.submit(new AufgabenBot(ls));
     }
     
-    private void berechneAlles() {
+    public void berechneAlles() {
         
         Timestamp heute = ChatBotManager.getInstance().jetzt();
         
         Collection<Uni> unis = DAO.gibUnis();
         
         for(Uni u : unis) {
-            
             
             
             for(Benutzer b : u.getBenutzer()) {
