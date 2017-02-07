@@ -7,8 +7,11 @@ import Entitys.LernStatus;
 import Entitys.Uni;
 import Message.MessageCreator;
 import Message.Nachricht;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.Collection;
+import java.util.LinkedList;
 import main.CBBenutzer;
 import main.CBPlattform;
 import main.ChatBotManager;
@@ -90,12 +93,6 @@ public class Controller {
         
         Nachricht nachricht = new Nachricht(benutzer);
         
-        
-        long id;
-        synchronized(benutzer) {
-            id = benutzer.getBenutzer().getId();
-        }
-        
                 
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
         dem entsprechend ausgefuehrt.*/
@@ -110,10 +107,21 @@ public class Controller {
                         aufgabe = DAO.gibAufgabe(ls);
                     } else {
                         
-                        aufgabe = DAO.gibAufgabe(benutzer, json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_TOKEN).getAsString());
+                        LinkedList<String> token = new LinkedList<>();
+                        
+                        JsonArray jt = json.getAsJsonObject(THEMA_OBJEKT).getAsJsonArray(THEMA_TOKEN);
+                        for(JsonElement js : jt) {
+                            token.add(js.getAsString());
+                        }
+                        
+                        aufgabe = DAO.gibAufgabe(benutzer, token);
                         
                     }
  
+                    if(aufgabe == null) {
+                        throw new Exception("Es konnte keine entsprechende Aufgabe gefunden werden.");
+                    }
+                    
                     //Provisorisch .. aber kommt das vor?
 //                    if(aufgabe == null) {
 //                        manager.gibBotPool().berechneNeu(benutzer);

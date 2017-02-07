@@ -8,8 +8,11 @@ import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import main.CBBenutzer;
@@ -52,27 +55,42 @@ public class DAO {
             + "and a.AUFGABENID = :ID";
    
     private static final String GIB_AUFGABEN_TOKEN = "select a.AUFGABENID "
-            + "from Aufgabe a, Token o, LernStatus l "
+            + "from Aufgabe a, Token o, LernStatus l, Thema t "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and o.AUFGABE_AUFGABENID = a.AUFGABENID "
+            + "and o.AUFGABE_AUFGABENID = a.AUFGABENID and t.THEMENID = l.THEMA_THEMENID "
             + "and o.TOKEN = :TOK";
     
     private static final String GIB_AUFGABEN_AUFGABENTEXT = "select a.AUFGABENID "
-            + "from Aufgabe a, LernStatus l "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID"
-            + "and (LOWER(a.FRAGE) like :TOK)";
+            + "from Aufgabe a, LernStatus l, Thema t "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
+            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(a.FRAGE) like :TOK)";
     
-    private static final String GIB_AUFGABEN_TEXT = "select a.AUFGABENID "
-            + "from Aufgabe a, LernStatus l "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID"
+    private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select a.AUFGABENID "
+            + "from Aufgabe a, LernStatus l, Thema t "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
+            + "and t.THEMENID = l.THEMA_THEMENID "
             + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
     
     private static final String GIB_AUFGABEN_THEMA = "select object(l) "
-            + "from Aufgabe a, Thema t, LernStatus l"
+            + "from Thema t, LernStatus l "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.THEMENID = a.THEMA_THEMENID and o.AUFGABE_AUFGABENID = a.AUFGABENID "
-            + "and (LOWER(t.NAME) like :TOK";
+            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
     
+    private static final String GIB_THEMA_THEMA = "select object(l) "
+            + "from Thema t, LernStatus l "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
+            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
+    
+    private static final String GIB_THEMA_MODUL_THEMA = "select object(l) "
+            + "from Thema t, LernStatus l "
+            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
+            + "t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ and "
+            + "t.LOWER(t.NAME) like :TOK";
+    
+    private static final String ABFRAGE_LERNSTATUS = "and l.THEMA_THEMENID = :TID";
+    
+    private static final String ABFRAGE_MODUL = "and t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ";
+
     private static final String GIB_BEAUFGABE = "select object(b) "
             + "from Beaufgabe b, Aufgabe a "
             + "where a.AufgabenID = :AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
@@ -85,7 +103,7 @@ public class DAO {
             + "where LERNSTATUS_BENUTZER_ID = :BID";
     
     private static final String ALLE_ZUAUFGAEBN = "select AUFGABE_AUFGABENID "
-            + "from ZuAufgabe"
+            + "from ZuAufgabe "
             + "where LERNSTATUS_BENUTZER_ID = :BID "
             + "order by KENNUNG ASC";
     
@@ -110,7 +128,7 @@ public class DAO {
             + "and m.KUERZEL = t.MODUL_KUERZEL)";
     
     private static final String GIB_PRUEFUNGSPERIODEN = "select object(p) "
-            + "from Pruefungsperiode p"
+            + "from Pruefungsperiode p "
             + "where p.UNI_ID = :UID and p.ANFANG > :HEUTE";
     
     private static final String GIB_TEILNAHME = "select object (t) "
@@ -166,6 +184,10 @@ public class DAO {
      * @throws java.lang.Exception 
      */
     public static Aufgabe gibAufgabe(LernStatus ls) throws Exception {
+        
+        if(ls == null) {
+            throw new Exception("Es wurde kein Thema angegeben.");
+        }
         
         Aufgabe a = null;
         
@@ -228,75 +250,155 @@ public class DAO {
     }
     
     /**
-     * Gibt eine Aufgabe, die einen bestimmten token entaelt aus.
+     * Gibt eine Aufgabe aus, die aus einer Liste an tokens am sinnvollsten war.
      * 
      * @param be
      * @param token
      * @return 
      * @throws java.lang.Exception 
      */
-    public static Aufgabe gibAufgabe(CBBenutzer be, String token) throws Exception {
+    public static Aufgabe gibAufgabe(CBBenutzer be, List<String> token) throws Exception {
         
         Aufgabe a;
         long aid = -1;
         long bId = be.getBenutzer().getId();
         
-        List result;
         
-        token = "%" + token.toLowerCase() + "%";
+        //Herausfinden ob ein token ein Modul in der Datenbank ist.
+        Modul m = null;
         
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_TOKEN);
-        
-        q.setParameter("BID", bId);
-        q.setParameter("TOK", token);
-        
-        result = q.getResultList();
-        
-        if(result.isEmpty()) {
-            q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_AUFGABENTEXT);
-        
-            q.setParameter("BID", bId);
-            q.setParameter("TOK", token);
-
-            result = q.getResultList();
+        Iterator it = token.iterator();
+        while(m == null && it.hasNext()) {
+            String s = (String)it.next();
             
-            if(result.isEmpty()) {
-                q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_TEXT);
-
-                q.setParameter("BID", bId);
-                q.setParameter("TOK", token);
-
-                result = q.getResultList();
+            m = EMH.getEntityManager().find(Modul.class, new ModulPK(be.getBenutzer().getUni().getId(),s));  
+            
+            if(m != null) {
+                it.remove();
+            }
+        }
+        
+        //Schauen ob fuer modul angemeldet
+        LernStatus angemeldetLS = null;
+        
+        if(m != null) {
+            angemeldetLS = EMH.getEntityManager().find(LernStatus.class, 
+                new LernStatusPK(bId,m.getThemen().iterator().next().getId()));
+        }
+            
+        if(angemeldetLS == null) {
+            throw new Exception("Du bist noch garnicht fuer das entsprechende Modul angemeldet!");
+        }
+        
+        //Pruefen ob noch token uebrig
+        if(token.isEmpty() && m != null) {
+            LernStatus ls = null;
+            int punkte = 10001;
+            for(Object o: gibLernstadi(be,m.getKuerzel())) {
+                LernStatus l = (LernStatus) o;
                 
-                if(result.isEmpty()) {
-                    q = EMH.getEntityManager().createNamedQuery(GIB_AUFGABEN_THEMA);
+                int p = l.getSumPunkte() * l.getThema().getAnteil();
+                if(p < punkte) {
+                    ls = l;
+                    punkte = p;
+                }
+            }
+            return gibAufgabe(ls);
+        }
+          
+        //Herausfinden ob angegebenes Thema in der Datenbank liegenden Themen entsprechen.
+        Query qu;
+        
+        List<LernStatus> stadi = new LinkedList<>();
+        
+        it = token.iterator();
+        while(stadi.isEmpty() && it.hasNext()) {
+            String s = (String) it.next();
+            if(m == null) {
+                qu = EMH.getEntityManager().createNamedQuery(GIB_THEMA_THEMA);
 
-                    q.setParameter("BID", bId);
-                    q.setParameter("TOK", token);
+                qu.setParameter("BID", bId);
+                qu.setParameter("TOK", "%" + s + "%");
 
-                    //Achtung! Hier in der liste jetzt lernStadi und nicht long
-                    result = q.getResultList();
-                    if(!result.isEmpty()) {
-                        //Was bei mehreren moeglichkeiten?
-                        return gibAufgabe((LernStatus) result.get(0));
-                    }
+            } else {
+                qu = EMH.getEntityManager().createNamedQuery(GIB_THEMA_MODUL_THEMA);
+
+                qu.setParameter("BID", bId);
+                qu.setParameter("TOK", "%" + s + "%");
+                qu.setParameter("UID", m.getUni().getId());
+                qu.setParameter("KRZ", m.getKuerzel());
+            }
+
+            for(Object o: qu.getResultList()) {
+                stadi.add((LernStatus) o);
+            }
+            
+            if(!stadi.isEmpty()) {
+                it.remove();
+            }
+
+        }
+        
+        //Falls keine token mehr uebrig sind.
+        if(token.isEmpty()) {
+            LernStatus ls = null;
+            int punkte = 10001;
+            for(LernStatus l: stadi) {
+                int p = l.getSumPunkte() * l.getThema().getAnteil();
+                if(p < punkte) {
+                    ls = l;
+                    punkte = p;
+                }
+            }
+            return gibAufgabe(ls);
+        }
+        
+        //Restlichen tokens bewerten
+        HashMap<Long,Integer> punkte = new HashMap<>();
+        
+        for(LernStatus ls : stadi) {
+            trageAufgabenEin(punkte,token,bId,ls,m);    
+        }
+        if(stadi.isEmpty()) {
+            trageAufgabenEin(punkte,token,bId,null,m);
+        }
+        
+        
+        Query qxg = EMH.getEntityManager().createNamedQuery(ALLE_XGAUFGAEBN);
+            
+        qxg.setParameter("BID", bId);
+            
+        List<Long> rxg = qxg.getResultList();
+  
+        List<Long> result = new LinkedList<>();
+        int top = 0;
+        for(Long key : punkte.keySet()) {
+            
+            if(!rxg.contains(key)) {
+               int v = punkte.get(key);
+            
+                if(v > top) {
+                    result.clear();
+                    top = v;
+                    result.add(key);
+                } else if (v == top) {
+                    result.add(key);
                 }
             }
         }
         
+        //Ergebniss auswerten
+        
         if(result.isEmpty()) {
             return null;
-        } else if(result.size() >= 1) {
-            aid = (long) result.get(0);
+        } else if(result.size() == 1) {
+            aid = result.get(0);
         } else {
             
             Query qzu = EMH.getEntityManager().createNamedQuery(ALLE_ZUAUFGAEBN);
-            Query qxg = EMH.getEntityManager().createNamedQuery(ALLE_XGAUFGAEBN);
             
-            qxg.setParameter("BID", bId);
             qzu.setParameter("BID", bId);
             
-            List rxg = qxg.getResultList();
             List rzu = qzu.getResultList();
             
             for(Object zu : rzu) {
@@ -304,19 +406,15 @@ public class DAO {
                 long id = (long) zu;
                 
                 if(result.contains(id)) {
-                    if(!rxg.contains(id)) {
-                        aid = id;
-                        break;
-                    }
+                    aid = id;
+                    break;
                 }
                 
             }
             
             
         }
-        if(aid == -1) {
-            return null;
-        }
+        
         try {
             
             EMH.beginTransaction();
@@ -342,6 +440,86 @@ public class DAO {
         
         return a;
     }  
+            
+    /**
+     * Diese Methode traegt ein eine Hash Map aus AufgabenID und einem wert 
+     * einen wert ein, wie oft der token in Aufgabe war und wie gut die Stelle 
+     * war, wo er gefunden wurde.
+     * 
+     * @param punkte Die HashMap, die die Aufgaben bewertet.
+     * @param token Die Token die gesuch werden soll.
+     * @param bId Die id des Benutzeres.
+     * @param ls Ein theoretisch gefundener LernStatus, kann auch null sein.
+     * @param m Ein theoretisch gefundener Modul, kann auch null sein.
+     */
+    private static void trageAufgabenEin(HashMap<Long,Integer> punkte, List<String> token, long bId, LernStatus ls, Modul m) {
+        
+        Query q1 = erstelleQuery(GIB_AUFGABEN_TOKEN,ls,m);
+        Query q2 = erstelleQuery(GIB_AUFGABEN_AUFGABENTEXT,ls,m);
+        Query q3 = erstelleQuery(GIB_AUFGABEN_ZUSATZTEXTE,ls,m);
+        
+        for(String t: token) {
+            t = "%" + t.toLowerCase() + "%";
+        
+
+            tragePunkteEin(punkte, 20,q1,t,bId,ls,m);
+            tragePunkteEin(punkte, 5,q2,t,bId,ls,m);
+            tragePunkteEin(punkte, 3,q3,t,bId,ls,m);
+        }
+    }
+    
+    /**
+     * Diese Methode fuert eine jpql abfrage aus und traegt in die Bewertung der 
+     * Aufgaben die entsprechende Punktzahl ein.
+     * 
+     * @param punkte Die HashMap, die die Aufgaben bewertet.
+     * @param wertung Der Wert, wie Stark das ergebniss gewichtet werden soll.
+     * @param jpql Die JPQL Abfrage.
+     * @param token Der Token der gesuch werden soll.
+     * @param bId Die id des Benutzeres.
+     * @param ls Ein theoretisch gefundener LernStatus, kann auch null sein.
+     * @param m Ein theoretisch gefundener Modul, kann auch null sein.
+     */
+    private static void tragePunkteEin(HashMap<Long,Integer> punkte, int wertung, Query jpql, String token, long bId, LernStatus ls, Modul m) {
+        
+        jpql.setParameter("BID", bId);
+        jpql.setParameter("TOK", token);
+        if(ls != null) {
+           jpql.setParameter("TID", ls.getThema().getId()); 
+        } else if(m != null) {
+            jpql.setParameter("UID", m.getUni().getId());
+            jpql.setParameter("KRZ", m.getKuerzel());
+        }
+        for(Object o : jpql.getResultList()) {
+            Long aid = (Long) o;
+
+            punkte.put(aid, punkte.get(aid) + wertung);
+        }
+    }
+    
+    /**
+     * Erstellt eine jpql abfrage, je nachdem ob ein modul oder LernStatus
+     * angegeben ist.
+     * 
+     * @param jpql Die zu grunde liegende Abfrage.
+     * @param ls Der LernStatus.
+     * @param m Das Modul.
+     * @return Die daraus resultierende Abfrage.
+     */
+    private static Query erstelleQuery(String jpql,LernStatus ls, Modul m) {
+        Query q;
+        
+        if(ls != null) {
+            jpql = jpql + " " + ABFRAGE_LERNSTATUS;
+        } else if(m != null) {
+            jpql = jpql + " " + ABFRAGE_MODUL;
+        }
+        
+        q = EMH.getEntityManager().createNamedQuery(jpql);
+        
+        return q;
+    }
+
     
     /**
      * Diese Methode stellt eine uebergebene Aufgabe in die Datenbank ein.
