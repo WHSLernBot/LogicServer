@@ -3,7 +3,9 @@ package DBBot;
 import Message.MessageCreator;
 import Message.Nachricht;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 import main.CBBenutzer;
+import main.ChatBotManager;
 
 /**
  * Diese Klasse erstllt aus vielen einzel Informationen eine zusammenhaengende 
@@ -70,6 +72,11 @@ public class PersonaleNachricht {
             
             
         }
+        
+        //Sendezeitpunkt bestimmen
+//        n.setZeit(ChatBotManager.getInstance().jetzt() );
+        
+        ChatBotManager.getInstance().addNachricht(n);
 
     }
     
@@ -101,15 +108,30 @@ public class PersonaleNachricht {
                 text = "Ab heute kannst du dich fuer " + text + " Anmelden.";
                 break;
             case NOTEEINTRAGEN:
-                text = "Denk daran noch deine " + text + " Note einzutragen, damit wir unser System verbessern koennen und bessere Prognossen machen koennen.";
+                text = "Denk daran noch deine " + text + " Note einzutragen, "
+                        + "damit wir unser System verbessern koennen und bessere "
+                        + "Prognossen machen koennen.";
+                break;
+            case AKTIVITAET:
+                text = "Du warst lange nicht mehr bei " + text + " Aktiv. Mach doch mal wieder was :) .. ";
                 break;
             case PROGNOSE_SCHLECHT:
+                text = "Deine Prognose in " + text + " sieht schlecht aus, "
+                        + "vielleicht ueberleg dir nochmal ob du die Klausur "
+                        + "wirklich schreiben willst.";
                 break;
             case PROGNOSE_MITTEL:
+                text = "Deine Prognose in " + text + " ist noch auf der Kippe, "
+                        + "du musst auf jeden Fall noch was machen um die "
+                        + "Klausur sicher zu bestehen.";
                 break;
             case PROGNOSE_GUT:
+                text = "Deine Prognose in " + text + " sieht super aus, mach weiter so!";
                 break;
             case KLAUSUR_TEILNAME:
+                text = "Wenn du " + text + " schreibst, dann denk dran das auch "
+                        + "bei uns ein zu tragen, damit wir unsere Prognosen "
+                        + "fortlaufend verbessern koennen.";
                 break;
 
         }

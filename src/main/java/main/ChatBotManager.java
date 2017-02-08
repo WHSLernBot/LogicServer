@@ -72,7 +72,7 @@ public class ChatBotManager {
         start.set(Calendar.HOUR, 3);
         start.set(Calendar.MINUTE, 0);
         start.set(Calendar.SECOND, 0);
-        start.set(Calendar.DAY_OF_YEAR, start.get(Calendar.DAY_OF_YEAR + 1));
+        start.add(Calendar.DATE, 1);
                 
         berechnenTimer.schedule(new BotTimer(), start.getTime(), day);
     }
@@ -137,6 +137,29 @@ public class ChatBotManager {
         
         return be;
         
+    }
+    
+    public CBBenutzer gibBenutzer(Benutzer b) {
+        CBPlattform pt = new CBPlattform(b.getPlattform().getPfID(),b.getPlattform().getAdresse().getId());
+        CBBenutzer cb = null;
+        benutzerLock.lock();
+        try {
+              if(benutzer.containsKey(pt)) {
+                cb = benutzer.get(pt);
+            } else {
+                cb = new CBBenutzer(b);
+
+                benutzer.put(pt, cb);
+            }
+
+           cb.gain();
+        } catch (Exception e) {
+            //Error 
+        } finally {
+            benutzerLock.unlock();
+        }
+        
+        return cb;
     }
     
     /**

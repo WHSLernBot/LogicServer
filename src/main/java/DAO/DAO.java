@@ -1060,6 +1060,14 @@ public class DAO {
         
     }   
     
+    /**
+     * Diese Methode gibt die Klausur zurueck an der sich der Benutzer fuer das
+     * Modul angemeldet hat.
+     * 
+     * @param b
+     * @param modul
+     * @return 
+     */
     public static Klausur gibKlausur(CBBenutzer b, String modul) {
         
         Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
@@ -1070,6 +1078,10 @@ public class DAO {
         }
         
         List result = q.getResultList();
+        
+        if(result.isEmpty()) {
+            return null;
+        }
         
         return ((Teilnahme) result.get(0)).getKlausur();
         

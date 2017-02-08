@@ -5,7 +5,10 @@ import java.sql.Timestamp;
 import main.CBBenutzer;
 
 /**
- *
+ * Diese Klasse stellt eine Nachricht da, die an den Benutzer gesendet wird.
+ * Sie generiert automatisch das user Objekt im json und kann zu einer 
+ * bestimmten zeit gesendet werden.
+ * 
  * @author Seve
  */
 public class Nachricht {
@@ -23,6 +26,11 @@ public class Nachricht {
     
     private int ttl;
 
+    /**
+     * Erstellt eine neue Nachricht.
+     * 
+     * @param benutzer Der Benutzer, der die Nachricht erhaten soll.
+     */
     public Nachricht(CBBenutzer benutzer) {
         
         JsonObject jUser = new JsonObject();
@@ -38,7 +46,7 @@ public class Nachricht {
 
 
         this.json.add(USER_OBJEKT, jUser);
-        }else {
+        } else {
               adresse = null;   
                 }
         this.zeit = null;
