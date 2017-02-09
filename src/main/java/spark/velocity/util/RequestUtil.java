@@ -19,11 +19,18 @@ public class RequestUtil {
     public static String getQueryUsername(Request request) {
         return request.queryParams("username");
     }
-
+    public static String getQueryUsernameAnlegen(Request request) {
+        return request.queryParams("usernameAnlegen");
+    }
     public static String getQueryPassword(Request request) {
         return request.queryParams("password");
     }
-
+    public static String getQueryPasswordErst(Request request) {
+        return request.queryParams("passwordErst");
+    }
+    public static String getQueryPasswordWdh(Request request) {
+        return request.queryParams("passwordWdh");
+    }
     public static String getQueryLoginRedirect(Request request) {
         return request.queryParams("loginRedirect");
     }

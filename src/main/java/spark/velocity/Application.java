@@ -7,13 +7,15 @@ package spark.velocity;
 
 import spark.Spark;
 import static spark.Spark.*;
-import spark.velocity.controller.IndexController;
+import spark.velocity.controller.*;
 import spark.velocity.util.Path;
 
 public class Application {
     public static void main(String[] args) {
         Spark.staticFileLocation("/public");
         get(Path.W_INDEX , IndexController.serveIndexPage);
+        get(Path.W_ADMIN, AdminController.serveAdminPage);
         post(Path.W_INDEX, IndexController.handleLoginPost);
+        post(Path.W_ADMIN, AdminController.handleRegPost);
     }
 }

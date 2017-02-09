@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Datenbankverwaltung</title>
-<link rel="stylesheet" type="text/css" href="/style.css">
-</head>
-<body>
+#parse("/velocity/layout.vm")
+#@mainLayout()
 <img id="logoStart" src="logo.png"/>
 #if($authenticationFailed)
         <p class="bad notification">$msg.get("LOGIN_AUTH_FAILED")</p>
@@ -16,6 +9,7 @@
         <p class="notification">$msg.get("LOGIN_LOGGED_OUT")</p>
     #end	
 <div>
+
     <h3> Willkommen bei der Datenbankverwaltung</h3>
     <form id="anmelden" method="post">
         <label for="login">Login: 
@@ -27,5 +21,4 @@
 		<input type="submit" value="Anmelden">
     </form>
 </div>
-</body>
-</html>
+#end
