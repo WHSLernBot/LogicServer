@@ -21,11 +21,11 @@ import spark.velocity.util.VelocityTemplateEngine;
  */
 public class AdminController {
     public static Route handleRegPost = (Request request, Response response) -> {
+        
         if(request == null){
             System.out.println("null");
         }
         Map<String, Object> model = new HashMap<>();
-        
         if(getQueryUsernameAnlegen(request) == null
                 || getQueryUsernameAnlegen(request).equals("")){
             System.out.println("Fehler");
@@ -35,9 +35,10 @@ public class AdminController {
         }
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };
+    
     public static Route serveAdminPage= (Request request, Response response) -> {
         Map<String, Object> model = new HashMap<>();
-        
+        response.redirect("admin");
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };
 }

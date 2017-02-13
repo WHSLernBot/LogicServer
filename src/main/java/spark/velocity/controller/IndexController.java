@@ -18,7 +18,6 @@ import spark.velocity.util.VelocityTemplateEngine;
  */
 public class IndexController {
 
-    private static final String LINK_ADMIN = "/admin.vm";
     public static Route serveIndexPage = (Request request, Response response) -> {
         Map<String, Object> model = new HashMap<>();
         
@@ -42,8 +41,9 @@ public class IndexController {
         if (getQueryLoginRedirect(request) != null) {
             response.redirect(getQueryLoginRedirect(request));
         }
-        if(getQueryUsername(request).equals("admin")) {           
-            return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
+        if(getQueryUsername(request).equals("admin")) {
+            
+            return AdminController.serveAdminPage.handle(request, response);
         }
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
     };
