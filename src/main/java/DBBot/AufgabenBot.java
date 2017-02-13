@@ -81,9 +81,11 @@ public class AufgabenBot implements Runnable {
             stadi = benutzer.getBenutzer().getLernStadi();
             berechne(stadi,null);
         } else {
+            DeepThoughtPrio rechner = new DeepThoughtPrio(modul,heute);
+            
             for(Thema t : modul.getThemen()) {
                 stadi = t.getLernStadi();
-                berechne(stadi,new DeepThoughtPrio(modul,heute));
+                berechne(stadi,rechner);
             }
         }  
         
@@ -112,22 +114,30 @@ public class AufgabenBot implements Runnable {
         HashMap<Long,aufgabenItem> infos = new HashMap<>();
         
         Thema thema;
-        
-        int sumPunkte = 0;
-        
+       
         for(LernStatus ls : stadi) {
+            
+            boolean neuberechen = (ls.istAktiv() && ls.isVeraendert());
+            
+            if(rechner != null && rechner.sollDatenErfassen() && !neuberechen) {
+                //Einsetztn falls nicht neu berechnet werden muss
+                
+                for(BeAufgabe b : ls.getBeAufgaben()) {
+                    rechner.addAntwort(b);
+                }
+            }
+            
             // Gucken ob man neu berechnen muss
             
-            if(ls.istAktiv() && ls.isVeraendert()) {
+            if(neuberechen) {
                 
                 thema = ls.getThema();
 
                 aufgaben = thema.getAufgaben();
                 // Alle Aufgaben holen 
                 for(Aufgabe a : aufgaben) {
-                    sumPunkte += a.getPunkte();
                     
-                    infos.put(a.getAufgabenID(), new aufgabenItem(a));             
+                    infos.put(a.getAufgabenID(), new aufgabenItem(a));  
                     
                 }
                 
@@ -140,6 +150,11 @@ public class AufgabenBot implements Runnable {
                         aufgabenItem item = infos.get(id);
                         
                         item.addAntwort(b.getDatum(), b.istRichtig(), b.getHinweis());
+                        
+                        if(rechner != null && rechner.sollDatenErfassen()) {
+                            // Einsetzt in matrix
+                            rechner.addAntwort(b);
+                        }
                     }                   
                 }
 
@@ -173,7 +188,10 @@ public class AufgabenBot implements Runnable {
                 infos.clear();
                 
             }
-        }    
+        }   
+        if(rechner != null && rechner.sollDatenErfassen()) {
+            rechner.rechnenStatistiken();
+        } 
     }
     
 }

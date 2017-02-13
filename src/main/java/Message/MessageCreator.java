@@ -45,14 +45,6 @@ public class MessageCreator {
     private static final String UNIS_NAME = "name";
     private static final String UNIS_ID = "uniID";
     
-    private static final String KLAUSUR_OBJEKT = "klausur";
-    private static final String KLAUSUR_HILFSMITTEL = "hilfsmittel";
-    private static final String KLAUSUR_ORT = "ort";
-    private static final String KLAUSUR_DAUER = "dauer";
-    private static final String KLAUSUR_PERIODE = "periode";
-    private static final String KLAUSUR_UHRZEIT = "uhrzeit";
-    private static final String KLAUSUR_TYP = "typ";
-    private static final String KLAUSUR_MODUL = "modul";
     
     private static final String MODULE_ARRAY = "module";
     private static final String MODULE_NAME = "name";
@@ -67,6 +59,8 @@ public class MessageCreator {
     private static final String PRUEFUNG_DATUM = "datum";
     private static final String PRUEFUNG_UHRZEIT = "uhrzeit";
     private static final String PRUEFUNG_TYP = "typ";
+    private static final String KLAUSUR_OBJEKT = "klausur";
+    private static final String KLAUSUR_MODUL = "modul";
             
     private static final String NAME = "username";
     
@@ -150,6 +144,8 @@ public class MessageCreator {
     
     public static void erstlleTextNachricht(JsonObject nachricht, String text) {
 
+        nachricht.addProperty(NACHRICHT, text);
+        
     }
      
     /**
@@ -179,25 +175,27 @@ public class MessageCreator {
     /**
      * Die Methode erstellt ein JsonObject, mit allen Informationen, 
      * die zur Klausur vorhanden sind.
-     * ---------------------------Das alles nicht schoener als fertiegn text?
+     * 
      * 
      * @param nachricht
      * @param klausur Enthaelt alle Informatonen zur Klausur.
      */
     public static void erstelleKlausurInfoJson(JsonObject nachricht, Klausur klausur) {
         
-        JsonObject jKlausurinfo = new JsonObject();   
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
         
-        jKlausurinfo.addProperty(KLAUSUR_HILFSMITTEL,klausur.getHilfsmittel());
-        jKlausurinfo.addProperty(KLAUSUR_ORT,klausur.getOrt());
-        jKlausurinfo.addProperty(KLAUSUR_DAUER,klausur.getDauer());
-        //Periode vielleicht als Objet mit infos
-        jKlausurinfo.addProperty(KLAUSUR_PERIODE,klausur.getPruefungsperiode().getAnfang().toString());
-        jKlausurinfo.addProperty(KLAUSUR_UHRZEIT,klausur.getUhrzeit().toString());
-        jKlausurinfo.addProperty(KLAUSUR_TYP, klausur.getTyp());
+        String text = klausur.getModul().getKuerzel() + " Klausur in der " 
+                + klausur.getPruefungsperiode().getPhase() + ". Pruefungsperiode :\n\n";
         
-        nachricht.add(KLAUSUR_OBJEKT, jKlausurinfo);     
-        nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
+        text += "Datum: " + sdfDate.format(klausur.getDatum()) + "\n";
+        text += "Uhrzeit: " + sdfTime.format(klausur.getUhrzeit()) + "\n";
+        text += "Raum: " + klausur.getOrt() + "\n";
+        text += "Dauer: " + klausur.getDauer() + "\n";
+        text += "Typ: " + klausur.getTyp() + "\n";
+        text += "Hilfsmittel: " + klausur.getHilfsmittel();
+  
+        nachricht.addProperty(NACHRICHT, text);
     }
     
     /**
@@ -225,7 +223,6 @@ public class MessageCreator {
      * Diese Methode erstellt einen genauen ueberblick ueber alle Themen eines 
      * Moduls und wie gut sie der Benutzer bearbeitet hat.
      * 
-     * --------- Das ganze kann noch mehr infos beinhalten --------------
      * 
      * @param nachricht
      * @param b
@@ -238,7 +235,7 @@ public class MessageCreator {
         String textmodul = " -- " + modul + " -- \n";
          
         String text = "";
-        double prozent = 0.0;
+        int prozent = 0;
         
         for(Object o : stadi) {
             
@@ -247,15 +244,20 @@ public class MessageCreator {
             
             text = text + t.getName() + ":\n\t" + s.getRichtige() 
                     + "/" + s.getGeloest() + " richtig geloest\n\t"
-                    + "zu " + s.getSumPunkte() + "% bereit fuer die Klausur\n\n";
+                    + "zu " + s.getSumPunkte() + "% das Thema abgeschlossen\n\n";
             
             prozent = s.getSumPunkte() * t.getAnteil();
             
         }
         
-        prozent = prozent / 100;
+        short note = DAO.gibErgebniss(b, modul,prozent);
         
-        textmodul = textmodul + "Unseren Berechnungen nach sind sie zu" + prozent + "% bereit fuer die Klausur";
+        textmodul += "Unseren Berechnungen nach haben sie das Modul zu" 
+                + prozent + "% abgeschlossen.";
+        
+        if(note != 0) {
+            textmodul += " Die Klausurnote aehnlicher Benutzer war :" + note / 10 + "," + note % 10;
+        }
         
         nachricht.addProperty(NACHRICHT, textmodul + "\n\n" + text);
     }

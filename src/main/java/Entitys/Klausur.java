@@ -88,6 +88,11 @@ public class Klausur implements Serializable {
      */
     private String typ;
     
+    /**
+     * Ist true, falls eine note hinzugefuegt wurde und somit das ergebnis veraendert wurde.
+     */
+    private boolean veraendert;
+    
     public Klausur(){}
     
     public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel, String typ){
@@ -102,8 +107,16 @@ public class Klausur implements Serializable {
         this.hilfsmittel = hilfsmittel;
         this.quotient = 0;
         this.typ = typ;
+        this.veraendert = false;
     }
 
+    public boolean isVeraendert() {
+        return veraendert;
+    }
+
+    public void setVeraendert(boolean veraendert) {
+        this.veraendert = veraendert;
+    }
     public String getTyp() {
         return typ;
     }

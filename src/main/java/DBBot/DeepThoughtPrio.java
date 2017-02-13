@@ -1,11 +1,21 @@
 package DBBot;
 
+import DAO.DAO;
 import DAO.EMH;
+import Entitys.BeAufgabe;
 import Entitys.Modul;
 import Entitys.Statistik;
+import Entitys.Teilnahme;
+import Entitys.Thema;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -13,20 +23,46 @@ import java.util.List;
  */
 public class DeepThoughtPrio {
     
-    private HashMap<Short,Statistik> stats;
+    private StatMap stats;
     
     private final Timestamp heute;
     
     private final Modul modul;
     
+    private final boolean datenerfassen;
+    
+    private final HashMap<Long,StatMatrix> ergebnisse;
+    
+    private final Set<Long> nichtErfolgreich;
+    
+    private final long[] themen;
+    
+    private final int[] prozent;
+    
     public DeepThoughtPrio(Modul m, Timestamp heute) {
+        
         
         this.heute = heute;
         modul = m;
         
-        for (Statistik s : m.getStatistiken()) {
-            stats.put(s.getWoche(), s);
+        stats = new StatMap(m);
+        
+        datenerfassen = DAO.wurdeVeraendert(m);
+        
+        ergebnisse = new HashMap<>();
+        
+        Collection<Thema> t = m.getThemen();
+        themen = new long[t.size()];
+        prozent = new int[t.size()];
+        
+        int i = 0;
+        for(Thema te : t) {
+            themen[i] = te.getId();
+            prozent[i] = te.getAnteil();
+            i++;
         }
+        
+        nichtErfolgreich = new HashSet<>();
     }
     
     /**
@@ -56,7 +92,7 @@ public class DeepThoughtPrio {
                 
                 long woche = (heuteMs - beItem.getDatum().getTime()) / eineWoche;
                 
-                int anteilPunkte = gibStat((short) woche).getAnteil() * punkte;
+                int anteilPunkte = stats.gibStat((short) woche).getAnteil() * punkte;
                 
                 aufgabenPunkte += anteilPunkte;
                 
@@ -80,30 +116,107 @@ public class DeepThoughtPrio {
         
     }
     
-    private Statistik gibStat(short woche) {
-        
-        Statistik s = stats.get(woche);
-        
-        if(s == null) {
-            try {
-                EMH.beginTransaction();
-
-                modul.addStatistik(woche,berechneAnteil(woche));
-
-                EMH.getEntityManager().merge(modul);
-
-                EMH.commit();
-            } catch (Exception e) {
-                EMH.rollback();
-            }
-        }
-        
-        return s;
-        
+    /**
+     * Gibt an, ob daten zur neuberechnung der Statistiken erfasst werden solln.
+     * @return true, falls alle daten erfasst werden solln.
+     */
+    public boolean sollDatenErfassen() {
+        return datenerfassen;
     }
     
-    private int berechneAnteil(short woche) {
-        return 100 / (woche + 1);
+    /**
+     * Berechnet die Statistiken eines Moduls neu aus und setzt die Ergebnisse
+     * in die Datenbank ein.
+     */
+    public void rechnenStatistiken() {
+       
+        if(this.themen.length < 2) {
+            if(themen.length == 1) {
+                prozent[0] = 100;
+            }
+            
+            DAO.setzeAnteil(themen,prozent);
+            
+            return;
+        }
+        
+        ArrayList<StatMatrix> noten = new ArrayList<>();
+          
+        noten.addAll(ergebnisse.values());
+        
+        if(noten.size() < 2) {
+            //Hier vielleicht andere Teilnehmer benachrichtigen um Note einzutragen.
+            return;
+        
+        }
+        Collections.sort(noten);
+        
+        //Nun liegen alle Statistiken in nach Noten sortierter Reichenfolge vor.
+        
+        
+        Iterator<StatMatrix> it = noten.iterator();
+        
+        StatMatrix sm = it.next();
+        StatMatrix pre = sm;
+        StatMatrix next;
+        
+        while(it.hasNext()) {
+            next = it.next();
+            
+            pre.setNext(next);
+            pre = next;
+        }
+        
+        //Hier werden nun die Anteiel der Themen berechnet.
+        sm.berechneVerhaeltnisse();
+        int zaehler = 0;
+        while(zaehler < 200 && sm.berechneThemen(prozent)) {
+            zaehler++;
+        }
+        
+        DAO.setzeAnteil(themen,prozent);
+        
+        sm.setzeAnteilThemen(prozent);
+        
+        //Jetzt werden die wochen berechnet
+        zaehler = 0;
+        while(zaehler < 200 && sm.berechneWochen(stats)) {
+            zaehler++;
+        }
+        
+        //Die neuen Statistiekn abspeichern
+        this.stats.merge();
+        
+        //Fertig!
+        sm.speichereProzent();
+    }
+    
+
+    
+    public void addAntwort(BeAufgabe be) {
+        
+        Long bid = be.getLernStatus().getBenutzer().getId();
+        
+        if(ergebnisse.containsKey(bid)) {
+            ergebnisse.get(bid).addAntwort(be);
+        } else {
+            
+            if(!nichtErfolgreich.contains(bid)) {
+                //Bissher werden nur erfolgreiche pruefungen betrachtet.
+                Teilnahme t = DAO.gibTeilnahme(bid,modul.getKuerzel());
+            
+                if(t != null) {
+                    StatMatrix mx = new StatMatrix(t,themen);
+
+                    ergebnisse.put(bid, mx);
+                } else {
+                    nichtErfolgreich.add(bid);
+                }
+            }
+            
+            
+        }
+        
     }
     
 }

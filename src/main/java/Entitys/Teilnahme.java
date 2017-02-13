@@ -42,12 +42,15 @@ public class Teilnahme implements Serializable {
      */
     private short note;
     
+    private int prozent;
+    
     public Teilnahme(){}
 
     public Teilnahme(Benutzer benutzer, Klausur klausur) {
         this.benutzer = benutzer;
         this.klausur = klausur;
         this.note = 0;
+        this.prozent = 0;
     }
     
     public Teilnahme(short note){
@@ -58,13 +61,22 @@ public class Teilnahme implements Serializable {
         this.note = note;
     }
     
-    public int getNote(){
+    public short getNote(){
         return note;
     }
 
     public Klausur getKlausur() {
         return klausur;
     }
+
+    public int getProzent() {
+        return prozent;
+    }
+
+    public void setProzent(int prozent) {
+        this.prozent = prozent;
+    }
+    
     
     @Override
     public int hashCode() {

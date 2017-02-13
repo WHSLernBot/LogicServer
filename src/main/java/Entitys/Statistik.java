@@ -62,6 +62,14 @@ public class Statistik implements Serializable {
     public int getAnteil(){
         return anteil;
     }
+    
+    /**
+     * Addiert die Angegebene Zahl auf den Anteil drauf.
+     * @param p 
+     */
+    public void setPlusAnteil(int p) {
+        anteil += p;
+    }
 
     @Override
     public int hashCode() {

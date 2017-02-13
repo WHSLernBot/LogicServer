@@ -2,8 +2,10 @@ package DBBot;
 
 import Message.MessageCreator;
 import Message.Nachricht;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 import main.CBBenutzer;
 import main.ChatBotManager;
 
@@ -74,7 +76,15 @@ public class PersonaleNachricht {
         }
         
         //Sendezeitpunkt bestimmen
-//        n.setZeit(ChatBotManager.getInstance().jetzt() );
+        n.setZeit(ChatBotManager.getInstance().jetzt() );
+
+        Calendar c = Calendar.getInstance();
+        
+        c.setTime(ChatBotManager.getInstance().jetzt());
+        
+        c.set(Calendar.HOUR, 9);
+        
+        n.setZeit(new Timestamp(c.getTime().getTime()));
         
         ChatBotManager.getInstance().addNachricht(n);
 

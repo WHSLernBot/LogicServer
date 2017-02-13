@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import main.CBBenutzer;
@@ -70,11 +69,6 @@ public class DAO {
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
             + "and t.THEMENID = l.THEMA_THEMENID "
             + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
-    
-    private static final String GIB_AUFGABEN_THEMA = "select object(l) "
-            + "from Thema t, LernStatus l "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
     
     private static final String GIB_THEMA_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
@@ -161,6 +155,16 @@ public class DAO {
     
     private static final String ALLE_SELEKTOREN = "select object(t) "
             + "from Thema t order by t.MODUL_KUERZEL ASC";
+    
+    private static final String WURDE_KLAUSUR_AKT = "selekt (k) "
+            + "from Klausur k "
+            + "where k.MODUL_KUERZEL = :KRZ and k.MODUL_UNI_ID = :UID "
+            + "and k.VERAENDERT";
+    
+    private static final String GIB_AEHNLICHE_ERGEBNISSE = "select object(t) "
+            + "from Teilname t "
+            + "where t.KLAUSUR_MODUL_KUERZEL = :KRZ and t.KLAUSUR_MODUL_UNI_ID = :UID "
+            + "and t.PROZENT >= :MIN and t.PROZENT <= :MAX order by t.PROZENT ASC";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
@@ -1045,7 +1049,12 @@ public class DAO {
             Teilnahme t = (Teilnahme) result.get(0);
             t.setNote(note);
 
+            Klausur k = gibKlausur(b,modul);
+            
+            k.setVeraendert(true);
+            
             EMH.merge(t);
+            EMH.merge(k);
             EMH.commit();
         } catch(Exception e) {
             EMH.rollback();
@@ -1087,6 +1096,35 @@ public class DAO {
         
     }
     
+    /**
+     * Gibt die gueltige und erfolgreiche Klausurteilnahme eines Benutzers aus.
+     * 
+     * @param id Die id des Benutzers.
+     * @param modul Das Modul das der Benutzer geschirben hat
+     * @return 
+     */
+    public static Teilnahme gibTeilnahme(Long id, String modul) {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        
+        q.setParameter("BID", id);
+        q.setParameter("KRZ", modul);
+
+        List result = q.getResultList();
+        
+        for(Object o : result) {
+            
+            Teilnahme t = (Teilnahme) o;
+            
+            if(t.getNote() >= 50 && t.getNote() != 0) {
+                return t;
+            }
+            
+        }
+        
+        return null;
+    }
+
     /**
      * Diese Methode meldet einen Benutzer bei einem Modul an und erstellt dort
      * die entsprechenden LernStadi. Dannach berechnet er alle Aufgaben fuer
@@ -1388,88 +1426,64 @@ public class DAO {
         
     }
     
+    public static boolean wurdeVeraendert(Modul m) {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(WURDE_KLAUSUR_AKT);
+        
+        q.setParameter("KRZ", m.getKuerzel());
+        q.setParameter("UID", m.getUni().getId());
+        
+        return (!q.getResultList().isEmpty());
+        
+    }
     
+    public static void setzeAnteil(long[] themen, int[] prozent) {
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            for(int i = 0; i < themen.length; i++) {
+                
+                Thema t = EMH.getEntityManager().find(Thema.class, themen[i]);
+                
+                t.setAnteil(prozent[i]);
+                
+                EMH.merge(t);
+                
+            }
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+        }
+        
+    }
+    
+    public static short gibErgebniss(CBBenutzer b, String m, int prozent) {
+        
+        short note = 0;
+        
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_AEHNLICHE_ERGEBNISSE);
+        
+        q.setParameter("UID", b.getBenutzer().getUni().getId());
+        q.setParameter("KRZ", m);
+        q.setParameter("MIN", prozent - 5);
+        q.setParameter("MAX", prozent + 5);
+        
+        for(Object o : q.getResultList()) {
+            
+            Teilnahme t = (Teilnahme) o;
+            note = t.getNote();
+            if(t.getProzent() >= prozent) {
+                break;
+            }
+            
+        }
+        
+        return note;
+        
+    }
 
-//    /**
-//     * Diese Methode speichert die Antwort, die der Benutzer gegeben hat. 
-//     * -------------------------------------------Was soll das?
-//     * @param id Id der Plattform.
-//     * @param plattform Plattform, die der Benutzer nutzt.
-//     * @param antwort Antwort, die der Benutzer gegeben hat.
-//     */
-//    public static void speichereAntwort(long id, short plattform, String antwort) {
-//        
-//        Query q = EMH.getEntityManager().createQuery(GIB_ANTWORT);
-//        
-//        q.setParameter("ID", id);
-//        q.setParameter("Plattform", plattform);
-//        
-//        Aufgabe a = (Aufgabe) q.getResultList().get(0);
-//        try{
-//            EMH.beginTransaction();
-//            a.addAntwort(antwort, Boolean.TRUE);
-//            EMH.getEntityManager().persist(a);
-//            EMH.commit();  
-//        } catch (Exception e){
-//            EMH.rollback();
-//        }
-//        
-//    }
-
-//    /**
-//     * Hier wird die Note des Benutzer im System gespeichert.
-//     * ------------------------------------------DAFUQ?
-//     * @param id Id der Plattform.
-//     * @param plattform Plattform, die der Benutzer nutzt.
-//     * @param note Die Note, die der Benutzer geschrieben hat.
-//     */
-//    public static void speichereNote(long id, short plattform, short note) {
-//
-//        Query q = EMH.getEntityManager().createQuery(GIB_NOTE);
-//        
-//        q.setParameter("ID", id);
-//        q.setParameter("Plattform", plattform);
-//        
-//        Teilnahme t = (Teilnahme) q.getResultList().get(0);
-//        
-//        try{
-//            EMH.beginTransaction();
-//            t.setNote(note);
-//            EMH.getEntityManager().merge(t);
-//            EMH.commit();  
-//        } catch (Exception e){
-//            EMH.rollback();
-//        }
-//    }
-
-//    /**
-//     * 
-//     * ----------------------------
-//     * 
-//     * @param id
-//     * @param plattform
-//     * @param modul
-//     * @return 
-//     */
-//    public static Klausur gibKlausur(long id, short plattform, String modul) {
-//        
-//        Query q = EMH.getEntityManager().createQuery(GIB_KLAUSUR);
-//        
-//        q.setParameter("ID", id);
-//        q.setParameter("Plattform", plattform);
-//        
-//        Klausur k = (Klausur) q.getResultList().get(0);
-//        
-//        try{
-//            EMH.beginTransaction();
-//            EMH.getEntityManager().persist(k);
-//            EMH.commit();
-//            
-//        } catch (Exception e) {
-//            EMH.rollback();
-//        }
-//        
-//        return k;     
-//    }
-   
 }

@@ -20,19 +20,15 @@ public class BotPool {
     
     private static final int AUFGABEN_POOL_SIZE = 10;
     private static final int BENUTZER_POOL_SIZE = 10;
-    private static final int KLAUSUR_POOL_SIZE = 5;
     
     private final ExecutorService aufgabenBots;
     
     private final ExecutorService benutzerBots;
     
-    private final ExecutorService klausurBots;
-    
     public BotPool() {
         
         aufgabenBots = Executors.newFixedThreadPool(AUFGABEN_POOL_SIZE);
         benutzerBots = Executors.newFixedThreadPool(BENUTZER_POOL_SIZE);
-        klausurBots = Executors.newFixedThreadPool(KLAUSUR_POOL_SIZE);
 
     }
     
@@ -60,9 +56,8 @@ public class BotPool {
             
             for(Modul m : u.getModul()) {
                 aufgabenBots.submit(new AufgabenBot(m));
+                
             }
-            
-//            u.getPruefungsperiode()
             
         }
         
