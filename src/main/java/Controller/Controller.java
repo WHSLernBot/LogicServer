@@ -43,6 +43,7 @@ public class Controller {
     private static final String METHODE_MELDE_MODUL_AN = "meldeFuerModulAn";
     private static final String METHODE_SETZE_INAKTIV = "setzeInaktiv";
     private static final String METHODE_GIB_PRUEFUNGEN = "gibPruefungen";
+    private static final String METHODE_NEUE_VERVINDUNG = "neueVerbindung";
     
     private static final String USER_OBJEKT = "user";
     private static final String USER_ID = "userID";
@@ -62,6 +63,10 @@ public class Controller {
     private static final String NOTE = "userNote";
     
     private static final String NAME = "username";
+    
+    private static final String ADRESSE_OBJEKT = "adresse";
+    private static final String ADRESSE_URL = "url";
+    private static final String ADRESSE_NUMMER = "nummer";
     
     private static final String AUFGABE = "aufgabenID";
     
@@ -206,6 +211,13 @@ public class Controller {
                 case METHODE_GIB_PRUEFUNGEN:   
                     MessageCreator.erstlleKlausurListe(nachricht.getJson(), 
                             DAO.gibPruefungen(benutzer, json.get(MODUL).getAsString()));
+                    break;
+                case METHODE_NEUE_VERVINDUNG:
+                    JsonObject ad = json.get(ADRESSE_OBJEKT).getAsJsonObject();
+                    
+                    String s = DAO.neueVerbindung(ad.get(ADRESSE_NUMMER).getAsShort(),ad.get(ADRESSE_URL).getAsString());
+                    
+                    MessageCreator.erstlleTextNachricht(nachricht.getJson(), s);
                     break;
                 default:
                     throw new Exception("Methode konnte nicht ausgewertet werden.");

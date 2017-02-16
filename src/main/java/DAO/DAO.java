@@ -1486,4 +1486,33 @@ public class DAO {
         
     }
 
+    public static String neueVerbindung(short nummer, String url) throws Exception {
+        
+        Adresse a = EMH.getEntityManager().find(Adresse.class, nummer);
+        
+        try {
+            EMH.beginTransaction();
+            if(a == null) {
+                a = new Adresse(nummer,url);
+
+                EMH.persist(a);
+            } else {
+                a.setAdresse(url);
+                
+                EMH.merge(a);
+            }
+            
+            EMH.commit();
+        } catch(Exception e) {
+            EMH.rollback();
+            
+            throw new Exception("Verbindung konnte nicht hinzugefuegt werden.");
+        }
+        
+        EMH.getEntityManager().find(Adresse.class, nummer);
+        
+        return a.toString();
+        
+    }
+    
 }

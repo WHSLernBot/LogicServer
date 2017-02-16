@@ -65,7 +65,7 @@ public class MessageCreator {
     private static final String NAME = "username";
     
     private static final String NACHRICHT = "nachricht";
-    private static final String FEHLER = "nachricht";
+    private static final String FEHLER = "fehler";
     
     private static final int BEWERTUNG_ABFRAGE = 8;
     
