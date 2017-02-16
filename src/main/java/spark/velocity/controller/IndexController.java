@@ -31,7 +31,7 @@ public class IndexController {
             System.out.println("null");
         }
         Map<String, Object> model = new HashMap<>();
-        if(!UserController.authenticate(getQueryUsername(request), getQueryPassword(request))){
+        if(!LoginController.authenticate(getQueryUsername(request), getQueryPassword(request))){
             model.put("authenticationFailed", true);            
             return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_INDEX));
         }
@@ -45,6 +45,6 @@ public class IndexController {
             
             return AdminController.serveAdminPage.handle(request, response);
         }
-        return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
+        return UserController.serveUserPage.handle(request, response);
     };
 }

@@ -1,6 +1,6 @@
 #parse("/velocity/layout.vm")
 #@mainLayout()
-<form id="rahmen">
+<form id="rahmen"method="post">
 		<label id="text">Modul hinzufügen</label><br><br>
 		<label id ="text" for="modul">Name: <input id="modul" name="modul"> </label>
 		<label id ="text" for="kuerzel">Kürzel: <input id="kuerzel" name="kuerzel"> </label>
@@ -9,15 +9,14 @@
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
 	</form>
-	<form id="rahmen">
+	<form id="rahmen"method="post">
 		<label id="text">Thema hinzufügen</label><br><br>
-		<label id ="text" for="dModul">Modul: <select id="dModul" name="modul"> 
-		<option>OPR</option>
-		<option>INS</option>
-		<option>ASG</option>
-		</select>
-		</label>
-		<label id ="text" for="tkuerzel">Thema: <input id="tkuerzel" name="tkuerzel"> </label>
+		<label id ="text" for="dModul">Modul: <select id="themaModul" name="modul"> 
+		#foreach ($modul in $module)
+                    <option> $modul</option>
+                #end
+		</select></label>
+		<label id ="text" for="tkuerzel">Thema: <input id="thema" name="tkuerzel"> </label>
 		<div id="mButton">
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 

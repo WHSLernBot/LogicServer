@@ -12,10 +12,21 @@ import spark.Request;
  * @author Sebastian
  */
 public class RequestUtil {
-    public static String getQueryLocale(Request request) {
-        return request.queryParams("locale");
+    public static String getQueryModuk(Request request){
+        return request.queryParams("modul"); 
     }
-
+    public static String getQueryModul(Request request) {
+        return request.queryParams("modul");
+    }
+    public static String getQueryThemaModul(Request request) {
+        return request.queryParams("themaModul");
+    }
+    public static String getQueryKuerzel(Request request) {
+        return request.queryParams("kuerzel");
+    }
+    public static String getQueryThema(Request request) {
+        return request.queryParams("thema");
+    }
     public static String getQueryUsername(Request request) {
         return request.queryParams("username");
     }
@@ -34,11 +45,7 @@ public class RequestUtil {
     public static String getQueryLoginRedirect(Request request) {
         return request.queryParams("loginRedirect");
     }
-
-    public static String getSessionLocale(Request request) {
-        return request.session().attribute("locale");
-    }
-
+    
     public static String getSessionCurrentUser(Request request) {
         return request.session().attribute("currentUser");
     }

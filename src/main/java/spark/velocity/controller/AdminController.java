@@ -38,7 +38,7 @@ public class AdminController {
     
     public static Route serveAdminPage= (Request request, Response response) -> {
         Map<String, Object> model = new HashMap<>();
-        response.redirect("admin");
+//        response.redirect("admin");
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };
 }

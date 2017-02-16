@@ -7,7 +7,7 @@ public class Path {
      */
     public static final String W_INDEX = "/index";
     public static final String W_ADMIN = "/admin";
-    public static final String W_USER = "/admin";
+    public static final String W_USER = "/user";
     /**
      * Templatepath
      */
