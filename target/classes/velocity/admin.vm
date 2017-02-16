@@ -1,0 +1,17 @@
+#parse("/velocity/layout.vm")
+#@mainLayout()
+<div>
+    <form id="addUser" method="post">
+        <label for="username">Benutzername: 
+		<input id="login" name="usernameAnlegen" value="" required> 
+	</label><br>
+	<label for="pw">Password: 
+		<input id="pw" type="password" name="passwordErst" value="" required> 
+	</label><br>
+        <label for="pw">Password wiederholen: 
+		<input id="pw" type="password" name="passwordWdh" value="" required> 
+	</label><br>
+		<input type="submit" value="Anmelden">
+    </form>
+</div>
+#end

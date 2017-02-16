@@ -2,7 +2,6 @@ package DBBot;
 
 import Message.MessageCreator;
 import Message.Nachricht;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -62,7 +61,7 @@ public class PersonaleNachricht {
         
         Nachricht n = new Nachricht(b);
         
-        String nachricht = "";
+        String nachricht = "Hey " + b.getBenutzer().getName() + ":) \n";
         
         for(int i = 0; i < OPTIONEN; i++) {
             nachricht = nachricht + gibOptionsnachricht(i);

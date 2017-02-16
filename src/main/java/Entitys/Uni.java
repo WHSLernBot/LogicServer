@@ -35,6 +35,12 @@ public class Uni implements Serializable {
     private String name;
     
     /**
+     * Password fuer die Webseite
+     */
+    @Column(length = 200)
+    private String password;
+    
+    /**
      * Benutzer die diese Uni/Fachbereich besuchen.
      */
     @OneToMany(mappedBy="uni", cascade=CascadeType.ALL,orphanRemoval = true)
@@ -56,6 +62,7 @@ public class Uni implements Serializable {
     
     public Uni(String name) {
         this.name = name;
+        this.password = "projekt";
     }
 
     public short getId() {
@@ -68,6 +75,14 @@ public class Uni implements Serializable {
     
     public String getName(){
         return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Collection<Benutzer> getBenutzer() {
