@@ -93,6 +93,9 @@ public class Aufgabe implements Serializable {
      */
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Bewertung> bewertungen;
+    
+    @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
+    private Collection<BeAufgabe> bearbeitet;
 
     public Aufgabe(){    
     }

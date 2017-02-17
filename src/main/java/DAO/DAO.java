@@ -3,9 +3,9 @@ package DAO;
 import DBBot.aufgabenItem;
 import Entitys.*;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1600,27 +1600,14 @@ public class DAO {
      * @param password Das angegebene Password.
      * @return true, falls das Password richtig war.
      */
-    public static boolean getPruefePassword(short id, String password) {
+    public static boolean pruefePassword(short id, String password) {
         
         Uni u = EMH.getEntityManager().find(Uni.class, id);
         
         return (u == null) ? false : u.getPassword().equals(password);
         
     }
-    
-    /**
-     * Gibt das Password der angebenene Uni zurueck. Eigentlich unsicher :D
-     * 
-     * @param id Id der Uni.
-     * @return Das password.
-     */
-    public static String getPassword(short id) {
-        Uni u = EMH.getEntityManager().find(Uni.class, id);
-        
-        return (u == null) ? null : u.getPassword();
-    }
  
-    
     /**
      * Diese Methode fuegt einer Uni ein entsprechendes Modul hinzu.
      * 
@@ -1629,7 +1616,7 @@ public class DAO {
      * @param kuerzel Kuerzel des Moduls.
      * @throws java.lang.Exception
      */
-    public static void setModul(short id, String name, String kuerzel) throws Exception {
+    public static void addModul(short id, String name, String kuerzel) throws Exception {
                 
         try {
             EMH.beginTransaction();
@@ -1682,7 +1669,7 @@ public class DAO {
      * @param anteil Anteil die das Thema zum modul insgesamt annimmt.
      * @throws java.lang.Exception
      */
-    public static void setThema(String kuerzel, short id, String thema, int anteil) throws Exception {
+    public static void addThema(String kuerzel, short id, String thema, int anteil) throws Exception {
                 
         try {
             EMH.beginTransaction();
@@ -1756,7 +1743,7 @@ public class DAO {
      * @return Die neue Aufgabe.
      * @throws java.lang.Exception
      */
-    public static Aufgabe setFrage(Thema thema, String frage, String hinweis, String verweis, int punkte) throws Exception {      
+    public static Aufgabe addAufgabe(Thema thema, String frage, String hinweis, String verweis, int punkte) throws Exception {      
         
         Aufgabe a;
         
@@ -1773,7 +1760,7 @@ public class DAO {
             EMH.commit();
         } catch(Exception e) {
             EMH.rollback();
-            throw new Exception("Die Note konnte nicht gespeichert werden.");
+            throw new Exception("Die Aufgabe konnte nicht gespeichert werden.");
         }
         
         return a;
@@ -1788,7 +1775,7 @@ public class DAO {
      * @param richtig Falls true, ist die Antwort richtig.
      * @throws Exception 
      */
-    public static void setAntwort(Long aufgabe, String antwort, boolean richtig) throws Exception {
+    public static void addAntwort(long aufgabe, String antwort, boolean richtig) throws Exception {
         
         Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, aufgabe);
         if(a == null) {
@@ -1814,7 +1801,14 @@ public class DAO {
         }
     }
     
-    public static void setToken(Long aufgabe, String token) throws Exception {
+    /**
+     * Fuegt einer Aufgabe ein neues Token hinzu.
+     * 
+     * @param aufgabe Die AufgabeID.
+     * @param token Das neue Token.
+     * @throws Exception 
+     */
+    public static void addToken(long aufgabe, String token) throws Exception {
         
         Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, aufgabe);
         if(a == null) {
@@ -1837,5 +1831,190 @@ public class DAO {
         }
         
     }
+    
+    /**
+     * Aendert das Passwort einer uni.
+     * 
+     * @param id Die Id der uni.
+     * @param neu Das alte Passwort.
+     * @param alt Das neue Passwort.
+     * @throws Exception 
+     */
+    public static void setPassword(short id, String neu, String alt) throws Exception {
+        
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        if(u == null || !pruefePassword(id,alt) ) {
+            throw new Exception("Die angaben stimmen nicht.");
+        }
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            u.setPassword(neu);
+            
+            EMH.merge(u);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Passwort konnte nicht gespeichert werden.");
+        }
+        
+    }
+    
+    /**
+     * Aendert den Namen der Uni.
+     * 
+     * @param id Die Id der uni.
+     * @param name Der neue Name der Uni.
+     * @throws Exception 
+     */
+    public static void setUsername(short id, String name) throws Exception {
+        
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        if(u == null) {
+            throw new Exception("Die Uni konnte nicht gefunden werden.");
+        }
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            u.setName(name);
+            
+            EMH.merge(u);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Der Name konnte nicht gespeichert werden.");
+        }
+        
+    }
+    
+    /**
+     * Erstellt eine neue Uni.
+     * 
+     * @param name Name der Uni.
+     * @param passwort Passwort der Uni.
+     * @throws Exception 
+     */
+    public static void neueUni(String name, String passwort) throws Exception {
+
+        try {
+            
+            EMH.beginTransaction();
+            
+            Uni u = new Uni(name);
+            
+            u.setPassword(passwort);
+            
+            EMH.persist(u);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Der Name konnte nicht gespeichert werden.");
+        }
+        
+    }
+    
+    /**
+     * Fuegt eine neue Pruefungsperiode einer Uni hinzu.
+     * 
+     * @param id Id der Uni.
+     * @param jahr Jahr der Pruefungsperiode.
+     * @param phase Nummer der Phase.
+     * @param anfang Angangsdatum der Pruefungen.
+     * @param ende Enddatum der Pruefungen.
+     * @param anmeldebeginn Anmelebeginn der Pruefungen.
+     * @throws Exception 
+     */
+    public static void addPruefungsphase(short id, short jahr, short phase, Date anfang, Date ende, Date anmeldebeginn) throws Exception {
+
+        try {
+            
+            EMH.beginTransaction();
+            
+            Uni u = EMH.getEntityManager().find(Uni.class, id);
+            
+            Pruefungsperiode p = new Pruefungsperiode(u,jahr,phase,anmeldebeginn, anfang,ende);
+            
+            EMH.persist(p);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Pruefungsphase konnte nicht erstellt werden.");
+        }
+        
+    }
+    
+    /**
+     * Fuegt neiner Pruefungsperiode eine neue Klausur hinzu.
+     * 
+     * @param p Die Pruefungsperiode.
+     * @param m Das Modul der Pruefung.
+     * @param datum Das Datum der Klausur.
+     * @param uhrzeit Die Uhrzeit der Klausur.
+     * @param dauer Die Dauer der Klausur.
+     * @param ort Der Ort der Klausur.
+     * @param hilfsmittle Zugelassene Hilfsmittel.
+     * @param typ Die Art der Klausur (muenlicht, schriftlich etc.)
+     * @throws Exception 
+     */
+    public static void addKlausur(Pruefungsperiode p, Modul m, Date datum, 
+            Time uhrzeit, short dauer, String ort, String hilfsmittle, String typ) throws Exception {
+
+        try {
+            
+            EMH.beginTransaction();
+            
+            Klausur k = new Klausur(m, p, datum, uhrzeit, dauer, ort, hilfsmittle, typ);
+            
+            EMH.persist(k);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Pruefungsphase konnte nicht erstellt werden.");
+        }
+        
+    }
+    
+    /**
+     * Loescht eine Aufgabe und alle zugehoerigen Antworten und token.
+     * 
+     * @param id Die AufgabenID.
+     * @throws Exception 
+     */
+    public static void loescheAufgabe(long id) throws Exception {
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, id);
+            
+            EMH.remove(a);
+            
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Aufgabe konnte nicht geloescht werden.");
+        }
+        
+    }
+    
+    
     
 }
