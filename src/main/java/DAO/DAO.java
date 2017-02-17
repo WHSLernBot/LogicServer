@@ -166,6 +166,30 @@ public class DAO {
             + "where t.KLAUSUR_MODUL_KUERZEL = :KRZ and t.KLAUSUR_MODUL_UNI_ID = :UID "
             + "and t.PROZENT >= :MIN and t.PROZENT <= :MAX order by t.PROZENT ASC";
     
+    private static final String ALLE_MODULE = "select object(m)"
+            + " from Modul m, Uni u"
+            + " where u.UNI_NAME = : UN and m.UNI_ID = u.ID";
+    
+    private static final String ALLE_THEMEN = "select object(t) "
+            + "from Thema t, modul m, uni u "
+            + "where t.MOdul_Kuerzel = m.Kuerzel and t.Modul_UNI_ID = m.UNI_ID "
+            + "and m.UNI_ID = u.ID and t.NAME = :N";
+    
+    private static final String GIB_UNI = "select object(u) "
+            + "from Uni u "
+            + "where LOWER(u.NAME) LIKE :NA";
+    
+    private static final String GIB_THEMA = "select object(t) "
+            + "from Thema t, Lernstatus ls, Benutzer b "
+            + "where b.ID = :BID and ls.BENUTZER_ID = b.ID "
+            + "ls.THEMA_THEMENID = t.THEMENID and t.NAME = :TName";
+            
+     private static final String GIB_FRAGE = "select object(f) "
+             + "from Antwort aw, Aufgabe a, Thema t, Lernstatus ls "
+             + "where aw.Aufgabe_AUFGABEN_ID = a.AUFGABEN_ID "
+             + "and a.Thema_THEMENID = t.THEMENID and ls.THEMA_THEMENID = t.THEMENID and"
+             + "ls.BENUTZER_ID = :BID and a.FRAGE = :FR";  
+    
     //--------------------------- Allgemeine Methoden --------------------------
     
     /**
@@ -525,6 +549,7 @@ public class DAO {
     }
 
     
+    /*
     /**
      * Diese Methode stellt eine uebergebene Aufgabe in die Datenbank ein.
      * 
@@ -533,7 +558,7 @@ public class DAO {
      * @param aufgabe Die Aufgabe als Json Objekt in definiertem aussehen.
      * @throws java.lang.Exception Wird geworfen, falls der Benutzer keine neue
      * Aufgabe hinzufuegen darf.
-     */
+     *
     public static void neueAufgabe(CBBenutzer b, long thema, JsonObject aufgabe) throws Exception {
  
         //moegliche sicherheitsluecke
@@ -580,6 +605,7 @@ public class DAO {
             EMH.rollback();
         }    
     }
+    */
     
     /**
      * Diese Methode bewertet eine Aufgabe.
@@ -1512,6 +1538,303 @@ public class DAO {
         EMH.getEntityManager().find(Adresse.class, nummer);
         
         return a.toString();
+        
+    }
+    
+    //------------ Methoden fuer die Webseite ----------------------------------
+   
+//    /**
+//     * Diese Methode gib den Namen des Benutzers.
+//     * --------Versteh ich nicht .. so gar nicht
+//     * @param b Der ChatBot-Benutzer.
+//     * @param id id des Benutzers.
+//     * @return 
+//     */
+//    public static Benutzer getUsername(CBBenutzer b, long id) {
+//        
+//        Benutzer be = EMH.getEntityManager().find(Benutzer.class, id);
+//        
+//        synchronized(b) {
+//            be = b.getBenutzer();
+//            be.getName();
+//            
+//        } 
+//        return be;
+//    }
+    
+    /**
+     * Gibt die id der Uni zurueck fuer die sich ein Benutzer angemeldet hat.
+     * 
+     * @param name Der angegebene Name.
+     * @return Die entsprechende id, falls nichts efunden wurde wird -1 zurueckgegeben.
+     */
+    public static short getUniID(String name) {
+        
+        Query q = EMH.getEntityManager().createNamedQuery(GIB_UNI);
+        
+        q.setParameter("NA", name.toLowerCase());
+        
+        Uni u = ((Uni) q.getResultList().get(0));
+        
+        return (u == null) ? -1 : u.getId();
+        
+    }
+    
+    /**
+     * Gibt den Benutzernamen der Uni zurueck.
+     * 
+     * @param id Die id der Uni.
+     * @return Der name, falls die Uni nicht gefunden werden konnte wird 
+     * "unbekannt" zurueckgegebn.
+     */
+    public static String getUsername(short id) {
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        return (u == null) ? "unbekannt" : u.getName();
+    }
+    
+    /**
+     * Diese Methode gibt zurueck, ob das angegebene Password der Uni richtig war.
+     * 
+     * @param id Die ID der Uni.
+     * @param password Das angegebene Password.
+     * @return true, falls das Password richtig war.
+     */
+    public static boolean getPruefePassword(short id, String password) {
+        
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        return (u == null) ? false : u.getPassword().equals(password);
+        
+    }
+    
+    /**
+     * Gibt das Password der angebenene Uni zurueck. Eigentlich unsicher :D
+     * 
+     * @param id Id der Uni.
+     * @return Das password.
+     */
+    public static String getPassword(short id) {
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        return (u == null) ? null : u.getPassword();
+    }
+ 
+    
+    /**
+     * Diese Methode fuegt einer Uni ein entsprechendes Modul hinzu.
+     * 
+     * @param id ID der Uni.
+     * @param name Name des Moduls.
+     * @param kuerzel Kuerzel des Moduls.
+     * @throws java.lang.Exception
+     */
+    public static void setModul(short id, String name, String kuerzel) throws Exception {
+                
+        try {
+            EMH.beginTransaction();
+            Uni uni = EMH.getEntityManager().find(Uni.class, id);
+            
+            Modul m = new Modul(uni,kuerzel,name);
+            
+            EMH.persist(m);
+
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Modul konnte nicht hinzugefuegt werden");
+        }
+    
+    }
+    
+    /**
+     * Diese Methode erstellt eine Liste von Modulen. 
+     * 
+     * @param id Id der Uni.
+     * @return Gibt eine Liste von Module zurueck.
+     */
+    public static Collection<Modul> getModule(short id) {
+        
+//        ArrayList<Modul> module = new ArrayList<>();
+//        
+//        Query q = EMH.getEntityManager().createQuery(ALLE_MODULE);
+//        q.setParameter("UN", name);
+//        
+//        List rs = q.getResultList();
+//        
+//        for(Object o : rs) {
+//            module.add((Modul) o);
+//        }
+
+        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        
+        return u.getModul();
+    }
+    
+   
+    /**
+     * Diese Methode fuegt einem Modul ein Thema hinzu.
+     * 
+     * @param kuerzel Kuerzel des Moduls.
+     * @param id Id der Uni. 
+     * @param thema Das Thema das gesetzt werden soll.
+     * @param anteil Anteil die das Thema zum modul insgesamt annimmt.
+     * @throws java.lang.Exception
+     */
+    public static void setThema(String kuerzel, short id, String thema, int anteil) throws Exception {
+                
+        try {
+            EMH.beginTransaction();
+            Modul modul = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
+            
+            int summe = 100 + anteil;
+            
+            int rest = 0;
+            
+            for(Thema th : modul.getThemen()) {
+                
+                int ant = th.getAnteil();
+                
+                ant = ant * 100 / summe;
+                
+                rest += ant;
+                
+                th.setAnteil(ant);
+                
+                EMH.merge(ant);
+                
+            }      
+            
+            Thema t = new Thema(modul,thema,(100 - rest));
+            
+            EMH.persist(t);
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Das Thema konnte nicht hinzugefuegt werden");
+        }
+    
+    }
+    
+    /**
+     * Diese Methode erstellt eine Liste von Themen. Eigentlich unnoetig. 
+     * Besser ueber Modul.getThemen()
+     * 
+     * @param id Id der Uni.
+     * @param kuerzel Name des Moduls.
+     * @return 
+     */
+    public static Collection<Thema> getThemen(short id, String kuerzel) {
+        
+//        ArrayList<Thema> themen = new ArrayList<>();
+//        
+//        Query q = EMH.getEntityManager().createQuery(ALLE_THEMEN);
+//        q.setParameter("N", kuerzel);
+//        
+//        List rs = q.getResultList();
+//        
+//        for(Object o : rs) {
+//            themen.add((Thema) o);
+//        }
+        
+        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
+        
+        return m.getThemen();
+    }
+    
+    
+    /**
+     * Diese Methode speichert eine neue Aufgabe ab.
+     * 
+     * @param thema Zugehoeriges Thema der Frage.
+     * @param frage Frage, die gesetzt werden soll.
+     * @param hinweis Der Hinweistext zur Aufgabe.
+     * @param verweis Der Verweistext zur Aufgabe.
+     * @param punkte Die Punkte die die Aufgabe annehemen soll. Falls >= 0 standartwert 100.
+     * @return Die neue Aufgabe.
+     * @throws java.lang.Exception
+     */
+    public static Aufgabe setFrage(Thema thema, String frage, String hinweis, String verweis, int punkte) throws Exception {      
+        
+        Aufgabe a;
+        
+        try {
+
+            EMH.beginTransaction();
+
+            if(punkte <= 0) {
+                punkte = 100;
+            }
+            a = new Aufgabe(thema,frage,punkte,hinweis,verweis);
+
+            EMH.persist(a);
+            EMH.commit();
+        } catch(Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Note konnte nicht gespeichert werden.");
+        }
+        
+        return a;
+    }
+    
+    
+    /**
+     * Fuegt eine neue Antwort einer Aufgabe hinzu.
+     * 
+     * @param aufgabe Die Id der Aufgabe.
+     * @param antwort Antwort der Aufgabe.
+     * @param richtig Falls true, ist die Antwort richtig.
+     * @throws Exception 
+     */
+    public static void setAntwort(Long aufgabe, String antwort, boolean richtig) throws Exception {
+        
+        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, aufgabe);
+        if(a == null) {
+            throw new Exception("Die Aufgabe wurde nicht gefunden.");
+        }
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            Antwort aw = new Antwort(a,a.getAnzAntworten(),antwort,richtig);
+            
+            a.addAntwort();
+            
+            EMH.merge(a);
+            EMH.persist(aw);
+                        
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Antwort konnte nicht gespeichert werden.");
+        }
+    }
+    
+    public static void setToken(Long aufgabe, String token) throws Exception {
+        
+        Aufgabe a = EMH.getEntityManager().find(Aufgabe.class, aufgabe);
+        if(a == null) {
+            throw new Exception("Die Aufgabe wurde nicht gefunden.");
+        }
+        
+        try {
+            
+            EMH.beginTransaction();
+            
+            Token t = new Token(a,token);
+            
+            EMH.persist(t);
+                        
+            EMH.commit();
+            
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Die Antwort konnte nicht gespeichert werden.");
+        }
         
     }
     

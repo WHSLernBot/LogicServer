@@ -86,24 +86,12 @@ public class Modul implements Serializable {
         return themen;
     }
 
-    public void addThema(String name) {
-        this.themen.add(new Thema(this,name,20)); //anteil dynamisch bestimmen
-    }
-
     public Collection<Klausur> getKlausuren() {
         return klausuren;
     }
 
-    public void addKlausur(Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel,String typ) {
-        this.klausuren.add(new Klausur(this,pruefungsperiode,datum,uhrzeit,dauer,ort,hilfsmittel,typ));
-    }
-
     public Collection<Statistik> getStatistiken() {
         return statistiken;
-    }
-
-    public void addStatistik(short woche,int anteil) {
-        this.statistiken.add(new Statistik(this,woche,anteil));
     }
 
     public Uni getUni() {

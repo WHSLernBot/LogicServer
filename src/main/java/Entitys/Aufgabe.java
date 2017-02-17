@@ -118,31 +118,11 @@ public class Aufgabe implements Serializable {
     }
     
     /**
-     * Fuegt eine neue Antwort dieser Aufgabe hinzu.
-     * 
-     * @param antwort Der Antworttext.
-     * @param richtig true, falls diese Antwort richtig ist.
-     */
-    public void addAntwort(String antwort, Boolean richtig) {
-        this.antworten.add(new Antwort(this,anzAntworten,antwort,richtig));
-        
-        anzAntworten++;
-    }
-    
-    /**
      * 
      * @return Alle Antwortmoeglichkeiten dieser Frage.
      */
     public Collection<Antwort> getAntworten(){
         return this.antworten;
-    }
-    
-    /**
-     * Fuegt der Aufgabe einen neuen Token hinzu.
-     * @param tok Der Token.
-     */
-    public void addToken(String tok){
-        this.token.add(new Token(this,tok));
     }
     
     /**
@@ -215,6 +195,10 @@ public class Aufgabe implements Serializable {
 
     public short getAnzAntworten() {
         return anzAntworten;
+    }
+    
+    public void addAntwort() {
+        anzAntworten++;
     }
 
     public Collection<Bewertung> getBewertungen() {
