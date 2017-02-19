@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt die Bewertung einer Aufgabe durch einen Benutzer wieder,
@@ -16,6 +17,7 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @IdClass(BewertungPK.class)
+@Table(name="Bewertung")
 public class Bewertung implements Serializable {
 
     private static final long serialVersionUID = 1L;

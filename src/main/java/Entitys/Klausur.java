@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Klausur dar, an dem sich ein Benutzer anmelden kann. 
@@ -19,6 +20,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @IdClass(KlausurPK.class)
+@Table(name="Klausur")
 public class Klausur implements Serializable {
     
     private static final long serialVersionUID = 1L;

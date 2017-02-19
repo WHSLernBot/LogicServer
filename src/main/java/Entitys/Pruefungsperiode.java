@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Pruefungsperiode einer Uni dar, in der jede Klausur 
@@ -19,6 +20,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @IdClass(PruefungsperiodePK.class)
+@Table(name="Pruefungsperiode")
 public class Pruefungsperiode implements Serializable {
     
     private static final long serialVersionUID = 1L;

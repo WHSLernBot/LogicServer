@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine statisik dar, die berechnet in wie weit der Zeitfaktor
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(StatistikPK.class)
+@Table(name="Statistik")
 public class Statistik implements Serializable {
     
     private static final long serialVersionUID = 1L;

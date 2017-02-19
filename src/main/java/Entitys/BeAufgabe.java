@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt einer Aufgabe dar, die von einem Benutzer bearbeitet wurde.
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(BeAufgabePK.class)
+@Table(name="BeAufgabe")
 public class BeAufgabe implements Serializable {
     
     private static final long serialVersionUID = 1L;

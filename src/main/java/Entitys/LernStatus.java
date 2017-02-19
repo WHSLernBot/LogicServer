@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt einen LernStatus dar, der den Fortschritt eines Benutzers
@@ -19,6 +20,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @IdClass(LernStatusPK.class)
+@Table(name="LernStatus")
 public class LernStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;

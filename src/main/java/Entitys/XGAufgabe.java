@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine eXtra Geloeste Aufgabe dar, die auserhalb der
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(XGAufgabePK.class)
+@Table(name="XGAufgabe")
 public class XGAufgabe implements Serializable {
     
     private static final long serialVersionUID = 1L;

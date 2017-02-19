@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Aufgabe zu einem bestimmten Thema dar.
@@ -18,6 +19,7 @@ import javax.persistence.OneToMany;
  * @author Seve
  */
 @Entity
+@Table(name="Aufgabe")
 public class Aufgabe implements Serializable {
 
     private static final long serialVersionUID = 1L;

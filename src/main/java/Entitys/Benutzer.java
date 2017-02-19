@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt einen Benutzer des ChatBots dar.
@@ -19,6 +20,7 @@ import javax.persistence.OneToOne;
  * @author Seve
  */
 @Entity
+@Table(name="Benutzer")
 public class Benutzer implements Serializable {
 
     private static final long serialVersionUID = 1L;

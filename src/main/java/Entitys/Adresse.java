@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse beschreibt die Adresse einer Plattform.
@@ -12,6 +13,7 @@ import javax.persistence.Id;
  * @author Seve
  */
 @Entity
+@Table(name="Adresse")
 public class Adresse implements Serializable {
 
     private static final long serialVersionUID = 1L;

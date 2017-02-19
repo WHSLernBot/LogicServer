@@ -10,12 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt ein Thema eines Moduls dar.
  * @author Seve
  */
 @Entity
+@Table(name="Thema")
 public class Thema implements Serializable {
     
     private static final long serialVersionUID = 1L;

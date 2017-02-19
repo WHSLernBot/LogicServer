@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Antwortmoeglichkeit einer Aufgabe dar.
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(AntwortPK.class)
+@Table(name="Antwort")
 public class Antwort implements Serializable {
 
     private static final long serialVersionUID = 1L;

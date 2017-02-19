@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Ein Token, der ein bestimmtes Stichwort zu einer Aufgabe ist.
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(TokenPK.class)
+@Table(name="Token")
 public class Token implements Serializable {
     
     private static final long serialVersionUID = 1L;

@@ -11,12 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Universitaet und einen dort angesiedelten Fachbereich dar.
  * @author Seve
  */
 @Entity
+@Table(name="Uni")
 public class Uni implements Serializable {
 
     private static final long serialVersionUID = 1L;

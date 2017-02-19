@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse beschreibt die Teilnahme eines Benutzers an einer Klausur.
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 @IdClass(TeilnahmePK.class)
+@Table(name="Teilnahme")
 public class Teilnahme implements Serializable {
     
     private static final long serialVersionUID = 1L;

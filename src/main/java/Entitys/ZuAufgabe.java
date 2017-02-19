@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt eine Aufgabe dar, die der Benutzer als naechstes 
@@ -17,6 +18,7 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @IdClass(ZuAufgabePK.class)
+@Table(name="ZuAufgabe")
 public class ZuAufgabe implements Serializable {
     
     private static final long serialVersionUID = 1L;

@@ -1,8 +1,6 @@
 package Entitys;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -12,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse stellt ein Modul eines Unistudiengangs dar.
@@ -19,6 +18,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @IdClass(ModulPK.class)
+@Table(name="Modul")
 public class Modul implements Serializable {
     
     private static final long serialVersionUID = 1L;

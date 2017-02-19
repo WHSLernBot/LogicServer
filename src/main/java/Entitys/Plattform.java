@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  * Diese Klasse beschreibt die Plattform mit der ein Benutzer den ChatBot aufruft.
@@ -15,6 +16,7 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @IdClass(PlattformPK.class)
+@Table(name="Plattform")
 public class Plattform implements Serializable {
     
     private static final long serialVersionUID = 1L;
