@@ -17,9 +17,7 @@ public class Application {
         get(Path.W_ADMIN, AdminController.serveAdminPage);
         get(Path.W_USER, UserController.serveUserPage);
         post(Path.W_INDEX, IndexController.handleLoginPost);
-//        post(Path.W_ADMIN, AdminController.handleRegPost);
-//        post(Path.W_ADMIN, UserController.handleModulPost);
+        post(Path.W_ADMIN, AdminController.handleRegPost);
         post(Path.W_USER, UserController.handleModulPost);
-        post(Path.W_USER, UserController.handleThemaPost);
     }
 }

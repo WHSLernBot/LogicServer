@@ -3,11 +3,9 @@ package spark.velocity.controller;
 import java.util.HashMap;
 import java.util.Map;
 import spark.ModelAndView;
-import spark.Redirect;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import static spark.Spark.redirect;
 import static spark.velocity.util.RequestUtil.*;
 import spark.velocity.util.Path;
 import spark.velocity.util.VelocityTemplateEngine;
@@ -19,11 +17,12 @@ import spark.velocity.util.VelocityTemplateEngine;
 public class IndexController {
 
     public static Route serveIndexPage = (Request request, Response response) -> {
-        Map<String, Object> model = new HashMap<>();
-        
-//        model.put("loggedOut", removeSessionAttrLoggedOut(request));
-//        model.put("loginRedirect", removeSessionAttrLoginRedirect(request));
-        return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_INDEX));
+        Map<String, Object> model = new HashMap<>();       
+        model.put("loggedOut", removeSessionAttrLoggedOut(request));
+        model.put("loginRedirect", removeSessionAttrLoginRedirect(request));
+        System.out.println("IndexPage");
+        model.put("currentUser", getQueryUsername(request));
+        return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_INDEX));       
     };
 
     public static Route handleLoginPost = (Request request, Response response) -> {
@@ -42,9 +41,10 @@ public class IndexController {
             response.redirect(getQueryLoginRedirect(request));
         }
         if(getQueryUsername(request).equals("admin")) {
-            
+            response.redirect("/admin");
             return AdminController.serveAdminPage.handle(request, response);
         }
+        response.redirect("/user");
         return UserController.serveUserPage.handle(request, response);
     };
 }

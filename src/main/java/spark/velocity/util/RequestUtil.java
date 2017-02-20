@@ -12,8 +12,50 @@ import spark.Request;
  * @author Sebastian
  */
 public class RequestUtil {
-    public static String getQueryModuk(Request request){
-        return request.queryParams("modul"); 
+    public static String getQueryModulFrage(Request request) {
+        return request.queryParams("modulFrage");
+    }
+    public static String getQueryThemaFrage(Request request) {
+        return request.queryParams("themaFrage");
+    }
+    public static String getQueryAntwort4Richtig(Request request) {
+        return request.queryParams("antwort4Richtig");
+    }
+    public static String getQueryAntwort4(Request request) {
+        return request.queryParams("antwort4");
+    }
+    public static String getQueryAntwort3Richtig(Request request) {
+        return request.queryParams("antwort3Richtig");
+    }
+    public static String getQueryAntwort3(Request request) {
+        return request.queryParams("antwort3");
+    }
+    public static String getQueryAntwort2Richtig(Request request) {
+        return request.queryParams("antwort2Richtig");
+    }
+    public static String getQueryAntwort2(Request request) {
+        return request.queryParams("antwort2");
+    }
+    public static String getQueryAntwort1Richtig(Request request) {
+        return request.queryParams("antwort1Richtig");
+    }
+    public static String getQueryAntwort1(Request request) {
+        return request.queryParams("antwort1");
+    }
+    public static String getQueryHinweis(Request request) {
+        return request.queryParams("hinweis");
+    }
+    public static String getQueryVerweis(Request request) {
+        return request.queryParams("verweis");
+    }
+    public static String getQueryFrage(Request request) {
+        return request.queryParams("frage");
+    }
+    public static String getQueryPunkte(Request request) {
+        return request.queryParams("punkte");
+    }
+    public static String getQueryThemaAnteil(Request request) {
+        return request.queryParams("anteil");
     }
     public static String getQueryModul(Request request) {
         return request.queryParams("modul");
@@ -25,7 +67,7 @@ public class RequestUtil {
         return request.queryParams("kuerzel");
     }
     public static String getQueryThema(Request request) {
-        return request.queryParams("thema");
+        return request.queryParams("tkuerzel");
     }
     public static String getQueryUsername(Request request) {
         return request.queryParams("username");

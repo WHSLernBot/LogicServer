@@ -1,6 +1,7 @@
 #parse("/velocity/layout.vm")
 #@mainLayout()
-<form id="rahmen"method="post">
+<form method="post">
+            <div id="rahmen">
 		<label id="text">Modul hinzufügen</label><br><br>
 		<label id ="text" for="modul">Name: <input id="modul" name="modul"> </label>
 		<label id ="text" for="kuerzel">Kürzel: <input id="kuerzel" name="kuerzel"> </label>
@@ -8,53 +9,57 @@
 		<button id="mSubmit" type="submit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
-	</form>
-	<form id="rahmen"method="post">
+            </div>
+            <div id="rahmen">
 		<label id="text">Thema hinzufügen</label><br><br>
-		<label id ="text" for="dModul">Modul: <select id="themaModul" name="modul"> 
+		<label id ="text" for="dModul">Modul: <select id="themaModul" name="themaModul"> 
 		#foreach ($modul in $module)
                     <option> $modul</option>
                 #end
 		</select></label>
 		<label id ="text" for="tkuerzel">Thema: <input id="thema" name="tkuerzel"> </label>
+                <label id ="text" for="anteil">Anteil: <input id="anteil" name="anteil"> </label>
 		<div id="mButton">
-		<button id="mSubmit">Bestätigen</button> 
+		<button id="mSubmit" type="submit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
-	</form>
-	
-	<form id="rahmen">
-		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modul1"> 
-		<option>OPR</option>
-		<option>INS</option>
-		<option>ASG</option>
+            </div>
+            <div id="rahmen">
+		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulFrage"> 
+		#foreach ($modul in $module)
+                    <option> $modul</option>
+                #end
 		</select></label>
-		<label id ="text" for="dModul2">Thema: <select id="dModul2" name="modul2"> 
-		<option>xml</option>
-		<option>css</option>
-		<option>html</option>
+		<label id ="text" for="dModul2">Thema: <select id="dModul2" name="themaFrage">           
+                    #foreach ($thema in $themen)
+                        <option> $thema </option>
+                    #end
 		</select></label><br><br>
 		<label id="text">Frage hinzufügen</label><br><br>
-		<label id ="textarea" for="textarea">Frage: <textarea id="textarea" name="textarea"> </textarea></label><br>
-		<label id ="textarea" for="textarea">Antwort 1: <textarea id="textarea" name="textarea"> </textarea></label><br>
-		<label id ="textarea" for="textarea">Antwort 2: <textarea id="textarea" name="textarea"> </textarea></label><br>
-		<label id ="textarea" for="textarea">Antwort 3: <textarea id="textarea" name="textarea"> </textarea></label><br>
-		<label id ="textarea" for="textarea">Antwort 4: <textarea id="textarea" name="textarea"> </textarea></label><br><br>
+		<label id ="text" for="textarea">Frage: <textarea id="textarea" name="frage"></textarea></label>
+                <label id ="text" for="textarea">Hinweis: <textarea id="textarea" name="hinweis"></textarea></label><br>
+                <label id ="text" for="textarea">Verweis: <textarea id="textarea" name="verweis"></textarea></label>
+                <label id ="text" for="anteil">Punkte: <input id="anteil" name="punkte"> </label><br>
+		<label id ="text" for="textarea">Antwort 1: <textarea id="textarea" name="antwort1"></textarea></label>
+		<label id ="text" for="textarea">Antwort 2: <textarea id="textarea" name="antwort2"></textarea></label><br>
+		<label id ="text" for="textarea">Antwort 3: <textarea id="textarea" name="antwort3"></textarea></label>
+		<label id ="text" for="textarea">Antwort 4: <textarea id="textarea" name="antwort4"></textarea></label><br><br>
 		<fieldset> 
 		<label id="text">Richtige Antwort: </label><br>
-		<input type="radio" id="a1" name="RichtigeAntwort" value="Antwort1"> 
+		<input type="radio" id="a1" name="antwort1Richtig" value="true"> 
 		<label for="a1"> Antwort 1</label><br> 
-		<input type="radio" id="a2" name="RichtigeAntwort" value="Antwort2"> 
+		<input type="radio" id="a2" name="antwort2Richtig" value="true"> 
 		<label for="a2"> Antwort 2</label><br> 
-		<input type="radio" id="a3" name="RichtigeAntwort" value="Antwort3"> 
+		<input type="radio" id="a3" name="antwort3Richtig" value="true"> 
 		<label for="a3"> Antwort 3</label><br>
-		<input type="radio" id="a4" name="RichtigeAntwort" value="Antwort4"> 
+		<input type="radio" id="a4" name="antwort4Richtig" value="true"> 
 		<label for="a4"> Antwort 4</label> 
 		</fieldset>
-		
+            
 		<div id="mButton">
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
+            </div>
 	</form>
 #end

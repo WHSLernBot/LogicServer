@@ -6,10 +6,10 @@
 		<input id="login" name="usernameAnlegen" value="" required> 
 	</label><br>
 	<label for="pw">Password: 
-		<input id="pw" type="password" name="passwordErst" value="" required> 
+		<input id="pw" type="text" name="passwordErst" value="" required> 
 	</label><br>
         <label for="pw">Password wiederholen: 
-		<input id="pw" type="password" name="passwordWdh" value="" required> 
+		<input id="pw" type="text" name="passwordWdh" value="" required> 
 	</label><br>
 		<input type="submit" value="Anmelden">
     </form>

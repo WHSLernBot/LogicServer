@@ -5,8 +5,6 @@
  */
 package spark.velocity.controller;
 
-import Entitys.Uni;
-
 /**
  *
  * @author Sebastian
@@ -16,15 +14,7 @@ public class LoginController {
         if (username.isEmpty() || password.isEmpty()) {
             return false;
         }
-//        Uni user = DAO.DAO.gibUni((short)0);
-        String user = "admin";
-        String pw = "123";
-        String user1 = "whs";
-        String pw1  = "111";
-//        if (user == null) {
-//            return false;
-//        }
-        return user.equals(username) && pw.equals(password)
-                || user1.equals(username) && pw1.equals(password);
+        short uni = DAO.DAO.getUniID(username);
+        return DAO.DAO.pruefePassword(uni, password) && DAO.DAO.getUsername(uni).equals(username);
     }
 }
