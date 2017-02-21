@@ -77,6 +77,9 @@ public class Main {
         http.get("/hello3", (q, a) -> "Hello from port 5678!");
         
         
+        //Hier müsste Sebastian glaube ich seine Routen angeben!
+        
+        
         
     }
     
