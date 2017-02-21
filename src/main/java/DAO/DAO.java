@@ -277,6 +277,17 @@ public class DAO {
         
     }
     
+    private static boolean istAngemeldet(CBBenutzer b, Modul m) {
+        LernStatus angemeldetLS = null;
+        
+        if(m != null) {
+            angemeldetLS = EMH.getEntityManager().find(LernStatus.class, 
+                new LernStatusPK(b.getBenutzer().getId(),m.getThemen().iterator().next().getId()));
+        }
+            
+        return angemeldetLS != null;
+    }
+    
     /**
      * Gibt eine Aufgabe aus, die aus einer Liste an tokens am sinnvollsten war.
      * 
@@ -305,42 +316,18 @@ public class DAO {
                 it.remove();
             }
         }
-        
-        //Schauen ob fuer modul angemeldet
-        LernStatus angemeldetLS = null;
-        
-        if(m != null) {
-            angemeldetLS = EMH.getEntityManager().find(LernStatus.class, 
-                new LernStatusPK(bId,m.getThemen().iterator().next().getId()));
-        }
             
-        if(angemeldetLS == null) {
+        if(!istAngemeldet(be,m)) {
             throw new Exception("Du bist noch garnicht fuer das entsprechende Modul angemeldet!");
         }
         
-        //Pruefen ob noch token uebrig
-        if(token.isEmpty() && m != null) {
-            LernStatus ls = null;
-            int punkte = 10001;
-            for(Object o: gibLernstadi(be,m.getKuerzel())) {
-                LernStatus l = (LernStatus) o;
-                
-                int p = l.getSumPunkte() * l.getThema().getAnteil();
-                if(p < punkte) {
-                    ls = l;
-                    punkte = p;
-                }
-            }
-            return gibAufgabe(ls);
-        }
-          
         //Herausfinden ob angegebenes Thema in der Datenbank liegenden Themen entsprechen.
         Query qu;
         
         List<LernStatus> stadi = new LinkedList<>();
         
         it = token.iterator();
-        while(stadi.isEmpty() && it.hasNext()) {
+        while(!token.isEmpty() && stadi.isEmpty() && it.hasNext()) {
             String s = (String) it.next();
             if(m == null) {
                 qu = EMH.getEntityManager().createNamedQuery(GIB_THEMA_THEMA);
@@ -367,30 +354,56 @@ public class DAO {
 
         }
         
-        //Falls keine token mehr uebrig sind.
-        if(token.isEmpty()) {
-            LernStatus ls = null;
-            int punkte = 10001;
-            for(LernStatus l: stadi) {
-                int p = l.getSumPunkte() * l.getThema().getAnteil();
-                if(p < punkte) {
-                    ls = l;
-                    punkte = p;
-                }
-            }
-            return gibAufgabe(ls);
-        }
-        
         //Restlichen tokens bewerten
         HashMap<Long,Integer> punkte = new HashMap<>();
         
-        for(LernStatus ls : stadi) {
-            trageAufgabenEin(punkte,token,bId,ls,m);    
-        }
-        if(stadi.isEmpty()) {
-            trageAufgabenEin(punkte,token,bId,null,m);
+        if(!token.isEmpty()) {
+            for(LernStatus ls : stadi) {
+                trageAufgabenEin(punkte,token,bId,ls,m);    
+            }
+            if(stadi.isEmpty()) {
+                trageAufgabenEin(punkte,token,bId,null,m);
+            }
         }
         
+        //Jetzt wurden alle Token ausgewertet. Zeit auszuwerten:
+        
+        if(m != null && stadi.isEmpty() && punkte.isEmpty()) {
+            //Es liegt nur ein Modul vor
+            
+            LernStatus ls = null;
+            double mPunkte = 10001;
+            for(Object o: gibLernstadi(be,m.getKuerzel())) {
+                LernStatus l = (LernStatus) o;
+                
+                double p = l.getSumPunkte() / l.getThema().getAnteil();
+                if(p < mPunkte) {
+                    ls = l;
+                    mPunkte = p;
+                }
+            }
+            return gibAufgabe(ls);
+            
+        } else if(!stadi.isEmpty() && punkte.isEmpty()) {
+            
+            //Es liegen Lernstadi vor
+            
+            LernStatus ls = null;
+            double mPunkte = 10001;
+            for(Object o: stadi) {
+                LernStatus l = (LernStatus) o;
+                
+                double p = l.getSumPunkte() / l.getThema().getAnteil();
+                if(p < mPunkte) {
+                    ls = l;
+                    mPunkte = p;
+                }
+            }
+            return gibAufgabe(ls);
+            
+        }
+        
+        //Es gibt auch noch gefundene Token
         
         Query qxg = EMH.getEntityManager().createNamedQuery(ALLE_XGAUFGAEBN);
             
@@ -2015,6 +2028,71 @@ public class DAO {
         
     }
     
+    
+    //---------------- Test Funktionen ------------------
+    
+    /**
+     * Erstellt ein paar Datenbankeintraege, falls diese noch nicht vorhanden sind.
+     * Diese sind:
+     * Eine Uni, ein Modul, ein Thema, eine Aufgabe mit 3 Antworten und 2 Token
+     * 
+     * @throws Exception 
+     */
+    public static void erstelleEintraege() throws Exception {
+        
+        String name = "WHS Informatik";
+        
+        if(DAO.getUniID(name) != -1) {
+            return;
+        }
+        
+        try {
+            EMH.beginTransaction();
+            
+            Uni u = new Uni(name);
+            
+            EMH.persist(u);
+            
+            Modul m = new Modul(u,"INS", "Internetsprachen");
+            
+            EMH.persist(m);
+            
+            Thema t = new Thema(m,"HTML",100);
+            
+            EMH.persist(t);
+            
+            Aufgabe a = new Aufgabe(t,"Mit welchem Tag kann man in HTML "
+                    + "bereiche makieren?", 100, "Das Tag "
+                            + "ist nur fuer die Darstellung da.", "Schau dir "
+                                    + "nochmal alle TAGs auf den Folien an.");
+            
+            
+            Antwort aw1 = new Antwort(a,a.getAnzAntworten(),"<span>",true);
+            a.addAntwort();
+            
+            Antwort aw2 = new Antwort(a,a.getAnzAntworten(),"<pre>",false);
+            a.addAntwort();
+            
+            Antwort aw3 = new Antwort(a,a.getAnzAntworten(),"<figure>",false);
+            a.addAntwort();
+            
+            Token t1 = new Token(a,"tag");
+            Token t2 = new Token(a,"html");
+            
+            EMH.persist(a);
+            EMH.persist(aw1);
+            EMH.persist(aw2);
+            EMH.persist(aw3);
+            EMH.persist(t1);
+            EMH.persist(t2);
+            
+            EMH.commit();
+        } catch (Exception e) {
+            EMH.rollback();
+            throw new Exception("Eintraege konnten nich erstellt werden.");
+        }
+        
+    }
     
     
 }
