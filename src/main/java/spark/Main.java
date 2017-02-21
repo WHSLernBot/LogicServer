@@ -70,8 +70,17 @@ public class Main {
       
         });
         
-        
-        http.get("/hello2", (q, a) -> "Hello from port 1234!");
+        http.get("/testVerbindung", (req, res) -> {
+            
+            short i = 1;
+            String  s = DAO.DAO.neueVerbindung(i, "testwebsite.de");
+            
+            DAO.EMH.closeEntityManager();
+            
+            return s;
+            
+            
+        });
         
         
         http.get("/hello3", (q, a) -> "Hello from port 5678!");
