@@ -71,6 +71,7 @@ public class Controller {
     private static final String AUFGABE = "aufgabenID";
     
     private static final String MODUL = "modul";
+    private static final String MODUL_ARRAY = "module";
     private static final String PERIODE = "pruefungsperiode";
     private static final String PERIODE_JAHR = "pruefungsperiodeJahr";
     
@@ -200,7 +201,22 @@ public class Controller {
                     MessageCreator.erstlleModulListe(nachricht.getJson(), DAO.gibNichtangemeldete(benutzer));
                     break;
                 case METHODE_MELDE_MODUL_AN:
-                    DAO.meldeAn(benutzer,json.get(MODUL).getAsString());
+                    
+                    String fehler = "";
+                    for(JsonElement je : json.get(MODUL_ARRAY).getAsJsonArray()) {
+                        
+                        try {
+                            DAO.meldeAn(benutzer,je.getAsString());
+                        } catch (Exception e) {
+                            fehler += e.getMessage();
+                        }
+                        
+                    }
+                    
+                    if(!fehler.equals("")) {
+                        throw new Exception(fehler);
+                    }
+                    
                     break;
                 case METHODE_SETZE_INAKTIV:
                     DAO.setzeInaktiv(benutzer,json.get(MODUL).getAsString());

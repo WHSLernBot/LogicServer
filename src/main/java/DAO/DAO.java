@@ -308,7 +308,7 @@ public class DAO {
         
         Iterator it = token.iterator();
         while(m == null && it.hasNext()) {
-            String s = (String)it.next();
+            String s = ((String)it.next()).toUpperCase();
             
             m = EMH.getEntityManager().find(Modul.class, new ModulPK(be.getBenutzer().getUni().getId(),s));  
             
@@ -794,6 +794,7 @@ public class DAO {
      * @throws java.lang.Exception
      */
     public static void setzeName(CBBenutzer benutzer, String name) throws Exception {
+        
         try {
             
             EMH.beginTransaction();
@@ -854,6 +855,8 @@ public class DAO {
      * @throws java.lang.Exception
      */
     public static void meldePruefungAn(CBBenutzer b, String modul, short periode, short jahr) throws Exception {
+        
+        modul = modul.toUpperCase();
         
         Teilnahme t;
         Klausur k;
@@ -917,6 +920,8 @@ public class DAO {
      * @throws java.lang.Exception 
      */
     public static void meldePruefungAb(CBBenutzer b, String modul) throws Exception {
+        
+        modul = modul.toUpperCase();
         
         Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
         
@@ -1016,6 +1021,8 @@ public class DAO {
      */
     public static List<Klausur> gibPruefungen(CBBenutzer b, String modul) throws Exception {
         
+        modul = modul.toUpperCase();
+        
         Query qPeriode = EMH.getEntityManager().createNamedQuery(GIB_PRUEFUNGSPERIODEN);
         
         Query qTeilnahme = EMH.getEntityManager().createNamedQuery(GIB_TEILNAHME);
@@ -1072,6 +1079,8 @@ public class DAO {
      */
     public static void speichereNote(CBBenutzer b, String modul, short note) throws Exception {
         
+        modul = modul.toUpperCase();
+        
         Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
         
         synchronized(b) {
@@ -1118,6 +1127,8 @@ public class DAO {
      */
     public static Klausur gibKlausur(CBBenutzer b, String modul) {
         
+        modul = modul.toUpperCase();
+        
         Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
         
         synchronized(b) {
@@ -1143,6 +1154,8 @@ public class DAO {
      * @return 
      */
     public static Teilnahme gibTeilnahme(Long id, String modul) {
+        
+        modul = modul.toUpperCase();
         
         Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
         
@@ -1175,9 +1188,16 @@ public class DAO {
      */
     public static void meldeAn(CBBenutzer b, String modul) throws Exception {
         
+        modul = modul.toUpperCase();
+        
+        Modul m = EMH.getEntityManager().find(Modul.class, modul);
+        
+        if(m == null) {
+            throw new Exception(modul + " konnte nicht gefunden werden.");
+        }
         try {
             EMH.beginTransaction();
-            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+            
 
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
@@ -1190,7 +1210,7 @@ public class DAO {
                         EMH.persist(new LernStatus(be,t,datum));  
                     } else {
                         if(ls.isBeendet()) {
-                            throw new Exception("Dieses Modul haben Sie schon erfolgreich absolviert.");
+                            throw new Exception(modul + " haben Sie schon erfolgreich absolviert.");
                         }
                         ls.setAktiv(true);
                         EMH.merge(ls);
@@ -1202,11 +1222,10 @@ public class DAO {
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
-            throw new Exception("Das Modul konnte nicht angemeldet werden.");
+            throw new Exception(modul + " konnte nicht angemeldet werden.");
         }
     
         ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
-        
     }
     
     /**
@@ -1217,6 +1236,8 @@ public class DAO {
      * @throws Exception 
      */
     public static void setzeInaktiv(CBBenutzer b, String modul) throws Exception {
+        
+        modul = modul.toUpperCase();
         
         try {
             EMH.beginTransaction();
@@ -1249,6 +1270,8 @@ public class DAO {
      * @throws Exception 
      */
     public static void setzeBeendet(CBBenutzer b, String modul) throws Exception {
+        
+        modul = modul.toUpperCase();
         
         try {
             EMH.beginTransaction();
@@ -1419,8 +1442,16 @@ public class DAO {
            
     }
     
+    /**
+     * Gibt alle Lernstadi eines Moduls zurueck, die zu einem Benutzer gehoehren.
+     * 
+     * @param b Der Benutzer.
+     * @param modul Das entsprechende Modul.
+     * @return Liste aller Lernstadi.
+     */
     public static List gibLernstadi(CBBenutzer b, String modul) {
-        
+        modul = modul.toUpperCase();
+      
          Query q = EMH.getEntityManager().createQuery(GIB_LERNSTADI);
         
          synchronized(b) {
@@ -1465,6 +1496,12 @@ public class DAO {
         
     }
     
+    /**
+     * Prueft ob bei einem Modul neue Klausurergebnisse dazukamen.
+     * 
+     * @param m Das Modul.
+     * @return true, falls neue ergebnisse dazukamen.
+     */
     public static boolean wurdeVeraendert(Modul m) {
         
         Query q = EMH.getEntityManager().createNamedQuery(WURDE_KLAUSUR_AKT);
@@ -1476,6 +1513,12 @@ public class DAO {
         
     }
     
+    /**
+     * Setzt den Anteil der Angegebenen Themen neu.
+     * 
+     * @param themen Array aller Themen IDs.
+     * @param prozent Array der entsprechenden Prozente.
+     */
     public static void setzeAnteil(long[] themen, int[] prozent) {
         
         try {
@@ -1500,14 +1543,25 @@ public class DAO {
         
     }
     
-    public static short gibErgebniss(CBBenutzer b, String m, int prozent) {
+    /**
+     * Diese Methode gib die naechste note eines anderen Benutzers aus, der ein
+     * Modul geschrieben hat und mit seinen berechneten Prozent +- 5 Prozent
+     * mit der angabe des Benutzers uebereinstimmt.
+     * 
+     * @param b Der Benutzer.
+     * @param modul Das Modul in dem die Klausur geschrieben wird.
+     * @param prozent Der errechnete Prozentwert.
+     * @return Die Note. Falls keine gefunden wurde wird -1 zurueckgegeben.
+     */
+    public static short gibErgebniss(CBBenutzer b, String modul, int prozent) {
         
+        modul = modul.toUpperCase();
         short note = 0;
         
         Query q = EMH.getEntityManager().createNamedQuery(GIB_AEHNLICHE_ERGEBNISSE);
         
         q.setParameter("UID", b.getBenutzer().getUni().getId());
-        q.setParameter("KRZ", m);
+        q.setParameter("KRZ", modul);
         q.setParameter("MIN", prozent - 5);
         q.setParameter("MAX", prozent + 5);
         
@@ -1631,11 +1685,19 @@ public class DAO {
      */
     public static void addModul(short id, String name, String kuerzel) throws Exception {
                 
+        kuerzel = kuerzel.toUpperCase();
+        
+        Modul mod = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
+        
+        if(mod != null) {
+            throw new Exception(kuerzel + " exestiert schon an dieser Uni.");
+        }
+        
         try {
             EMH.beginTransaction();
             Uni uni = EMH.getEntityManager().find(Uni.class, id);
             
-            Modul m = new Modul(uni,kuerzel,name);
+            Modul m = new Modul(uni,kuerzel.toUpperCase(),name);
             
             EMH.persist(m);
 
