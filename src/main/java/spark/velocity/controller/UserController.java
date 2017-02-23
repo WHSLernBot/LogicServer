@@ -9,7 +9,6 @@ import Entitys.Aufgabe;
 import Entitys.Modul;
 import Entitys.Pruefungsperiode;
 import Entitys.Thema;
-import Entitys.Uni;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
