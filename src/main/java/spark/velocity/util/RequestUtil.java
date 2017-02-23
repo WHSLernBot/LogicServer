@@ -1,17 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spark.velocity.util;
 
 import spark.Request;
 
 /**
- *
- * @author Sebastian
+ * Diese Klassen stellt Methoden bereit, um die Request auszulesen.
  */
 public class RequestUtil {
+    public static String getQueryPeriode(Request request) {
+        return request.queryParams("periode");
+    }
+    public static String getQueryModulKlausur(Request request) {
+        return request.queryParams("modulKlausur");
+    }
+    public static String getQueryDatum(Request request) {
+        return request.queryParams("datum");
+    }
+    public static String getQueryUhrzeit(Request request) {
+        return request.queryParams("uhrzeit");
+    }
+    public static String getQueryDauer(Request request) {
+        return request.queryParams("dauer");
+    }
+    public static String getQueryHilfsmittel(Request request) {
+        return request.queryParams("hilfsmittel");
+    }
+    public static String getQueryOrt(Request request) {
+        return request.queryParams("ort");
+    }
+    public static String getQueryTyp(Request request) {
+        return request.queryParams("beginn");
+    }
+    public static String getQueryAnmeldeBeginn(Request request) {
+        return request.queryParams("typ");
+    }
+    public static String getQueryEndePP(Request request) {
+        return request.queryParams("ende");
+    }
+    public static String getQueryAnfangPP(Request request) {
+        return request.queryParams("anfang");
+    }
+    public static String getQueryPhase(Request request) {
+        return request.queryParams("phase");
+    }
+    public static String getQueryJahr(Request request) {
+        return request.queryParams("jahr");
+    }
     public static String getQueryModulFrage(Request request) {
         return request.queryParams("modulFrage");
     }

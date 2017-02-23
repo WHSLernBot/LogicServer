@@ -17,6 +17,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import static spark.Spark.get;
+import static spark.Spark.post;
+import spark.velocity.controller.*;
+import spark.velocity.util.Path;
 
 public class Main {
     
@@ -24,7 +28,13 @@ public class Main {
    
 
     public static void main(String[] args) {
-        
+        Spark.staticFileLocation("/public");
+        get(Path.W_INDEX , IndexController.serveIndexPage);
+        get(Path.W_ADMIN, AdminController.serveAdminPage);
+        get(Path.W_USER, UserController.serveUserPage);
+        post(Path.W_INDEX, IndexController.handleLoginPost);
+        post(Path.W_ADMIN, AdminController.handleRegPost);
+        post(Path.W_USER, UserController.handleModulPost);
         igniteFirstSpark();  
        
     }

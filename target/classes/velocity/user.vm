@@ -60,6 +60,46 @@
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
+
+            <div id="rahmen">
+		<label id="text">Prüfungsperiode hinzufügen</label><br><br>
+		<label id ="text" for="jahr">Jahr: <input id="jahr" name="jahr"> </label>
+                <label id ="text" for="phase">Phase: <select id="phase" name="phase">           
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+		</select></label><br>
+		<label id ="text" for="anfang">Anfang der PP.: <input id="anfang" name="anfang"> </label>
+                <label id ="text" for="anfang">Ende der PP.: <input id="ende" name="ende"> </label><br>
+                <label id ="text" for="anfang">Beginn der Anmeldung: <input id="beginn" name="beginn"> </label>
+		<div id="mButton">
+		<button id="mSubmit">Bestätigen</button> 
+		<button id="mCancel" type="reset">Abbrechen</button> 
+		</div>
+<div id="rahmen">
+		<label id="text">Prüfungsperiode hinzufügen</label><br><br>
+		<label id ="text" for="dModul1">Prüfungsperiode: <select id="dModul1" name="periode"> 
+		#foreach ($periode in $pp)
+                    <option> $periode</option>
+                #end
+		</select></label>
+                <label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulKlausur"> 
+		#foreach ($modul in $module)
+                    <option> $modul</option>
+                #end
+		</select></label>
+		<label id ="text" for="datum">Datum: <input id="datum" name="datum"> </label>
+                <label id ="text" for="anfang">Uhrzeit: <input id="uhrzeit" name="uhrzeit"> </label><br>
+                <label id ="text" for="dauer">Dauer: <input id="dauer" name="dauer"> </label>
+                <label id ="text" for="ort">Ort: <input id="ort" name="ort"> </label>
+                <label id ="text" for="hilfsmittel">Hilfsmittel: <input id="hilfsmittel" name="hilfsmittel"> </label>
+                <label id ="text" for="typ">Typ: <input id="typ" name="typ"> </label>  
+		<div id="mButton">
+		<button id="mSubmit">Bestätigen</button> 
+		<button id="mCancel" type="reset">Abbrechen</button> 
+		</div>
+
             </div>
 	</form>
 #end

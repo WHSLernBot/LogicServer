@@ -16,10 +16,14 @@ import static spark.velocity.util.RequestUtil.*;
 import spark.velocity.util.VelocityTemplateEngine;
 
 /**
- *
- * @author Sebastian
+ * Diese Klasse stellt Methoden bereit um die 
+ * Indexseite und den Loginpost einer Webseite zu verarbeiten. 
  */
 public class AdminController {
+    /**
+     * Diese Variable beinhaltet eine Route, die einen Post zum 
+     * Regestrieren neuer Benutzer verwaltet.
+     */
     public static Route handleRegPost = (Request request, Response response) -> {
         
         if(request == null){
@@ -32,12 +36,15 @@ public class AdminController {
         }
         if(getQueryPasswordErst(request).equals(getQueryPasswordWdh(request))){
             System.out.println("DAO einfügen");
+            DAO.DAO.neueUni(getQueryUsernameAnlegen(request), getQueryPasswordErst(request));
+
         }
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };
-    
+    /**
+     * Diese Variable beinhaltet eine Route, die die Adminseite rendert.
+     */
     public static Route serveAdminPage= (Request request, Response response) -> {
-        System.out.println("AdminPage");
         Map<String, Object> model = new HashMap<>();       
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };

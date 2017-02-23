@@ -1,6 +1,8 @@
 
 package spark.velocity.util;
-
+/**
+ * Diese Klasse gibt die Pfade für die Webseite an.
+ */
 public class Path {
     /**
      * Webpath
