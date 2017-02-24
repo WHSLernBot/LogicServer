@@ -6,6 +6,7 @@ import spark.Request;
  * Diese Klassen stellt Methoden bereit, um die Request auszulesen.
  */
 public class RequestUtil {
+    //Klausur
     public static String getQueryPeriode(Request request) {
         return request.queryParams("periode");
     }
@@ -28,10 +29,11 @@ public class RequestUtil {
         return request.queryParams("ort");
     }
     public static String getQueryTyp(Request request) {
-        return request.queryParams("beginn");
-    }
-    public static String getQueryAnmeldeBeginn(Request request) {
         return request.queryParams("typ");
+    }
+//Pruefungsperiode 
+    public static String getQueryAnmeldeBeginn(Request request) {
+        return request.queryParams("beginn");
     }
     public static String getQueryEndePP(Request request) {
         return request.queryParams("ende");

@@ -11,10 +11,12 @@ import Entitys.Pruefungsperiode;
 import Entitys.Thema;
 import java.sql.Date;
 import java.sql.Time;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import spark.ModelAndView;
 import spark.Request;
@@ -41,6 +43,7 @@ public class UserController {
     public static Route handleModulPost = new Route() {
         @Override
         public Object handle(Request request, Response response) throws Exception {
+            System.out.println("HandleModul");
             if (request == null) {
                 System.out.println("null");
             }
@@ -66,38 +69,51 @@ public class UserController {
             if (!getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
                     && !getQueryAntwort2(request).equals("") && !getQueryAntwort3(request).equals("")
                     && !getQueryAntwort4(request).equals("") && !getQueryPunkte(request).equals("")) {
+
                 Aufgabe auf = DAO.DAO.addAufgabe(thema, getQueryFrage(request), getQueryHinweis(request), getQueryVerweis(request), Integer.parseInt(getQueryPunkte(request)));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort1(request), !(getQueryAntwort1Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort2(request), !(getQueryAntwort2Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort3(request), !(getQueryAntwort3Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort4(request), !(getQueryAntwort4Richtig(request) == null));
+ 
             }
+            
             //Fuege eine Pruefungsperiode hinzu.
             if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
                     && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
-                DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-                Date date = (Date) format.parse(getQueryAnfangPP(request));
-                Date anfang = new Date(date.getDay(), date.getMonth(), date.getYear());
-                date = (Date) format.parse(getQueryEndePP(request));
-                Date ende = new Date(date.getDay(), date.getMonth(), date.getYear());
-                date = (Date) format.parse(getQueryAnmeldeBeginn(request));
-                Date anmeldebeginn = new Date(date.getDay(), date.getMonth(), date.getYear());                
-                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)), anfang, ende, anmeldebeginn);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
+                Date anfang = new Date(cal.getTimeInMillis());
+                cal.setTime(sdf.parse(getQueryEndePP(request)));
+                Date ende = new Date(cal.getTimeInMillis());
+                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
+                Date anmeldebeginn = new Date(cal.getTimeInMillis());
+                
+                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request))
+                        , anfang, ende, anmeldebeginn);
             }
+            
             HashMap<String,Pruefungsperiode> per = (HashMap) DAO.DAO.gibUni(uniID).getPruefungsperiode();
             model.put("pp",per);
-            // Fuege eine Klausur hinzu.
+//          Fuege eine Klausur hinzu.
             if(!getQueryUhrzeit(request).equals("") && !getQueryDatum(request).equals("")
                     && !getQueryOrt(request).equals("") && !getQueryHilfsmittel(request).equals("")
                     && !getQueryTyp(request).equals("") && !getQueryDauer(request).equals("")) {
-            DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-            Date datum = (Date) format.parse(getQueryDatum(request));
-            Time uhrzeit = new Time(format.parse(getQueryUhrzeit(request)).getTime());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(sdf.parse(getQueryDatum(request)));
+            Date datum = new Date(cal.getTimeInMillis());
+            LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
+            Time uhrzeit = new Time(lt.getHour(),lt.getMinute(),lt.getSecond());
+
             HashMap<String,Modul> hm =  (HashMap) DAO.DAO.getModule(uniID);
-            
+
             DAO.DAO.addKlausur(per.get(getQueryPeriode(request)),hm.get(getQueryModulKlausur(request))
                     , datum, uhrzeit, Short.parseShort(getQueryDauer(request))
                     , getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
+                    
             
             }
             return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));

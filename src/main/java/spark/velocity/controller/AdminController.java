@@ -35,7 +35,6 @@ public class AdminController {
             System.out.println("Fehler");
         }
         if(getQueryPasswordErst(request).equals(getQueryPasswordWdh(request))){
-            System.out.println("DAO einfügen");
             DAO.DAO.neueUni(getQueryUsernameAnlegen(request), getQueryPasswordErst(request));
 
         }
