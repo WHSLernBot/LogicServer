@@ -95,7 +95,7 @@ public class Controller {
         CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
                 userOb.get(USER_PLATTFORM).getAsShort());
 
-        CBBenutzer benutzer = manager.gibBenutzer(pt, json.get(NAME).getAsString() ,userOb.get(USER_SESSION).getAsString());
+        CBBenutzer benutzer = manager.gibBenutzer(pt,userOb.get(USER_SESSION).getAsString());
         
         Nachricht nachricht = new Nachricht(benutzer);
         

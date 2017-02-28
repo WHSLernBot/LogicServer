@@ -105,11 +105,10 @@ public class ChatBotManager {
      * Gibt den Benutzer zur zugehoerigen Plattform zurueck.
      * 
      * @param pt
-     * @param name
      * @param session
      * @return 
      */
-    public CBBenutzer gibBenutzer(CBPlattform pt, String name, String session) {
+    public CBBenutzer gibBenutzer(CBPlattform pt, String session) {
         
         CBBenutzer be = null;
         benutzerLock.lock();
@@ -119,7 +118,7 @@ public class ChatBotManager {
                be = DAO.sucheBenutzer(pt);
                
                if(be == null) {
-                   Benutzer b = DAO.neuerBenutzer(pt, name, session);
+                   Benutzer b = DAO.neuerBenutzer(pt, "", session);
                    
                    be = new CBBenutzer(b);
                }
