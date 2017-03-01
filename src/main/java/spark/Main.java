@@ -18,9 +18,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.*;
 import spark.velocity.controller.*;
 import spark.velocity.util.Path;
 
