@@ -29,7 +29,7 @@ public class Main {
    
 
     public static void main(String[] args) {
-        Spark.staticFileLocation("/public");
+//        Spark.staticFileLocation("/public");
 //        get(Path.W_INDEX , IndexController.serveIndexPage);
 //        get(Path.W_ADMIN, AdminController.serveAdminPage);
 //        get(Path.W_USER, UserController.serveUserPage);
@@ -113,7 +113,7 @@ public class Main {
         
         
         //Hier müsste Sebastian glaube ich seine Routen angeben!
-        
+        http.staticFileLocation("/public");
         http.get(Path.W_INDEX , IndexController.serveIndexPage);
         http.get(Path.W_ADMIN, AdminController.serveAdminPage);
         http.get(Path.W_USER, UserController.serveUserPage);
