@@ -2,6 +2,7 @@ package spark;
 
 import Message.Nachricht;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -29,12 +30,12 @@ public class Main {
 
     public static void main(String[] args) {
         Spark.staticFileLocation("/public");
-        get(Path.W_INDEX , IndexController.serveIndexPage);
-        get(Path.W_ADMIN, AdminController.serveAdminPage);
-        get(Path.W_USER, UserController.serveUserPage);
-        post(Path.W_INDEX, IndexController.handleLoginPost);
-        post(Path.W_ADMIN, AdminController.handleRegPost);
-        post(Path.W_USER, UserController.handleModulPost);
+//        get(Path.W_INDEX , IndexController.serveIndexPage);
+//        get(Path.W_ADMIN, AdminController.serveAdminPage);
+//        get(Path.W_USER, UserController.serveUserPage);
+//        post(Path.W_INDEX, IndexController.handleLoginPost);
+//        post(Path.W_ADMIN, AdminController.handleRegPost);
+//        post(Path.W_USER, UserController.handleModulPost);
         igniteFirstSpark();  
        
     }
@@ -83,20 +84,42 @@ public class Main {
         http.get("/testVerbindung", (req, res) -> {
             
             short i = 1;
-            String  s = DAO.DAO.neueVerbindung(i, "testwebsite.de");
+
+            JsonObject a = new JsonObject();
+            
+            //Hier json erstellen
+            
+            
+            
+            
+            
+            Nachricht na = Controller.Controller.loese(a);
             
             DAO.EMH.closeEntityManager();
             
-            return s;
+            return na;
             
             
         });
         
         
-        http.get("/hello3", (q, a) -> "Hello from port 5678!");
+        http.get("/createTest", (q, a) -> {
+            
+            
+            DAO.DAO.erstelleEintraege();
+            
+            return true;
+        });
         
         
         //Hier müsste Sebastian glaube ich seine Routen angeben!
+        
+        http.get(Path.W_INDEX , IndexController.serveIndexPage);
+        http.get(Path.W_ADMIN, AdminController.serveAdminPage);
+        http.get(Path.W_USER, UserController.serveUserPage);
+        http.post(Path.W_INDEX, IndexController.handleLoginPost);
+        http.post(Path.W_ADMIN, AdminController.handleRegPost);
+        http.post(Path.W_USER, UserController.handleModulPost);
         
         
         
