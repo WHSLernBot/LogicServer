@@ -20,42 +20,33 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.*;
 import spark.velocity.controller.*;
 import spark.velocity.util.Path;
 
 public class Main {
     
+    //Anzahl gleichzeitiger Zugriffe
     private static final int POOL_SIZE = 20;
    
 
     public static void main(String[] args) {
-//        Spark.staticFileLocation("/public");
-//        get(Path.W_INDEX , IndexController.serveIndexPage);
-//        get(Path.W_ADMIN, AdminController.serveAdminPage);
-//        get(Path.W_USER, UserController.serveUserPage);
-//        post(Path.W_INDEX, IndexController.handleLoginPost);
-//        post(Path.W_ADMIN, AdminController.handleRegPost);
-//        post(Path.W_USER, UserController.handleModulPost);
+        
         igniteFirstSpark();  
        
     }
     
-//    static void igniteSecondSpark() {     
-//        
-//        Service http = ignite();
-//        
-//        
-//        http.get("/basic", (req, res) -> "Hello World 2");
-//        
-//        
-//    }
-    
+
+    /**
+     * Methode, welche einen Pool von Routen erstellt und gleichzeitige Zugriffe 
+     * verarbeitet.
+     */
     static void igniteFirstSpark() {
         
         Service http = ignite()
                       .port(getHerokuAssignedPort())
-                      .threadPool(POOL_SIZE);
-        
+                      .threadPool(POOL_SIZE)
+                      .staticFileLocation("/public");
         
         http.get("/", (req, res) -> "Ja es geht zumindest.");
         
@@ -87,9 +78,6 @@ public class Main {
 
             JsonObject a = new JsonObject();
             
-            //Hier json erstellen
-            
-            
             
             
             
@@ -112,8 +100,8 @@ public class Main {
         });
         
         
-        //Hier müsste Sebastian glaube ich seine Routen angeben!
-        http.staticFileLocation("/public");
+        //Routen für die Datenbankverwaltung
+        
         http.get(Path.W_INDEX , IndexController.serveIndexPage);
         http.get(Path.W_ADMIN, AdminController.serveAdminPage);
         http.get(Path.W_USER, UserController.serveUserPage);
