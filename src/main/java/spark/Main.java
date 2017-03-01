@@ -2,7 +2,7 @@ package spark;
 
 import Message.Nachricht;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -74,11 +74,18 @@ public class Main {
             short i = 1;
 
             JsonObject a = new JsonObject();
+            a.addProperty("userID", 1234);
+            a.addProperty("plattformID", 1);
+            
+            
+            JsonObject body = new JsonObject();
+            body.add("user", a);
+            body.addProperty("methode", "meldeFuerModulAn");
+            body.addProperty("modul", "INS");
             
             
             
-            
-            Nachricht na = Controller.Controller.loese(a);
+            Nachricht na = Controller.Controller.loese(body);
             
             DAO.EMH.closeEntityManager();
             
@@ -90,10 +97,17 @@ public class Main {
         
         http.get("/createTest", (q, a) -> {
             
+            try {
+                
+                DAO.DAO.erstelleEintraege();
+                return "Einträge erstellt";
+            } catch (Exception e) {
+                
+                System.out.println(e.getMessage());
+                return e.getMessage();
+            }
             
-            DAO.DAO.erstelleEintraege();
             
-            return true;
         });
         
         
