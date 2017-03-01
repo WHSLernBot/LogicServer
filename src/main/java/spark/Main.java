@@ -71,8 +71,6 @@ public class Main {
         
         http.get("/testVerbindung", (req, res) -> {
             
-            short i = 1;
-
             JsonObject a = new JsonObject();
             a.addProperty("userID", 1234);
             a.addProperty("plattformID", 1);
@@ -101,6 +99,7 @@ public class Main {
                 
                 DAO.DAO.erstelleEintraege();
                 return "Einträge erstellt";
+                
             } catch (Exception e) {
                 
                 System.out.println(e.getMessage());
