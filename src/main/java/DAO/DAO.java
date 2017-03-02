@@ -62,24 +62,24 @@ public class DAO {
     private static final String GIB_AUFGABEN_AUFGABENTEXT = "select a.AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(a.FRAGE) like :TOK)";
+            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(FRAGE) like :TOK)";
     
     private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select a.AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
             + "and t.THEMENID = l.THEMA_THEMENID "
-            + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
+            + "and (LOWER(HINWEIS) like :TOK or LOWER(VERWEIS) like :TOK)";
     
     private static final String GIB_THEMA_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
+            + "t.THEMENID = a.THEMA_THEMENID and LOWER(NAME) like :TOK";
     
     private static final String GIB_THEMA_MODUL_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
             + "t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ and "
-            + "t.LOWER(t.NAME) like :TOK";
+            + "t.LOWER(NAME) like :TOK";
     
     private static final String ABFRAGE_LERNSTATUS = "and l.THEMA_THEMENID = :TID";
     
@@ -165,30 +165,10 @@ public class DAO {
             + "from Teilname t "
             + "where t.KLAUSUR_MODUL_KUERZEL = :KRZ and t.KLAUSUR_MODUL_UNI_ID = :UID "
             + "and t.PROZENT >= :MIN and t.PROZENT <= :MAX order by t.PROZENT ASC";
-    
-    private static final String ALLE_MODULE = "select object(m)"
-            + " from Modul m, Uni u"
-            + " where u.UNI_NAME = : UN and m.UNI_ID = u.ID";
-    
-    private static final String ALLE_THEMEN = "select object(t) "
-            + "from Thema t, modul m, uni u "
-            + "where t.MOdul_Kuerzel = m.Kuerzel and t.Modul_UNI_ID = m.UNI_ID "
-            + "and m.UNI_ID = u.ID and t.NAME = :N";
-    
+
     private static final String GIB_UNI = "select object(u) "
             + "from Uni u "
-            + "where LOWER(u.NAME) LIKE :NA";
-    
-    private static final String GIB_THEMA = "select object(t) "
-            + "from Thema t, Lernstatus ls, Benutzer b "
-            + "where b.ID = :BID and ls.BENUTZER_ID = b.ID "
-            + "ls.THEMA_THEMENID = t.THEMENID and t.NAME = :TName";
-            
-     private static final String GIB_FRAGE = "select object(f) "
-             + "from Antwort aw, Aufgabe a, Thema t, Lernstatus ls "
-             + "where aw.Aufgabe_AUFGABEN_ID = a.AUFGABEN_ID "
-             + "and a.Thema_THEMENID = t.THEMENID and ls.THEMA_THEMENID = t.THEMENID and"
-             + "ls.BENUTZER_ID = :BID and a.FRAGE = :FR";  
+            + "where LOWER(NAME) LIKE :NA";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
