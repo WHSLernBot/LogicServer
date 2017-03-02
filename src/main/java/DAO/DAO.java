@@ -330,13 +330,13 @@ public class DAO {
         while(!token.isEmpty() && stadi.isEmpty() && it.hasNext()) {
             String s = (String) it.next();
             if(m == null) {
-                qu = EMH.getEntityManager().createNamedQuery(GIB_THEMA_THEMA);
+                qu = EMH.getEntityManager().createQuery(GIB_THEMA_THEMA);
 
                 qu.setParameter("BID", bId);
                 qu.setParameter("TOK", "%" + s + "%");
 
             } else {
-                qu = EMH.getEntityManager().createNamedQuery(GIB_THEMA_MODUL_THEMA);
+                qu = EMH.getEntityManager().createQuery(GIB_THEMA_MODUL_THEMA);
 
                 qu.setParameter("BID", bId);
                 qu.setParameter("TOK", "%" + s + "%");
@@ -405,7 +405,7 @@ public class DAO {
         
         //Es gibt auch noch gefundene Token
         
-        Query qxg = EMH.getEntityManager().createNamedQuery(ALLE_XGAUFGAEBN);
+        Query qxg = EMH.getEntityManager().createQuery(ALLE_XGAUFGAEBN);
             
         qxg.setParameter("BID", bId);
             
@@ -436,7 +436,7 @@ public class DAO {
             aid = result.get(0);
         } else {
             
-            Query qzu = EMH.getEntityManager().createNamedQuery(ALLE_ZUAUFGAEBN);
+            Query qzu = EMH.getEntityManager().createQuery(ALLE_ZUAUFGAEBN);
             
             qzu.setParameter("BID", bId);
             
@@ -556,7 +556,7 @@ public class DAO {
             jpql = jpql + " " + ABFRAGE_MODUL;
         }
         
-        q = EMH.getEntityManager().createNamedQuery(jpql);
+        q = EMH.getEntityManager().createQuery(jpql);
         
         return q;
     }
@@ -886,7 +886,7 @@ public class DAO {
         
         //Pruefen ob schon teilnahme existiert
         
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_TEILNAHME);
+        Query q = EMH.getEntityManager().createQuery(GIB_TEILNAHME);
         
         q.setParameter("BID", b.getBenutzer().getId());
         q.setParameter("KRZ", modul);
@@ -923,7 +923,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        Query q = EMH.getEntityManager().createQuery(SUCHE_TEILNAHME);
         
         synchronized(b) {
             q.setParameter("BID", b.getBenutzer().getId());
@@ -976,7 +976,7 @@ public class DAO {
      * @return  
      */
     public static List gibAngemeldete(CBBenutzer b) {
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_MODULE);
+        Query q = EMH.getEntityManager().createQuery(GIB_MODULE);
         
         synchronized(b) {
             q.setParameter("BID", b.getBenutzer().getId());
@@ -995,8 +995,8 @@ public class DAO {
      * @return  
      */
     public static List gibNichtangemeldete(CBBenutzer b) {
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_NOT_MODULE);
-        Query qu = EMH.getEntityManager().createNamedQuery(GIB_INAKTIVE_MODULE);
+        Query q = EMH.getEntityManager().createQuery(GIB_NOT_MODULE);
+        Query qu = EMH.getEntityManager().createQuery(GIB_INAKTIVE_MODULE);
         
         synchronized(b) {
             q.setParameter("UID", b.getBenutzer().getUni().getId());
@@ -1023,9 +1023,9 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        Query qPeriode = EMH.getEntityManager().createNamedQuery(GIB_PRUEFUNGSPERIODEN);
+        Query qPeriode = EMH.getEntityManager().createQuery(GIB_PRUEFUNGSPERIODEN);
         
-        Query qTeilnahme = EMH.getEntityManager().createNamedQuery(GIB_TEILNAHME);
+        Query qTeilnahme = EMH.getEntityManager().createQuery(GIB_TEILNAHME);
         
         ModulPK mPK;
         LernStatus ls;
@@ -1081,7 +1081,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        Query q = EMH.getEntityManager().createQuery(SUCHE_TEILNAHME);
         
         synchronized(b) {
             q.setParameter("BID", b.getBenutzer().getId());
@@ -1129,7 +1129,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        Query q = EMH.getEntityManager().createQuery(SUCHE_TEILNAHME);
         
         synchronized(b) {
             q.setParameter("BID", b.getBenutzer().getId());
@@ -1157,7 +1157,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        Query q = EMH.getEntityManager().createNamedQuery(SUCHE_TEILNAHME);
+        Query q = EMH.getEntityManager().createQuery(SUCHE_TEILNAHME);
         
         q.setParameter("BID", id);
         q.setParameter("KRZ", modul);
@@ -1504,7 +1504,7 @@ public class DAO {
      */
     public static boolean wurdeVeraendert(Modul m) {
         
-        Query q = EMH.getEntityManager().createNamedQuery(WURDE_KLAUSUR_AKT);
+        Query q = EMH.getEntityManager().createQuery(WURDE_KLAUSUR_AKT);
         
         q.setParameter("KRZ", m.getKuerzel());
         q.setParameter("UID", m.getUni().getId());
@@ -1558,7 +1558,7 @@ public class DAO {
         modul = modul.toUpperCase();
         short note = 0;
         
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_AEHNLICHE_ERGEBNISSE);
+        Query q = EMH.getEntityManager().createQuery(GIB_AEHNLICHE_ERGEBNISSE);
         
         q.setParameter("UID", b.getBenutzer().getUni().getId());
         q.setParameter("KRZ", modul);
@@ -1637,7 +1637,7 @@ public class DAO {
      */
     public static short getUniID(String name) {
         
-        Query q = EMH.getEntityManager().createNamedQuery(GIB_UNI);
+        Query q = EMH.getEntityManager().createQuery(GIB_UNI);
         
         q.setParameter("NA", name.toLowerCase());
         
