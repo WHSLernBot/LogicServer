@@ -102,7 +102,7 @@ public class Controller {
 
         Nachricht nachricht = new Nachricht(benutzer);
         
-        System.out.println("Vor der Switch anweisung!");
+        
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
         dem entsprechend ausgefuehrt.*/
         try {
