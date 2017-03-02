@@ -12,10 +12,10 @@
 
     <h3> Willkommen bei der Datenbankverwaltung</h3>
     <form id="anmelden" method="post">
-        <label for="login">Login: 
+        <label id="text" for="login">Login: 
 		<input id="login" name="username" value="" required> 
 	</label><br>
-	<label for="pw">Password: 
+	<label id="text" for="pw">Password: 
 		<input id="pw" type="password" name="password" value="" required> 
 	</label><br>
 		<input type="submit" value="Anmelden">
