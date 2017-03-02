@@ -70,28 +70,32 @@ public class Main {
         });
         
         http.get("/testVerbindung", (req, res) -> {
+            //Json Body
+            JsonObject body = new JsonObject();
             
+            //User Object
             JsonObject a = new JsonObject();
             a.addProperty("userID", 1234);
             a.addProperty("plattformID", 1);
             a.addProperty("witSession", 5678);
             
-            
-            JsonObject body = new JsonObject();
-            body.add("user", a);
-            body.addProperty("methode", "meldeFuerModulAn");
-            
+            //Module Array Object
             JsonArray ja = new JsonArray();
             ja.add("INS");
             
+            //Füllen des Body
+            body.add("user", a);
+            body.addProperty("methode", "meldeFuerModulAn");
             body.add("module", ja);
-                
-            System.out.println(body.toString());
             
+            
+                
             try {
+                
                 
                 Nachricht na = Controller.Controller.loese(body);
                 return na.getJson();
+                
             } catch(Exception e) {
                 
                 System.out.println("FEHLER NACHRICHT = " + e.getMessage());
@@ -113,7 +117,7 @@ public class Main {
                 
             } catch (Exception e) {
                 
-                System.out.println(e.getMessage());
+                
                 return e.getMessage();
             }
             
