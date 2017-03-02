@@ -131,8 +131,11 @@ public class UserController {
         }
         if(name != null) {
             uniID = DAO.DAO.getUniID(getQueryUsername(request));
+            if(!DAO.DAO.getModule(uniID).isEmpty()) {
+                ar = (ArrayList) DAO.DAO.getModule(uniID);
+            }
         }
-        ar = (ArrayList) DAO.DAO.getModule(uniID);
+        
         Map<String, Object> model = new HashMap<>();
         model.put("module", ar);
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
