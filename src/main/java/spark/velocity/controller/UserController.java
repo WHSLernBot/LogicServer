@@ -126,8 +126,10 @@ public class UserController {
         if (request == null) {
             System.out.println("null");
         }
-        if (name == null) {
-            name = getQueryUsername(request);
+        if (name == null) {            
+            name = getQueryUsername(request);          
+        }
+        if(name != null) {
             uniID = DAO.DAO.getUniID(getQueryUsername(request));
         }
         ar = (ArrayList) DAO.DAO.getModule(uniID);
