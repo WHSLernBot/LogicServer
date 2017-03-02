@@ -169,7 +169,10 @@ public class DAO {
     private static final String GIB_UNI = "select object(u) "
             + "from Uni u "
             + "where LOWER(NAME) like :NA";
-//            + "where u.";
+    
+    private static final String GIB_THEMEN = "select object (t) "
+            + "from Thema t "
+            + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
@@ -263,7 +266,7 @@ public class DAO {
         
         if(m != null) {
             angemeldetLS = EMH.getEntityManager().find(LernStatus.class, 
-                new LernStatusPK(b.getBenutzer().getId(),m.getThemen().iterator().next().getId()));
+                new LernStatusPK(b.getBenutzer().getId(),DAO.getThemen(m).iterator().next().getId()));
         }
             
         return angemeldetLS != null;
@@ -1184,11 +1187,14 @@ public class DAO {
                 Benutzer be = b.getBenutzer();
                 Date datum = gibDatum();
                 
-//                System.out.println("a");
-                for(Thema t : m.getThemen()) {
-//                    System.out.println("c");
+                System.out.println("a");
+                Collection<Thema> themen = DAO.getThemen(m);
+                
+                System.out.println(m.getKuerzel());
+                for(Thema t : themen) {
+                    System.out.println("c");
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
-//                    System.out.println("b");
+                    System.out.println("b");
                     if(ls == null) {
                         EMH.persist(new LernStatus(be,t,datum));  
                     } else {
@@ -1201,11 +1207,11 @@ public class DAO {
 
                 }
             }
-            
+            System.out.println("p");
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
-            throw new Exception(modul + " konnte nicht angemeldet werden.");
+            throw new Exception(modul + " konnte nicht angemeldet werden. " + e.getMessage());
         }
     
         ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
@@ -1777,20 +1783,23 @@ public class DAO {
      */
     public static Collection<Thema> getThemen(short id, String kuerzel) {
         
-//        ArrayList<Thema> themen = new ArrayList<>();
-//        
-//        Query q = EMH.getEntityManager().createQuery(ALLE_THEMEN);
-//        q.setParameter("N", kuerzel);
-//        
-//        List rs = q.getResultList();
-//        
-//        for(Object o : rs) {
-//            themen.add((Thema) o);
-//        }
+        ArrayList<Thema> themen = new ArrayList<>();
         
-        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
+        Query q = EMH.getEntityManager().createQuery(GIB_THEMEN);
+        q.setParameter("UID", id);
+        q.setParameter("KRZ", kuerzel);
         
-        return m.getThemen();
+        List rs = q.getResultList();
+        
+        for(Object o : rs) {
+            themen.add((Thema) o);
+        }
+        
+        return themen;
+    }
+    
+    public static Collection<Thema> getThemen(Modul m) {
+        return getThemen(m.getUni().getId(),m.getKuerzel());
     }
     
     
