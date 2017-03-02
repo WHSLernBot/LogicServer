@@ -113,9 +113,8 @@ public class Thema implements Serializable {
         return aufgaben;
     }
 
-    public void addAufgaben(String frage, int schwierigkeit, String hinweis, String verweis) {
+    public void addAufgabe() {
         this.aufgabenZahl++;
-        this.aufgaben.add(new Aufgabe(this,frage,schwierigkeit,hinweis,verweis));
     }
 
     public Modul getModul() {

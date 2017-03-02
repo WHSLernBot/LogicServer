@@ -62,24 +62,24 @@ public class DAO {
     private static final String GIB_AUFGABEN_AUFGABENTEXT = "select a.AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(FRAGE) like :TOK)";
+            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(a.FRAGE) like :TOK)";
     
     private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select a.AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
             + "and t.THEMENID = l.THEMA_THEMENID "
-            + "and (LOWER(HINWEIS) like :TOK or LOWER(VERWEIS) like :TOK)";
+            + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
     
     private static final String GIB_THEMA_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.THEMENID = a.THEMA_THEMENID and LOWER(NAME) like :TOK";
+            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
     
     private static final String GIB_THEMA_MODUL_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
             + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
             + "t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ and "
-            + "t.LOWER(NAME) like :TOK";
+            + "t.LOWER(t.NAME) like :TOK";
     
     private static final String ABFRAGE_LERNSTATUS = "and l.THEMA_THEMENID = :TID";
     
@@ -165,10 +165,11 @@ public class DAO {
             + "from Teilname t "
             + "where t.KLAUSUR_MODUL_KUERZEL = :KRZ and t.KLAUSUR_MODUL_UNI_ID = :UID "
             + "and t.PROZENT >= :MIN and t.PROZENT <= :MAX order by t.PROZENT ASC";
-
+    
     private static final String GIB_UNI = "select object(u) "
             + "from Uni u "
-            + "where LOWER(NAME) LIKE :NA";
+            + "where LOWER(NAME) like :NA";
+//            + "where u.";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
@@ -1170,8 +1171,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
-        
-        Modul m = EMH.getEntityManager().find(Modul.class, modul);
+        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(),modul));
         
         if(m == null) {
             throw new Exception(modul + " konnte nicht gefunden werden.");
@@ -1184,9 +1184,11 @@ public class DAO {
                 Benutzer be = b.getBenutzer();
                 Date datum = gibDatum();
                 
-                
+//                System.out.println("a");
                 for(Thema t : m.getThemen()) {
+//                    System.out.println("c");
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
+//                    System.out.println("b");
                     if(ls == null) {
                         EMH.persist(new LernStatus(be,t,datum));  
                     } else {
@@ -1203,11 +1205,9 @@ public class DAO {
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
-            
             throw new Exception(modul + " konnte nicht angemeldet werden.");
         }
-        
-        
+    
         ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
     }
     
@@ -1224,7 +1224,7 @@ public class DAO {
         
         try {
             EMH.beginTransaction();
-            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+            Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(),modul));
 
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
@@ -1258,7 +1258,7 @@ public class DAO {
         
         try {
             EMH.beginTransaction();
-            Modul m = EMH.getEntityManager().find(Modul.class, modul);
+            Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(),modul));
 
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
@@ -1309,17 +1309,13 @@ public class DAO {
      */
     public static CBBenutzer sucheBenutzer(CBPlattform pt) {
         
+        Plattform p = EMH.getEntityManager().find(Plattform.class, new PlattformPK(pt.getId(),pt.getPlattform()));
         
-        
-        Benutzer be = EMH.getEntityManager().find(Benutzer.class, pt.getId());
-        
-        System.out.println("Benutzer erstellt!");
-        
-        if(be == null) {
+        if(p == null) {
             return null;
         }
         
-        return new CBBenutzer(be);
+        return new CBBenutzer(p.getBenutzer());
     }
     
     /**
@@ -1628,10 +1624,14 @@ public class DAO {
         
         q.setParameter("NA", name.toLowerCase());
         
-        Uni u = ((Uni) q.getResultList().get(0));
+        List result = q.getResultList();
         
-        return (u == null) ? -1 : u.getId();
-        
+        if(result.isEmpty()) {
+            return -1;
+        } else {
+            
+            return ((Uni) q.getResultList().get(0)).getId();
+        }        
     }
     
     /**
@@ -1818,6 +1818,10 @@ public class DAO {
             }
             a = new Aufgabe(thema,frage,punkte,hinweis,verweis);
 
+            thema.addAufgabe();
+            
+            EMH.persist(thema);
+            
             EMH.persist(a);
             EMH.commit();
         } catch(Exception e) {
@@ -2092,6 +2096,8 @@ public class DAO {
         String name = "WHS Informatik";
         
         if(DAO.getUniID(name) != -1) {
+            
+            System.out.println("uni gefunden");
             return;
         }
         
@@ -2107,6 +2113,8 @@ public class DAO {
             EMH.persist(m);
             
             Thema t = new Thema(m,"HTML",100);
+            
+            t.addAufgabe();
             
             EMH.persist(t);
             
