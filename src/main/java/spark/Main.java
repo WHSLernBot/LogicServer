@@ -91,7 +91,7 @@ public class Main {
             try {
                 
                 Nachricht na = Controller.Controller.loese(body);
-                return na.toString();
+                return na.getJson();
             } catch(Exception e) {
                 
                 System.out.println("FEHLER NACHRICHT = " + e.getMessage());
