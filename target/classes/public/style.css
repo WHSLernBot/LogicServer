@@ -1,5 +1,9 @@
 body,html{
-	background-color: #e6e6e6;
+/*	background-color: #e6e6e6;*/
+       background-attachment: fixed ! important;
+         background-color: #f0f0f0 ! important;
+         background-image: url("http://i.imgur.com/LvvaNSQ.png") ! important;
+         background-repeat: repeat-x ! important;
 }
 #addUser{
     text-align: center;
