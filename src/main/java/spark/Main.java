@@ -74,21 +74,32 @@ public class Main {
             JsonObject a = new JsonObject();
             a.addProperty("userID", 1234);
             a.addProperty("plattformID", 1);
+            a.addProperty("witSession", 5678);
             
             
             JsonObject body = new JsonObject();
             body.add("user", a);
             body.addProperty("methode", "meldeFuerModulAn");
-            body.addProperty("modul", "INS");
             
+            JsonArray ja = new JsonArray();
+            ja.add("INS");
             
+            body.add("module", ja);
+                
+            System.out.println(body.toString());
             
-            Nachricht na = Controller.Controller.loese(body);
+            try {
+                
+                Nachricht na = Controller.Controller.loese(body);
+                return na.toString();
+            } catch(Exception e) {
+                
+                System.out.println("FEHLER NACHRICHT = " + e.getMessage());
+                return e.getMessage() + "";
+                
+            }
             
-            DAO.EMH.closeEntityManager();
-            
-            return na;
-            
+           
             
         });
         

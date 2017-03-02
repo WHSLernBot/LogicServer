@@ -52,8 +52,8 @@ public class EMH {
     }
 
     public static EntityManager getEntityManager() {
+        
         EntityManager em = THREAD_LOCAL.get();
-
         if (em == null) {
             em = EMF.createEntityManager();
             // set your flush mode here

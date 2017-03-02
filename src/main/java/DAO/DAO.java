@@ -1190,6 +1190,7 @@ public class DAO {
         
         modul = modul.toUpperCase();
         
+        
         Modul m = EMH.getEntityManager().find(Modul.class, modul);
         
         if(m == null) {
@@ -1222,9 +1223,11 @@ public class DAO {
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
+            
             throw new Exception(modul + " konnte nicht angemeldet werden.");
         }
-    
+        
+        
         ChatBotManager.getInstance().gibBotPool().berechneNeu(b);
     }
     
@@ -1326,7 +1329,11 @@ public class DAO {
      */
     public static CBBenutzer sucheBenutzer(CBPlattform pt) {
         
+        
+        
         Benutzer be = EMH.getEntityManager().find(Benutzer.class, pt.getId());
+        
+        System.out.println("Benutzer erstellt!");
         
         if(be == null) {
             return null;
