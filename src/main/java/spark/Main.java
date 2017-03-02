@@ -69,6 +69,10 @@ public class Main {
       
         });
         
+        
+        /**
+         * Name ist Programm
+         */
         http.get("/testVerbindung", (req, res) -> {
             //Json Body
             JsonObject body = new JsonObject();
@@ -102,12 +106,13 @@ public class Main {
                 return e.getMessage() + "";
                 
             }
-            
-           
-            
+
         });
         
-        
+        /**
+         * Erstellt Test Einträge!
+         * 
+         */
         http.get("/createTest", (q, a) -> {
             
             try {
