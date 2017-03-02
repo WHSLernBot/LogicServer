@@ -1,5 +1,6 @@
 #parse("/velocity/layout.vm")
 #@mainLayout()
+<img id="logoStart" src="logo.png"/><br><br><br>
 <form method="post">
             <div id="rahmen">
 		<label id="text">Modul hinzufügen</label><br><br>

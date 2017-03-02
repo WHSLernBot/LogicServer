@@ -1,30 +1,8 @@
 body,html{
 	background-color: #e6e6e6;
 }
-
-#navi {
-	font: bold 12px Arial, regular;
-	letter-spacing: 2px;
-	box-shadow:0 1px 0px 0 #888888;
-}
-#navi ul {
- padding:0 31%; margin: 0 auto;
- list-style: none;
- height: 38px; line-height: 38px;
-}
-#navi li {
- float: left;
-}
-#navi li a {
- color: #212121;
- text-decoration: none;
- margin-right: 20px;
-}
-#navi li a:hover {
- color: #4e8dca;
-}
-#navi .aktiv {
-	color: #4e8dca;
+#addUser{
+    text-align: center;
 }
 #logo{
 	float:left;

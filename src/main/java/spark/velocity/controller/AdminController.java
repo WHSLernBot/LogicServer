@@ -36,7 +36,7 @@ public class AdminController {
         }
         if(getQueryPasswordErst(request).equals(getQueryPasswordWdh(request))){
             DAO.DAO.neueUni(getQueryUsernameAnlegen(request), getQueryPasswordErst(request));
-
+            model.put("angelegt",true);
         }
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };
