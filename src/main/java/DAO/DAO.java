@@ -43,54 +43,54 @@ public class DAO {
     private static final String AUFGABE_ANTWORT_RICHTIG = "richtig";
     private static final String AUFGABE_ANTWORT_NUMMER = "nummer";
     
-    private static final int BEWERTUNS_GRENZE = 20;
+    private static final int BEWERTUNS_GRENZE = 0;
     private static final int AUFGABEN_HINZUFUEG_GRENZE = 30;
     
     private static final String ALLE_UNIS = "select object(u) from Uni u";
     
     private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a "
-            + "where aw.AUFGABE_AUFGABENID = a.AUFGABENID and aw.NUMMER = :NR "
-            + "and a.AUFGABENID = :ID";
+            + "where AUFGABE_AUFGABENID = AUFGABENID and NUMMER = :NR "
+            + "and AUFGABENID = :ID";
    
-    private static final String GIB_AUFGABEN_TOKEN = "select a.AUFGABENID "
+    private static final String GIB_AUFGABEN_TOKEN = "select AUFGABENID "
             + "from Aufgabe a, Token o, LernStatus l, Thema t "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and o.AUFGABE_AUFGABENID = a.AUFGABENID and t.THEMENID = l.THEMA_THEMENID "
-            + "and o.TOKEN = :TOK";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
+            + "and AUFGABE_AUFGABENID = AUFGABENID and THEMENID = THEMA_THEMENID "
+            + "and TOKEN = :TOK";
     
-    private static final String GIB_AUFGABEN_AUFGABENTEXT = "select a.AUFGABENID "
+    private static final String GIB_AUFGABEN_AUFGABENTEXT = "select AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and t.THEMENID = l.THEMA_THEMENID and (LOWER(a.FRAGE) like :TOK)";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
+            + "and THEMENID = THEMA_THEMENID and LOWER(FRAGE) like :TOK";
     
-    private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select a.AUFGABENID "
+    private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select AUFGABENID "
             + "from Aufgabe a, LernStatus l, Thema t "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and t.THEMENID = l.THEMA_THEMENID "
-            + "and (LOWER(a.HINWEIS) like :TOK or LOWER(a.VERWEIS) like :TOK)";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
+            + "and THEMENID = THEMA_THEMENID "
+            + "and (LOWER(HINWEIS) like :TOK or LOWER(VERWEIS) like :TOK)";
     
     private static final String GIB_THEMA_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.THEMENID = a.THEMA_THEMENID and LOWER(t.NAME) like :TOK";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMENID and "
+            + "THEMENID = THEMA_THEMENID and LOWER(NAME) like :TOK";
     
     private static final String GIB_THEMA_MODUL_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
-            + "where l.BENUTZER_ID = :BID and l.THEMA_THEMENID = t.THEMENID and "
-            + "t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ and "
-            + "t.LOWER(t.NAME) like :TOK";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMENID and "
+            + "MODUL_UNI_ID = :UID and MODUL_KUERZEL = :KRZ and "
+            + "LOWER(NAME) like :TOK";
     
-    private static final String ABFRAGE_LERNSTATUS = "and l.THEMA_THEMENID = :TID";
+    private static final String ABFRAGE_LERNSTATUS = " and THEMA_THEMENID = :TID";
     
-    private static final String ABFRAGE_MODUL = "and t.MODUL_UNI_ID = :UID and t.MODUL_KUERZEL = :KRZ";
+    private static final String ABFRAGE_MODUL = " and MODUL_UNI_ID = :UID and MODUL_KUERZEL = :KRZ";
 
     private static final String GIB_BEAUFGABE = "select object(b) "
             + "from Beaufgabe b, Aufgabe a "
-            + "where a.AufgabenID = :AID and b.AUFGABE_AUFGABENID = a.AUFGABENID "
-            + "and b.LERNSTATUS_THEMA_THEMENID = a.THEMA_THEMENID "
-            + "and a.LERNSTATUS_BENUTZER_ID = :BID "
-            + "and b.KENNUNG = :K";
+            + "where AufgabenID = :AID and AUFGABE_AUFGABENID = AUFGABENID "
+            + "and LERNSTATUS_THEMA_THEMENID = THEMA_THEMENID "
+            + "and LERNSTATUS_BENUTZER_ID = :BID "
+            + "and KENNUNG = :K";
     
     private static final String ALLE_XGAUFGAEBN = "select AUFGABE_AUFGABENID "
             + "from XGAufgabe "
@@ -103,68 +103,69 @@ public class DAO {
     
     private static final String GIB_LERNSTADI = "select object(l) "
             + "from Benutzer b, LernStatus l, Thema t, Modul m "
-            + "where b.ID = :BID and l.BENUTZER_ID = b.ID and "
-            + "l.THEMA_THEMENID = t.THEMENID and t.MODUL_KUERZEL = :KRZ and "
-            + "t.MODUL_UNI_ID = b.UNI_ID";
+            + "where ID = :BID and BENUTZER_ID = ID and "
+            + "THEMA_THEMENID = THEMENID and MODUL_KUERZEL = :KRZ and "
+            + "MODUL_UNI_ID = UNI_ID";
     
-    private static final String GIB_MODULE = "select object(m) "
+    private static final String GIB_MODULE = "select DISTINCT object(m) "
             + "from Modul m, LernStatus ls, Thema t "
-            + "where ls.BENUTZER_ID = :BID, and ls.AKTIV = true "
-            + "and ls.Beendet = false and ls.THEMA_THEMENID = t.THEMENID and "
-            + "t.Modul_Kuerzel = m.KUERZEL and t.MODUL_UNI_ID = m.UNI_ID";
+            + "where BENUTZER_ID = :BID and AKTIV = true "
+            + "and Beendet = false and THEMA_THEMENID = THEMENID and "
+            + "Modul_Kuerzel = KUERZEL and MODUL_UNI_ID = UNI_ID";
     
-    private static final String GIB_NOT_MODULE = "select object(mod) "
-            + "from Modul mod "
-            + "where mod.UNI_ID = :UID and (NOT EXISTS "
-            + "select m "
+    private static final String GIB_NOT_MODULE = 
+//            "select DISTINCT object(mod) "
+//            + "from Modul mod "
+//            + "where UNI_ID = :UID and NOT EXISTS ( "
+            "select DISTINCT object(m) "
             + "from Modul m, Thema t, LernStatus ls "
-            + "where ls.BENUTZER_ID = :BID and ls.THEMA_THEMENID = t.THEMENID "
-            + "and m.KUERZEL = t.MODUL_KUERZEL)";
+            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMENID "
+            + "and KUERZEL = MODUL_KUERZEL and UNI_ID = :UID and Beendet = false";
     
     private static final String GIB_PRUEFUNGSPERIODEN = "select object(p) "
             + "from Pruefungsperiode p "
-            + "where p.UNI_ID = :UID and p.ANFANG > :HEUTE";
+            + "where UNI_ID = :UID and ANFANG > :HEUTE";
     
     private static final String GIB_TEILNAHME = "select object (t) "
-            + "from Teilnahme t, Benutzer b "
-            + "where b.ID = :BID and t.Benutzer_ID = b.ID and "
-            + "t.MODUL_UNI_ID = b.UNI_ID and t.KLAUSUR_PERIODE_UNI_ID = b.UNI_ID and "
-            + "t.KLAUSUR_PERIODE_PHASE = :PHA and t.KLAUSUR_PERIODE_JAHR = :JAHR and "
-            + "t.KLAUSUR_PERIODE_KUERZEL = :KRZ and t.NOTE < 50";
+            + "from Teilnahme t "
+            + "where Benutzer_ID = :BID and "
+//            + "MODUL_UNI_ID = UNI_ID and KLAUSUR_PERIODE_UNI_ID = UNI_ID and "
+            + "KLAUSUR_PERIODE_PHASE = :PHA and KLAUSUR_PERIODE_JAHR = :JAHR and "
+            + "KLAUSUR_MODUL_KUERZEL = :KRZ and NOTE < 50";
     
     private static final String SUCHE_TEILNAHME = "select object (t) "
-            + "from Teilnahme t, Benutzer b "
-            + "where b.ID = :BID and t.Benutzer_ID = b.ID and "
-            + "t.MODUL_UNI_ID = b.UNI_ID and t.KLAUSUR_PERIODE_UNI_ID = b.UNI_ID and "
-            + "t.KLAUSUR_PERIODE_KUERZEL = :KRZ and t.NOTE = 0";
+            + "from Teilnahme t "
+            + "where Benutzer_ID = :BID and "
+//            + "MODUL_UNI_ID = UNI_ID and KLAUSUR_PERIODE_UNI_ID = UNI_ID and "
+            + "KLAUSUR_MODUL_KUERZEL = :KRZ and NOTE = 0";
     
-    private static final String GIB_INAKTIVE_MODULE = "select object(m) "
+    private static final String GIB_BEENDETE_MODULE = "select DISTINCT object(m) "
             + "from Modul m, LernStatus ls, Thema t "
-            + "where ls.BENUTZER_ID = :BID, and ls.AKTIV = false "
-            + "and ls.Beendet = false and ls.THEMA_THEMENID = t.THEMENID and "
-            + "t.Modul_Kuerzel = m.KUERZEL and t.MODUL_UNI_ID = m.UNI_ID";
+            + "where BENUTZER_ID = :BID "
+            + "and Beendet = true and THEMA_THEMENID = THEMENID and "
+            + "Modul_Kuerzel = KUERZEL and MODUL_UNI_ID = UNI_ID";
     
     private static final String LOESCHE_ZUAUFGABEN = "delete from ZuAufgabe "
             + "where LERNSTATUS_BENUTZER_ID = :ID "
             + "and LERNSTATUS_THEMA_THEMENID = :THEMA";
     
-    private static final String GIB_SELEKTOREN = "select object(t) "
+    private static final String GIB_SELEKTOREN = "select DISTINCT object(t) "
             + "from LernStatus l, Thema t "
-            + "where l.BENUTZER_ID = :BID and l.AKTIV "
-            + "and l.THEMA_ThemenID = t.THEMENID order by t.MODUL_KUERZEL";
+            + "where BENUTZER_ID = :BID and AKTIV = true "
+            + "and THEMA_ThemenID = THEMENID order by MODUL_KUERZEL ASC";
     
     private static final String ALLE_SELEKTOREN = "select object(t) "
-            + "from Thema t order by t.MODUL_KUERZEL ASC";
+            + "from Thema t order by MODUL_KUERZEL ASC";
     
     private static final String WURDE_KLAUSUR_AKT = "selekt (k) "
             + "from Klausur k "
-            + "where k.MODUL_KUERZEL = :KRZ and k.MODUL_UNI_ID = :UID "
-            + "and k.VERAENDERT";
+            + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID "
+            + "and VERAENDERT";
     
     private static final String GIB_AEHNLICHE_ERGEBNISSE = "select object(t) "
             + "from Teilname t "
-            + "where t.KLAUSUR_MODUL_KUERZEL = :KRZ and t.KLAUSUR_MODUL_UNI_ID = :UID "
-            + "and t.PROZENT >= :MIN and t.PROZENT <= :MAX order by t.PROZENT ASC";
+            + "where KLAUSUR_MODUL_KUERZEL = :KRZ and KLAUSUR_MODUL_UNI_ID = :UID "
+            + "and PROZENT >= :MIN and PROZENT <= :MAX order by PROZENT ASC";
     
     private static final String GIB_UNI = "select object(u) "
             + "from Uni u "
@@ -173,6 +174,14 @@ public class DAO {
     private static final String GIB_THEMEN = "select object (t) "
             + "from Thema t "
             + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID";
+    
+    private static final String ALLE_MODULE = "select object (m) "
+            + "from Modul m "
+            + "where UNI_ID = :UID";
+    
+    private static final String GIB_ALLE_ANGEMELDETEN = "select DISTINCT object(b) "
+            + "from Benutzer b, LernStatus ls "
+            + "where ID = BENUTZER_ID and THEMA_THEMENID = :TID";
     
     //--------------------------- Allgemeine Methoden --------------------------
     
@@ -619,11 +628,17 @@ public class DAO {
         
         LernStatus ls = DAO.gibLernstatus(b, aufgabe.getThema().getId());
             
+        System.out.println(id);
+        
+        if(ls == null) {
+            throw new Exception("Sie sind garnicht am Modul angemeldet.");
+        }
+        
         if(ls.getRichtige() < BEWERTUNS_GRENZE) {
             throw new Exception("Aktuell duerfen Sie in diesem Thema keine Aufgaben bewerten.");
         }
         
-        if(darfBewerten(aufgabe,b)) {
+        if(!darfBewerten(aufgabe,b)) {
             throw new Exception("Sie haben die Aufgabe schon bewertet.");
         }
         
@@ -852,13 +867,19 @@ public class DAO {
             synchronized (b) {
                 PruefungsperiodePK pPK = new PruefungsperiodePK(jahr, b.getBenutzer().getUni().getId(), periode);
                 ModulPK mPK = new ModulPK(b.getBenutzer().getUni().getId(), modul);
+                
+                
                 k = EMH.getEntityManager().find(Klausur.class, new KlausurPK(mPK, pPK));
-
+                
+                if(k == null) {
+                    throw new Exception();
+                }
+                
                 t = new Teilnahme(b.getBenutzer(), k);
 
                 Modul m = EMH.getEntityManager().find(Modul.class, mPK);
                 ls = EMH.getEntityManager().find(LernStatus.class,
-                        new LernStatusPK(b.getBenutzer().getId(), m.getThemen().iterator().next().getId()));
+                        new LernStatusPK(b.getBenutzer().getId(), DAO.getThemen(m).iterator().next().getId()));
             }
         } catch(Exception e) {
             throw new Exception("Fehlerhafte Angaben.");
@@ -979,19 +1000,31 @@ public class DAO {
      * @return  
      */
     public static List gibNichtangemeldete(CBBenutzer b) {
-        Query q = EMH.getEntityManager().createQuery(GIB_NOT_MODULE);
-        Query qu = EMH.getEntityManager().createQuery(GIB_INAKTIVE_MODULE);
+        
+        Query qu = EMH.getEntityManager().createQuery(GIB_BEENDETE_MODULE);
+        
+        List res = new LinkedList<>();
         
         synchronized(b) {
-            q.setParameter("UID", b.getBenutzer().getUni().getId());
-            q.setParameter("BID", b.getBenutzer().getId());
             qu.setParameter("BID", b.getBenutzer().getId());
         }
        
-        List result = q.getResultList();
-        result.addAll(qu.getResultList());
+        Collection<Modul> mod = DAO.getModule(b.getBenutzer().getUni().getId());
         
-        return result;
+        List<Modul> ang = DAO.gibAngemeldete(b);
+        
+        List<Modul> be = qu.getResultList();
+        
+        for(Modul m : mod) {
+            
+            if(!ang.contains(m) && !be.contains(m)) {
+                res.add(m);
+            }
+            
+        }
+        
+        return res;
+
     }
     
     /**
@@ -1021,7 +1054,7 @@ public class DAO {
             qTeilnahme.setParameter("KRZ", modul);
             Modul m = EMH.getEntityManager().find(Modul.class, mPK);
             ls = EMH.getEntityManager().find(LernStatus.class, 
-                    new LernStatusPK(b.getBenutzer().getId(), m.getThemen().iterator().next().getId()));
+                    new LernStatusPK(b.getBenutzer().getId(), DAO.getThemen(m).iterator().next().getId()));
         }
         
         if(ls == null) {
@@ -1081,7 +1114,7 @@ public class DAO {
             Teilnahme t = (Teilnahme) result.get(0);
             t.setNote(note);
 
-            Klausur k = gibKlausur(b,modul);
+            Klausur k = t.getKlausur();
             
             k.setVeraendert(true);
             
@@ -1187,14 +1220,10 @@ public class DAO {
                 Benutzer be = b.getBenutzer();
                 Date datum = gibDatum();
                 
-                System.out.println("a");
                 Collection<Thema> themen = DAO.getThemen(m);
                 
-                System.out.println(m.getKuerzel());
                 for(Thema t : themen) {
-                    System.out.println("c");
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
-                    System.out.println("b");
                     if(ls == null) {
                         EMH.persist(new LernStatus(be,t,datum));  
                     } else {
@@ -1207,7 +1236,6 @@ public class DAO {
 
                 }
             }
-            System.out.println("p");
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
@@ -1234,7 +1262,7 @@ public class DAO {
 
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
-                for(Thema t : m.getThemen()) {
+                for(Thema t : DAO.getThemen(m)) {
 
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
 
@@ -1268,7 +1296,7 @@ public class DAO {
 
             synchronized(b) {
                 Benutzer be = b.getBenutzer();
-                for(Thema t : m.getThemen()) {
+                for(Thema t : DAO.getThemen(m)) {
 
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
 
@@ -1341,40 +1369,43 @@ public class DAO {
             q = EMH.getEntityManager().createQuery(ALLE_SELEKTOREN);
         }
         
-        List ls = q.getResultList();
+        List<Thema> ls = q.getResultList();
         
         String modul = "";
+        String name = "";
         
         JsonArray module = new JsonArray();
         JsonArray themen = new JsonArray();
         
-        for(Object o: ls) {
+        for(Thema t: ls) {
             
-            Thema t = (Thema) o;
-            
-            if(t.getModul().getKuerzel().equals(modul)) {
-                
-                JsonObject thema = new JsonObject();
-                
-                thema.addProperty(MODULE_THEMEN_NAME, t.getName());
-                thema.addProperty(MODULE_THEMEN_ID, t.getId());
-                
-                themen.add(thema);
-                
-            } else {
+            if(!t.getModul().getKuerzel().equals(modul)) {
                 if(!modul.equals("")) {
                     JsonObject mod = new JsonObject();
                     mod.addProperty(MODULE_KUERZEL, modul);  
-                    mod.addProperty(MODULE_NAME, t.getModul().getName());
+                    mod.addProperty(MODULE_NAME, name);
                     mod.add(MODULE_THEMEN_ARRAY, themen);
                     
                     themen = new JsonArray();
                 }
                 
                 modul = t.getModul().getKuerzel();
+                name = t.getModul().getName();
             }
+            
+            JsonObject thema = new JsonObject();
+                
+                thema.addProperty(MODULE_THEMEN_NAME, t.getName());
+                thema.addProperty(MODULE_THEMEN_ID, t.getId());
+                
+                themen.add(thema);
              
         }
+        JsonObject mod = new JsonObject();
+        mod.addProperty(MODULE_KUERZEL, modul);  
+        mod.addProperty(MODULE_NAME, name);
+        mod.add(MODULE_THEMEN_ARRAY, themen);
+        
         nachricht.add(MODULE_ARRAY, module);
     }
     
@@ -1674,12 +1705,13 @@ public class DAO {
      * @param id ID der Uni.
      * @param name Name des Moduls.
      * @param kuerzel Kuerzel des Moduls.
+     * @return 
      * @throws java.lang.Exception
      */
-    public static void addModul(short id, String name, String kuerzel) throws Exception {
+    public static Modul addModul(short id, String name, String kuerzel) throws Exception {
                 
         kuerzel = kuerzel.toUpperCase();
-        
+        Modul m;
         Modul mod = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
         
         if(mod != null) {
@@ -1690,7 +1722,7 @@ public class DAO {
             EMH.beginTransaction();
             Uni uni = EMH.getEntityManager().find(Uni.class, id);
             
-            Modul m = new Modul(uni,kuerzel.toUpperCase(),name);
+            m = new Modul(uni,kuerzel.toUpperCase(),name);
             
             EMH.persist(m);
 
@@ -1700,7 +1732,7 @@ public class DAO {
             EMH.rollback();
             throw new Exception("Das Modul konnte nicht hinzugefuegt werden");
         }
-    
+        return m;
     }
     
     /**
@@ -1711,20 +1743,18 @@ public class DAO {
      */
     public static Collection<Modul> getModule(short id) {
         
-//        ArrayList<Modul> module = new ArrayList<>();
-//        
-//        Query q = EMH.getEntityManager().createQuery(ALLE_MODULE);
-//        q.setParameter("UN", name);
-//        
-//        List rs = q.getResultList();
-//        
-//        for(Object o : rs) {
-//            module.add((Modul) o);
-//        }
-
-        Uni u = EMH.getEntityManager().find(Uni.class, id);
+        ArrayList<Modul> module = new ArrayList<>();
         
-        return u.getModul();
+        Query q = EMH.getEntityManager().createQuery(ALLE_MODULE);
+        q.setParameter("UID", id);
+        
+        List rs = q.getResultList();
+        
+        for(Object o : rs) {
+            module.add((Modul) o);
+        }
+        
+        return module;
     }
     
    
@@ -1735,10 +1765,12 @@ public class DAO {
      * @param id Id der Uni. 
      * @param thema Das Thema das gesetzt werden soll.
      * @param anteil Anteil die das Thema zum modul insgesamt annimmt.
+     * @return 
      * @throws java.lang.Exception
      */
-    public static void addThema(String kuerzel, short id, String thema, int anteil) throws Exception {
-                
+    public static Thema addThema(String kuerzel, short id, String thema, int anteil) throws Exception {
+               
+        Thema t;
         try {
             EMH.beginTransaction();
             Modul modul = EMH.getEntityManager().find(Modul.class, new ModulPK(id,kuerzel));
@@ -1747,7 +1779,7 @@ public class DAO {
             
             int rest = 0;
             
-            for(Thema th : modul.getThemen()) {
+            for(Thema th : DAO.getThemen(modul)) {
                 
                 int ant = th.getAnteil();
                 
@@ -1757,19 +1789,40 @@ public class DAO {
                 
                 th.setAnteil(ant);
                 
-                EMH.merge(ant);
+                EMH.merge(th);
                 
             }      
             
-            Thema t = new Thema(modul,thema,(100 - rest));
+            t = new Thema(modul,thema,(100 - rest));
             
+            Collection<Thema> themen = DAO.getThemen(modul);
+            
+            if(!themen.isEmpty()) {
+            
+                Query q = EMH.getEntityManager().createQuery(GIB_ALLE_ANGEMELDETEN);
+            
+                q.setParameter("TID", themen.iterator().next().getId());
+
+                for(Object o : q.getResultList()) {
+
+                    LernStatus ls = new LernStatus((Benutzer) o,t,DAO.gibDatum());
+
+                    EMH.persist(ls);
+
+                }
+            }
             EMH.persist(t);
+            
+           
+            
             EMH.commit();
             
         } catch (Exception e) {
             EMH.rollback();
-            throw new Exception("Das Thema konnte nicht hinzugefuegt werden");
+            throw new Exception("Das Thema konnte nicht hinzugefuegt werden. " + e.getMessage());
         }
+        
+        return t;
     
     }
     
@@ -2009,17 +2062,18 @@ public class DAO {
      * @param anfang Angangsdatum der Pruefungen.
      * @param ende Enddatum der Pruefungen.
      * @param anmeldebeginn Anmelebeginn der Pruefungen.
+     * @return 
      * @throws Exception 
      */
-    public static void addPruefungsphase(short id, short jahr, short phase, Date anfang, Date ende, Date anmeldebeginn) throws Exception {
-
+    public static Pruefungsperiode addPruefungsphase(short id, short jahr, short phase, Date anfang, Date ende, Date anmeldebeginn) throws Exception {
+        Pruefungsperiode p;
         try {
             
             EMH.beginTransaction();
             
             Uni u = EMH.getEntityManager().find(Uni.class, id);
             
-            Pruefungsperiode p = new Pruefungsperiode(u,jahr,phase,anmeldebeginn, anfang,ende);
+            p = new Pruefungsperiode(u,jahr,phase,anmeldebeginn, anfang,ende);
             
             EMH.persist(p);
             
@@ -2029,6 +2083,8 @@ public class DAO {
             EMH.rollback();
             throw new Exception("Die Pruefungsphase konnte nicht erstellt werden.");
         }
+        
+        return p;
         
     }
     

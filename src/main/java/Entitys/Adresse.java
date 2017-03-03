@@ -19,7 +19,7 @@ public class Adresse implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    private short id;
+    private Short id;
     
     @Column(length = 2000)
     private String adresse;
@@ -71,12 +71,11 @@ public class Adresse implements Serializable {
         }
         return true;
     }
-
     
     
     @Override
     public String toString() {
-        return "Entitys.Adresse[ id=" + id + " ]";
+        return "Adresse Nr: " + id + " (" + adresse +")";
     }
     
 }

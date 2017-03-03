@@ -27,7 +27,7 @@ public class Thema implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long thmenID;
+    private Long themenID;
     
     /**
      * Vollstaendiger Name des Themas
@@ -73,8 +73,12 @@ public class Thema implements Serializable {
     }
     
     
+    public void addAufgabe() {
+        this.aufgabenZahl++;
+    }
+    
     public Long getId() {
-        return thmenID;
+        return themenID;
     }
     
     public void setName(String name){
@@ -113,10 +117,6 @@ public class Thema implements Serializable {
         return aufgaben;
     }
 
-    public void addAufgabe() {
-        this.aufgabenZahl++;
-    }
-
     public Modul getModul() {
         return modul;
     }
@@ -124,7 +124,7 @@ public class Thema implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (thmenID != null ? thmenID.hashCode() : 0);
+        hash += (themenID != null ? themenID.hashCode() : 0);
         return hash;
     }
 
@@ -135,7 +135,7 @@ public class Thema implements Serializable {
             return false;
         }
         Thema other = (Thema) object;
-        if ((this.thmenID == null && other.thmenID != null) || (this.thmenID != null && !this.thmenID.equals(other.thmenID))) {
+        if ((this.themenID == null && other.themenID != null) || (this.themenID != null && !this.themenID.equals(other.themenID))) {
             return false;
         }
         return true;
@@ -143,7 +143,7 @@ public class Thema implements Serializable {
 
     @Override
     public String toString() {
-        return "Entitys.Thema[ id=" + thmenID + " ]";
+        return "Entitys.Thema[ id=" + themenID + " ]";
     }
     
 }

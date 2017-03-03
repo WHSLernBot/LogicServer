@@ -3,8 +3,6 @@ package Entitys;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
@@ -32,7 +30,6 @@ public class Teilnahme implements Serializable {
      * Die Klausur die der Benutzer schreibt.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     @ManyToOne
@@ -53,6 +50,8 @@ public class Teilnahme implements Serializable {
         this.klausur = klausur;
         this.note = 0;
         this.prozent = 0;
+        this.id = benutzer.gibKlausurNummer();
+        benutzer.neueKlausur();
     }
     
     public Teilnahme(short note){

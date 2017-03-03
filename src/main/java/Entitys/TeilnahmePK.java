@@ -2,7 +2,6 @@ package Entitys;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.MapsId;
 
 /**
  * Primary Key von Teilnahme.

@@ -73,6 +73,8 @@ public class Benutzer implements Serializable {
     @OneToOne(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Plattform plattform;
     
+    private long klausuranzahl;
+    
     public Benutzer(){
         
     }
@@ -90,8 +92,16 @@ public class Benutzer implements Serializable {
         this.name = name;
         this.letzteAntwort = letzteAntwort;
         plattform = new Plattform(pfID,pfNr,this,witSession);
+        klausuranzahl = 0;
     }
     
+    public void neueKlausur() {
+        klausuranzahl++;
+    }
+    
+    public long gibKlausurNummer() {
+        return klausuranzahl;
+    }
     
     public Long getId(){
         return id;
@@ -144,22 +154,8 @@ public class Benutzer implements Serializable {
         return ls;
     }
 
-    /**
-     * Fuegt einen neuen Lernstatus hinzu.
-     * 
-     * @param thema
-     * @param datum 
-     */
-    public void addLernStadi(Thema thema,Date datum) {
-        this.lernStadi.add(new LernStatus(this,thema,datum));
-    }
-
     public Collection<Teilnahme> getTeilnahmen() {
         return teilnahmen;
-    }
-
-    public void addTeilnahmen(Klausur klausur) {
-        this.teilnahmen.add(new Teilnahme(this,klausur));
     }
 
     public Plattform getPlattform() {
