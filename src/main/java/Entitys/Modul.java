@@ -1,5 +1,6 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -84,15 +86,39 @@ public class Modul implements Serializable {
     }
 
     public Collection<Thema> getThemen() {
-        return themen;
+        Collection<Thema> result;
+        
+        String sql = "select object(t) from Thema t "
+                + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("KRZ", this.kuerzel);
+        q.setParameter("UID", this.uni.getId());
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
-    public Collection<Klausur> getKlausuren() {
-        return klausuren;
-    }
+//    public Collection<Klausur> getKlausuren() {
+//        return klausuren;
+//    }
 
     public Collection<Statistik> getStatistiken() {
-        return statistiken;
+        Collection<Statistik> result;
+        
+        String sql = "select object(s) from Statistik s "
+                + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("KRZ", this.kuerzel);
+        q.setParameter("UID", this.uni.getId());
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
     public Uni getUni() {

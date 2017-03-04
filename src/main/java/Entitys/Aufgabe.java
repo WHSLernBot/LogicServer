@@ -1,5 +1,6 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
@@ -11,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Diese Klasse stellt eine Aufgabe zu einem bestimmten Thema dar.
@@ -99,6 +102,9 @@ public class Aufgabe implements Serializable {
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> bearbeitet;
 
+    @Transient
+    private int bekennung;
+    
     public Aufgabe(){    
     }
     
@@ -120,6 +126,7 @@ public class Aufgabe implements Serializable {
         this.verweis = verweis;
         this.punkte = 100;
         this.anzAntworten = 0;
+        this.bekennung = -1;
     }
     
     /**
@@ -127,16 +134,37 @@ public class Aufgabe implements Serializable {
      * @return Alle Antwortmoeglichkeiten dieser Frage.
      */
     public Collection<Antwort> getAntworten(){
-        return this.antworten;
+        Collection<Antwort> result;
+        
+        String sql = "select object(x) from XGAUFGABE x "
+                + "where AUFGABE_AUFGABENID = :AID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("AID", this.aufgabenID);
+        
+        result = q.getResultList();
+        
+        return result;
+    }
+
+    public int getBekennung() {
+        return bekennung;
+    }
+
+    public void setBekennung(int bekennung) {
+        this.bekennung = bekennung;
     }
     
     /**
      * 
      * @return Alle Token der Aufgabe.
      */
-    public Collection<Token> getToken(){
-        return this.token;
-    }
+//    public Collection<Token> getToken(){
+//        return this.token;
+//    }
+    
+    
     
     public long getAufgabenID(){
         return aufgabenID;
@@ -206,9 +234,9 @@ public class Aufgabe implements Serializable {
         anzAntworten++;
     }
 
-    public Collection<Bewertung> getBewertungen() {
-        return bewertungen;
-    }
+//    public Collection<Bewertung> getBewertungen() {
+//        return bewertungen;
+//    }
     
     @Override
     public int hashCode() {

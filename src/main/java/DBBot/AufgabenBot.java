@@ -95,6 +95,33 @@ public class AufgabenBot implements Runnable {
         }
     }
     
+        public void runsingle() {
+        
+        Collection<LernStatus> stadi;
+        
+        if(lernStatus != null) {
+            stadi = new LinkedList<>();
+            stadi.add(lernStatus);
+            berechne(stadi,null);
+        } else if(benutzer != null) {
+            stadi = benutzer.getBenutzer().getLernStadi();
+            berechne(stadi,null);
+        } else {
+            DeepThoughtPrio rechner = new DeepThoughtPrio(modul,heute);
+            
+            for(Thema t : modul.getThemen()) {
+                stadi = t.getLernStadi();
+                berechne(stadi,rechner);
+            }
+        }  
+        
+        if(benutzer != null) {
+            //evet. hier nachricht an den Benutzer senden
+            benutzer.release();
+        }
+    }
+    
+    
     /**
      * Berechnet zu den Angegebenen Lernstadi die entsprechenden Aufgaben und
      * setzt die Punkte des Lernstatus.
@@ -116,7 +143,7 @@ public class AufgabenBot implements Runnable {
         Thema thema;
        
         for(LernStatus ls : stadi) {
-            
+
             boolean neuberechen = (ls.istAktiv() && ls.isVeraendert());
             
             if(rechner != null && rechner.sollDatenErfassen() && !neuberechen) {
@@ -160,26 +187,33 @@ public class AufgabenBot implements Runnable {
 
                 //Aufgaben nach prioritaet sortieren
                 
+                
+                
                 int punkteLs;
                 
-                if(rechner == null) {
-                    punkteLs = new DeepThoughtPrio(thema.getModul(),heute).berechnePrioritaet(zuAufgaben);
-                } else {
-                    punkteLs = rechner.berechnePrioritaet(zuAufgaben);
+                for(aufgabenItem ai : infos.values()) {
+                    zuAufgaben.add(ai);
                 }
+                
+                if(!zuAufgaben.isEmpty()) {
+                    if(rechner == null) {
+                        punkteLs = new DeepThoughtPrio(thema.getModul(),heute).berechnePrioritaet(zuAufgaben);
+                    } else {
+                        punkteLs = rechner.berechnePrioritaet(zuAufgaben);
+                    }
 
-                Collections.sort(zuAufgaben);
-                
-                //Aufgaben in Datenbankliste einfuegen , alte vorher loeschen
-                
-                //Hier auch dynamisch schauen wie viele Aufgaben ueberhaubt gemacht werden sollen. 
-                //Zuerst allerdings einfach alle moeglich in der Reihenfolge einfuegen.
-                //wer macht das? Das DAO.
-                    
-                DAO.setztZuAufgaben(ls,zuAufgaben);
-                
-                DAO.setzeLSPunkte(ls,punkteLs);
-                
+                    Collections.sort(zuAufgaben);
+
+                    //Aufgaben in Datenbankliste einfuegen , alte vorher loeschen
+
+                    //Hier auch dynamisch schauen wie viele Aufgaben ueberhaubt gemacht werden sollen. 
+                    //Zuerst allerdings einfach alle moeglich in der Reihenfolge einfuegen.
+                    //wer macht das? Das DAO.
+
+                    DAO.setztZuAufgaben(ls,zuAufgaben);
+
+                    DAO.setzeLSPunkte(ls,punkteLs);
+                }
                 //loeschen
                 
                 aufgaben.clear();

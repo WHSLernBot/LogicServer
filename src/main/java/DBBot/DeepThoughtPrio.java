@@ -79,7 +79,7 @@ public class DeepThoughtPrio {
         long heuteMs = heute.getTime();
         
         long lsPunkte = 0;
-        
+
         for(aufgabenItem item : aufgaben) {
             
             int punkte = item.getAufgabe().getPunkte();

@@ -100,13 +100,13 @@ public class Pruefungsperiode implements Serializable {
         return anmeldebeginn;
     }
 
-    public Collection<Klausur> getKlausuren() {
-        return klausuren;
-    }
+//    public Collection<Klausur> getKlausuren() {
+//        return klausuren;
+//    }
 
-    public void addKlausuren(Klausur klausuren) {
-        this.klausuren.add(klausuren);
-    }
+//    public void addKlausuren(Klausur klausuren) {
+//        this.klausuren.add(klausuren);
+//    }
 
     public Date getAnfang() {
         return anfang;

@@ -1,5 +1,6 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -88,7 +90,18 @@ public class Uni implements Serializable {
     }
 
     public Collection<Benutzer> getBenutzer() {
-        return benutzer;
+        Collection<Benutzer> result;
+        
+        String sql = "select object(b) from Benutzer b "
+                + "where UNI_ID = :UID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("UID", this.id);
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
     public void addBenutzer(Benutzer benutzer) {
@@ -96,20 +109,42 @@ public class Uni implements Serializable {
     }
 
     public Collection<Modul> getModul() {
-        return modul;
+        Collection<Modul> result;
+        
+        String sql = "select object(m) from Modul m "
+                + "where UNI_ID = :UID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("UID", this.id);
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
-    public void addModul(String kuerzel, String name) {
-        this.modul.add(new Modul(this,kuerzel,name));
-    }
+//    public void addModul(String kuerzel, String name) {
+//        this.modul.add(new Modul(this,kuerzel,name));
+//    }
 
     public Collection<Pruefungsperiode> getPruefungsperiode() {
-        return pruefungsperiode;
+        Collection<Pruefungsperiode> result;
+        
+        String sql = "select object(p) from Pruefungsperiode p "
+                + "where UNI_ID = :UID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("UID", this.id);
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
-    public void addPruefungsperiode(short jahr, short phase, Date anmeldebeginn, Date anfang, Date ende) {
-        this.pruefungsperiode.add(new Pruefungsperiode(this,jahr,phase,anmeldebeginn,anfang,ende));
-    }
+//    public void addPruefungsperiode(short jahr, short phase, Date anmeldebeginn, Date anfang, Date ende) {
+//        this.pruefungsperiode.add(new Pruefungsperiode(this,jahr,phase,anmeldebeginn,anfang,ende));
+//    }
 
     @Override
     public int hashCode() {

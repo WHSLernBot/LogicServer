@@ -1,5 +1,6 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.CascadeType;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -102,19 +104,41 @@ public class Thema implements Serializable {
     }
 
     public Collection<LernStatus> getLernStadi() {
-        return lernStadi;
+        Collection<LernStatus> result;
+        
+        String sql = "select object(ls) from LernStatus ls "
+                + "where THEMA_THEMENID = :TID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("TID", this.themenID);
+        
+        result = q.getResultList();
+        
+        return result;
     }
     
-    /**
-     * Wenn ueberhaupt sinnvoll
-     * @param lernStatus 
-     */
-    public void addLernStatus(LernStatus lernStatus) {
-        this.lernStadi.add(lernStatus);
-    }
+//    /**
+//     * Wenn ueberhaupt sinnvoll
+//     * @param lernStatus 
+//     */
+//    public void addLernStatus(LernStatus lernStatus) {
+//        this.lernStadi.add(lernStatus);
+//    }
 
     public Collection<Aufgabe> getAufgaben() {
-        return aufgaben;
+        Collection<Aufgabe> result;
+        
+        String sql = "select object(a) from Aufgabe a "
+                + "where THEMA_THEMENID = :TID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("TID", this.themenID);
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
     public Modul getModul() {

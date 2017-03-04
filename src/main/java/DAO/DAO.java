@@ -50,30 +50,30 @@ public class DAO {
     
     private static final String GIB_ANTWORT = "select object(aw) "
             + "from Antwort aw, Aufgabe a "
-            + "where AUFGABE_AUFGABENID = AUFGABENID and NUMMER = :NR "
+            + "where a = aw.aufgabe and NUMMER = :NR "
             + "and AUFGABENID = :ID";
    
-    private static final String GIB_AUFGABEN_TOKEN = "select AUFGABENID "
+    private static final String GIB_AUFGABEN_TOKEN = "select object(a) "
             + "from Aufgabe a, Token o, LernStatus l, Thema t "
-            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
-            + "and AUFGABE_AUFGABENID = AUFGABENID and THEMENID = THEMA_THEMENID "
-            + "and TOKEN = :TOK";
+            + "where BENUTZER_ID = :BID and l.thema = a.thema "
+            + "and a = o.aufgabe and t = a.thema "
+            + "and TOKEN = :TOK ";
     
-    private static final String GIB_AUFGABEN_AUFGABENTEXT = "select AUFGABENID "
+    private static final String GIB_AUFGABEN_AUFGABENTEXT = "select object(a) "
             + "from Aufgabe a, LernStatus l, Thema t "
-            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
-            + "and THEMENID = THEMA_THEMENID and LOWER(FRAGE) like :TOK";
+            + "where BENUTZER_ID = :BID and l.thema = a.thema "
+            + "and t = a.thema and LOWER(FRAGE) like :TOK ";
     
-    private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select AUFGABENID "
+    private static final String GIB_AUFGABEN_ZUSATZTEXTE = "select object(a) "
             + "from Aufgabe a, LernStatus l, Thema t "
-            + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMA_THEMENID "
-            + "and THEMENID = THEMA_THEMENID "
+            + "where BENUTZER_ID = :BID and l.thema = a.thema "
+            + "and t = a.thema "
             + "and (LOWER(HINWEIS) like :TOK or LOWER(VERWEIS) like :TOK)";
     
     private static final String GIB_THEMA_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
             + "where BENUTZER_ID = :BID and THEMA_THEMENID = THEMENID and "
-            + "THEMENID = THEMA_THEMENID and LOWER(NAME) like :TOK";
+            + "LOWER(NAME) like :TOK ";
     
     private static final String GIB_THEMA_MODUL_THEMA = "select object(l) "
             + "from Thema t, LernStatus l "
@@ -81,23 +81,23 @@ public class DAO {
             + "MODUL_UNI_ID = :UID and MODUL_KUERZEL = :KRZ and "
             + "LOWER(NAME) like :TOK";
     
-    private static final String ABFRAGE_LERNSTATUS = " and THEMA_THEMENID = :TID";
+    private static final String ABFRAGE_LERNSTATUS = " and l.thema.themenID = :TID";
     
     private static final String ABFRAGE_MODUL = " and MODUL_UNI_ID = :UID and MODUL_KUERZEL = :KRZ";
 
     private static final String GIB_BEAUFGABE = "select object(b) "
-            + "from Beaufgabe b, Aufgabe a "
-            + "where AufgabenID = :AID and AUFGABE_AUFGABENID = AUFGABENID "
+            + "from BeAufgabe b, Aufgabe a "
+            + "where AufgabenID = :AID and a = b.aufgabe "
             + "and LERNSTATUS_THEMA_THEMENID = THEMA_THEMENID "
             + "and LERNSTATUS_BENUTZER_ID = :BID "
             + "and KENNUNG = :K";
     
-    private static final String ALLE_XGAUFGAEBN = "select AUFGABE_AUFGABENID "
-            + "from XGAufgabe "
+    private static final String ALLE_XGAUFGAEBN = "select object(x) "
+            + "from XGAufgabe x "
             + "where LERNSTATUS_BENUTZER_ID = :BID";
     
-    private static final String ALLE_ZUAUFGAEBN = "select AUFGABE_AUFGABENID "
-            + "from ZuAufgabe "
+    private static final String ALLE_ZUAUFGAEBN = "select object(z) "
+            + "from ZuAufgabe z "
             + "where LERNSTATUS_BENUTZER_ID = :BID "
             + "order by KENNUNG ASC";
     
@@ -105,7 +105,7 @@ public class DAO {
             + "from Benutzer b, LernStatus l, Thema t, Modul m "
             + "where ID = :BID and BENUTZER_ID = ID and "
             + "THEMA_THEMENID = THEMENID and MODUL_KUERZEL = :KRZ and "
-            + "MODUL_UNI_ID = UNI_ID";
+            + "b.uni = m.uni and t.modul = m";
     
     private static final String GIB_MODULE = "select DISTINCT object(m) "
             + "from Modul m, LernStatus ls, Thema t "
@@ -145,7 +145,7 @@ public class DAO {
             + "and Beendet = true and THEMA_THEMENID = THEMENID and "
             + "Modul_Kuerzel = KUERZEL and MODUL_UNI_ID = UNI_ID";
     
-    private static final String LOESCHE_ZUAUFGABEN = "delete from ZuAufgabe "
+    private static final String LOESCHE_ZUAUFGABEN = "Select object(z) from ZuAufgabe z "
             + "where LERNSTATUS_BENUTZER_ID = :ID "
             + "and LERNSTATUS_THEMA_THEMENID = :THEMA";
     
@@ -157,10 +157,10 @@ public class DAO {
     private static final String ALLE_SELEKTOREN = "select object(t) "
             + "from Thema t order by MODUL_KUERZEL ASC";
     
-    private static final String WURDE_KLAUSUR_AKT = "selekt (k) "
+    private static final String WURDE_KLAUSUR_AKT = "select (k) "
             + "from Klausur k "
             + "where MODUL_KUERZEL = :KRZ and MODUL_UNI_ID = :UID "
-            + "and VERAENDERT";
+            + "and VERAENDERT = true";
     
     private static final String GIB_AEHNLICHE_ERGEBNISSE = "select object(t) "
             + "from Teilname t "
@@ -212,6 +212,8 @@ public class DAO {
         
         Aufgabe a = null;
         
+        int kennung = -1;
+        
         long bid = ls.getBenutzer().getId();
         long tid = ls.getThema().getId();
         LernStatusPK pk = new LernStatusPK(bid,tid);
@@ -248,10 +250,12 @@ public class DAO {
                 }
             }
             
-            EMH.persist(new BeAufgabe(a,ls,ls.getKennungBe(),false,gibDatum(),false,false));
+            kennung = ls.getKennungBe();
+            
+            EMH.persist(new BeAufgabe(a,ls,kennung,false,gibDatum(),false,false));
             ls.addedBeAufgabe();
             EMH.merge(ls);
-               
+            
             EMH.commit();
             
         } catch (Exception e) {
@@ -265,6 +269,9 @@ public class DAO {
         if(zu == null) {
             ChatBotManager.getInstance().gibBotPool().berechneLS(ls);
         }
+        
+        a.setBekennung(kennung);   
+        
         
         return a;
         
@@ -294,7 +301,7 @@ public class DAO {
         Aufgabe a;
         long aid = -1;
         long bId = be.getBenutzer().getId();
-        
+        int kennung;
         
         //Herausfinden ob ein token ein Modul in der Datenbank ist.
         Modul m = null;
@@ -310,7 +317,7 @@ public class DAO {
             }
         }
             
-        if(!istAngemeldet(be,m)) {
+        if(m != null && !istAngemeldet(be,m)) {
             throw new Exception("Du bist noch garnicht fuer das entsprechende Modul angemeldet!");
         }
         
@@ -321,7 +328,7 @@ public class DAO {
         
         it = token.iterator();
         while(!token.isEmpty() && stadi.isEmpty() && it.hasNext()) {
-            String s = (String) it.next();
+            String s = ((String) it.next()).toLowerCase();
             if(m == null) {
                 qu = EMH.getEntityManager().createQuery(GIB_THEMA_THEMA);
 
@@ -366,7 +373,7 @@ public class DAO {
             
             LernStatus ls = null;
             double mPunkte = 10001;
-            for(Object o: gibLernstadi(be,m.getKuerzel())) {
+            for(Object o : gibLernstadi(be,m.getKuerzel())) {
                 LernStatus l = (LernStatus) o;
                 
                 double p = l.getSumPunkte() / l.getThema().getAnteil();
@@ -402,7 +409,11 @@ public class DAO {
             
         qxg.setParameter("BID", bId);
             
-        List<Long> rxg = qxg.getResultList();
+        List<Long> rxg = new LinkedList<>();
+        
+        for(Object o : qxg.getResultList()) {
+            rxg.add(((XGAufgabe) o).getAufgabe().getAufgabenID());
+        }
   
         List<Long> result = new LinkedList<>();
         int top = 0;
@@ -433,14 +444,16 @@ public class DAO {
             
             qzu.setParameter("BID", bId);
             
-            List rzu = qzu.getResultList();
+            List<Long> rzu = new LinkedList<>();
+        
+            for(Object o : qxg.getResultList()) {
+                rxg.add(((ZuAufgabe) o).getAufgabe().getAufgabenID());
+            }
             
-            for(Object zu : rzu) {
-          
-                long id = (long) zu;
-                
-                if(result.contains(id)) {
-                    aid = id;
+            for(long zu : rzu) {
+
+                if(result.contains(zu)) {
+                    aid = zu;
                     break;
                 }
                 
@@ -457,7 +470,9 @@ public class DAO {
             
             LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(bId,a.getThema().getId()));
             
-            EMH.persist(new BeAufgabe(a,ls,ls.getKennungBe(),false,gibDatum(),false,false));
+            kennung = ls.getKennungBe();
+            
+            EMH.persist(new BeAufgabe(a,ls,kennung,false,gibDatum(),false,false));
             ls.addedBeAufgabe();
             
             EMH.persist(new XGAufgabe(a,ls,ls.getKennungXG()));
@@ -471,6 +486,8 @@ public class DAO {
             EMH.rollback();
             throw new Exception("Aufgabe konnte nicht gefunden werden.");
         }
+        
+        a.setBekennung(kennung);   
         
         return a;
     }  
@@ -525,9 +542,12 @@ public class DAO {
             jpql.setParameter("KRZ", m.getKuerzel());
         }
         for(Object o : jpql.getResultList()) {
-            Long aid = (Long) o;
+            Long aid = ((Aufgabe) o).getAufgabenID();
 
-            punkte.put(aid, punkte.get(aid) + wertung);
+            int p = (punkte.containsKey(aid)) ? punkte.get(aid) : 0;
+            p += wertung;
+            
+            punkte.put(aid, p);
         }
     }
     
@@ -709,7 +729,7 @@ public class DAO {
      */
     public static void speichereAntwort(CBBenutzer b, long aufgabe, int kennung,
             short antwort, boolean hinweis) throws Exception {
-        
+
         try {
             
             EMH.beginTransaction();
@@ -719,26 +739,26 @@ public class DAO {
             q.setParameter("ID", aufgabe);
             
             Antwort aw = (Antwort) q.getResultList().get(0);
-            
+
             aw.wurdeGewaehlt();
             
             boolean richtig = aw.getRichtig();
             
             EMH.merge(aw);
-            
+            System.out.println("aa");
             q = EMH.getEntityManager().createQuery(GIB_BEAUFGABE);
             q.setParameter("AID", aufgabe);
             q.setParameter("BID", b.getBenutzer().getId());
             q.setParameter("K", kennung);
             
             BeAufgabe be = (BeAufgabe) q.getResultList().get(0);
-            
+            System.out.println("b");
             LernStatus ls = be.getLernStatus();
             
             ls.neueGeloest(gibDatum());
             
             be.setzeAntwort(richtig, hinweis, gibDatum());
-            
+            System.out.println("v");
             EMH.getEntityManager().merge(be);
             EMH.getEntityManager().merge(ls);
             
@@ -746,7 +766,7 @@ public class DAO {
             
         } catch (Exception e) {
             EMH.rollback();
-            throw new Exception("Die Antwort konnte nicht gespeichert werden.");
+            throw new Exception("Die Antwort konnte nicht gespeichert werden." + e.getMessage());
         }
          
     }
@@ -1225,7 +1245,9 @@ public class DAO {
                 for(Thema t : themen) {
                     LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
                     if(ls == null) {
-                        EMH.persist(new LernStatus(be,t,datum));  
+                        ls = new LernStatus(be,t,datum);
+                        
+                        EMH.persist(ls);  
                     } else {
                         if(ls.isBeendet()) {
                             throw new Exception(modul + " haben Sie schon erfolgreich absolviert.");
@@ -1458,7 +1480,12 @@ public class DAO {
         q.setParameter("ID", ls.getBenutzer().getId());
         q.setParameter("THEMA", ls.getThema().getId());
         
-        q.executeUpdate();
+        Collection<ZuAufgabe> zu = q.getResultList();
+        
+        for(ZuAufgabe z : zu) {
+//            System.out.println(z.getKennung());
+            EMH.remove(z);
+        }
            
     }
     
@@ -1806,7 +1833,7 @@ public class DAO {
                 for(Object o : q.getResultList()) {
 
                     LernStatus ls = new LernStatus((Benutzer) o,t,DAO.gibDatum());
-
+                    
                     EMH.persist(ls);
 
                 }

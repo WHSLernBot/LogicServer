@@ -179,13 +179,9 @@ public class Klausur implements Serializable {
         return quotient;
     }
 
-    public Collection<Teilnahme> getTeilnahmen() {
-        return teilnahmen;
-    }
-
-    public void addTeilnahmen(Teilnahme teilnahme) {
-        this.teilnahmen.add(teilnahme);
-    }
+//    public Collection<Teilnahme> getTeilnahmen() {
+//        return teilnahmen;
+//    }
 
     public Pruefungsperiode getPruefungsperiode() {
         return periode;

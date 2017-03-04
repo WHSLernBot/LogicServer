@@ -1,5 +1,6 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -133,30 +135,42 @@ public class Benutzer implements Serializable {
     
 
     public Collection<LernStatus> getLernStadi() {
-        return lernStadi;
+        
+        Collection<LernStatus> result;
+        
+        String sql = "select object(ls) from LernStatus ls "
+                + "where BENUTZER_ID = :BID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("BID", this.id);
+        
+        result = q.getResultList();
+        
+        return result;
     }
     
-    /**
-     * 
-     * @param id Themen id des entsprechenden Status.
-     * @return Der entsprechende LernStatus zum Thema.
-     */
-    public LernStatus getStatus(long id) {
-        
-        LernStatus ls = null;
-        
-        for(LernStatus l : lernStadi) {
-            if(l.getThema().getId() == id) {
-                ls = l;
-                break;
-            }
-        }
-        return ls;
-    }
+//    /**
+//     * 
+//     * @param id Themen id des entsprechenden Status.
+//     * @return Der entsprechende LernStatus zum Thema.
+//     */
+//    public LernStatus getStatus(long id) {
+//        
+//        LernStatus ls = null;
+//        
+//        for(LernStatus l : lernStadi) {
+//            if(l.getThema().getId() == id) {
+//                ls = l;
+//                break;
+//            }
+//        }
+//        return ls;
+//    }
 
-    public Collection<Teilnahme> getTeilnahmen() {
-        return teilnahmen;
-    }
+//    public Collection<Teilnahme> getTeilnahmen() {
+//        return teilnahmen;
+//    }
 
     public Plattform getPlattform() {
         return plattform;

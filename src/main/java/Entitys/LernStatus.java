@@ -1,8 +1,10 @@
 package Entitys;
 
+import DAO.EMH;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Query;
 import javax.persistence.Table;
 
 /**
@@ -115,7 +118,7 @@ public class LernStatus implements Serializable {
         this.sumPunkte = 0;
         this.geloest = 0;
         this.letztesDatum = letztesDatum;
-        veraendert = false;
+        veraendert = true;
         kennungBe = 0;
         kennungXG = 0;
         kennungZu = 0;
@@ -162,31 +165,56 @@ public class LernStatus implements Serializable {
     }
 
     public Collection<BeAufgabe> getBeAufgaben() {
-        return beAufgaben;
+        Collection<BeAufgabe> result;
+        
+        String sql = "select object(a) from BeAufgabe a "
+                + "where LERNSTATUS_BENUTZER_ID = :BID and LERNSTATUS_THEMA_THEMENID = :TID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("TID", this.thema.getId());
+        q.setParameter("BID", this.benutzer.getId());
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
-    public void addBeAufgaben(Aufgabe aufgabe, boolean richtig, 
-            Date datum, boolean hinweis, boolean beantwortet) {
-        
-        
-        this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennungBe,richtig,datum,
-                hinweis,beantwortet));    
-        this.kennungBe++;
-    }
+//    public void addBeAufgaben(Aufgabe aufgabe, boolean richtig, 
+//            Date datum, boolean hinweis, boolean beantwortet) {
+//        
+//        
+//        this.beAufgaben.add(new BeAufgabe(aufgabe,this,kennungBe,richtig,datum,
+//                hinweis,beantwortet));    
+//        this.kennungBe++;
+//    }
 
     public Collection<XGAufgabe> getXgAufgaben() {
-        return xgAufgaben;
-    }
-
-    public void addXgAufgaben(Aufgabe aufgabe) {
-        this.xgAufgaben.add(new XGAufgabe(aufgabe,this,kennungXG));
         
-        kennungXG++;
+        Collection<XGAufgabe> result;
+        
+        String sql = "select object(x) from XGAufgabe x "
+                + "where LERNSTATUS_BENUTZER_ID = :BID and LERNSTATUS_THEMA_THEMENID = :TID";
+        
+        Query q = EMH.getEntityManager().createQuery(sql);
+        
+        q.setParameter("BID", this.benutzer.getId());
+        q.setParameter("TID", this.thema.getId());
+        
+        result = q.getResultList();
+        
+        return result;
     }
 
-    public Collection<ZuAufgabe> getZuAufgaben() {
-        return zuAufgaben;
-    }
+//    public void addXgAufgaben(Aufgabe aufgabe) {
+//        this.xgAufgaben.add(new XGAufgabe(aufgabe,this,kennungXG));
+//        
+//        kennungXG++;
+//    }
+
+//    public Collection<ZuAufgabe> getZuAufgaben() {
+//        return zuAufgaben;
+//    }
 
     public Benutzer getBenutzer() {
         return benutzer;

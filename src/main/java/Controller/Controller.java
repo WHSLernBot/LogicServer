@@ -88,21 +88,18 @@ public class Controller {
      * @return Nachricht mit den geforderten Informationen.
      */
     public static Nachricht loese(JsonObject json) {
-        
-      
         ChatBotManager manager = ChatBotManager.getInstance();
-      
+        
         JsonObject userOb = json.getAsJsonObject(USER_OBJEKT);
 
         CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
                 userOb.get(USER_PLATTFORM).getAsShort());
-      
-        CBBenutzer benutzer = manager.gibBenutzer(pt,userOb.get(USER_SESSION).getAsString());
-      
 
+        CBBenutzer benutzer = manager.gibBenutzer(pt,userOb.get(USER_SESSION).getAsString());
+        
         Nachricht nachricht = new Nachricht(benutzer);
         
-        
+                
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
         dem entsprechend ausgefuehrt.*/
         try {
@@ -207,19 +204,16 @@ public class Controller {
                     
                     String fehler = "";
                     for(JsonElement je : json.get(MODUL_ARRAY).getAsJsonArray()) {
-                       
+                        
                         try {
                             DAO.meldeAn(benutzer,je.getAsString());
                         } catch (Exception e) {
-                            
-                            
-                            fehler = e.getMessage();
+                            fehler += e.getMessage();
                         }
                         
                     }
                     
                     if(!fehler.equals("")) {
-                        
                         throw new Exception(fehler);
                     }
                     
