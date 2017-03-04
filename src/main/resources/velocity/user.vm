@@ -1,7 +1,9 @@
 #parse("/velocity/layout.vm")
 #@mainLayout()
+
 <img id="logoStart" src="logo.png"/><br><br><br>
 <div align="center">
+#if($userLogin)
 <form method="post">
             <div id="rahmen">
 		<label id="text">Modul hinzufügen</label><br><br>
@@ -117,5 +119,8 @@
 		</div>
             </div>
 	</form>
+
+#end
+<p id="text">Sie müssen sich als User anmelden!</p>
 </div>
 #end
