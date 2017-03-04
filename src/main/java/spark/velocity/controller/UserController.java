@@ -5,6 +5,7 @@
  */
 package spark.velocity.controller;
 
+import DBBot.AufgabenBot;
 import Entitys.Aufgabe;
 import Entitys.Modul;
 import Entitys.Pruefungsperiode;
@@ -18,6 +19,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import main.ChatBotManager;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -47,7 +49,11 @@ public class UserController {
             if (request == null) {
                 System.out.println("null");
             }
-            ar = (ArrayList) DAO.DAO.getModule(uniID);
+            ArrayList<Modul> module = (ArrayList) DAO.DAO.getModule(uniID);
+
+            for (Modul mo : module) {
+                ar.add(mo.getKuerzel());
+            }
             Map<String, Object> model = new HashMap<>();
             model.put("module", ar);
 
@@ -64,20 +70,26 @@ public class UserController {
                 model.put("themen", DAO.DAO.getThemen(uniID, getQueryThemaModul(request)));
             }
             //Fuege eine Frage mit Antworten hinzu.
-            HashMap th = (HashMap) DAO.DAO.getThemen(uniID, name);
-            Thema thema = (Thema) th.get(getQueryThema(request));
-            if (!getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
+            ArrayList<Thema> the = (ArrayList) DAO.DAO.getThemen(uniID, getQueryModulFrage(request));
+            Thema thema = null;
+            for (Thema th : the) {
+                if (th.equals(getQueryThemaFrage(request))) {
+                    thema = th;
+                    break;
+                }
+            }
+
+            if (thema != null && !getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
                     && !getQueryAntwort2(request).equals("") && !getQueryAntwort3(request).equals("")
                     && !getQueryAntwort4(request).equals("") && !getQueryPunkte(request).equals("")) {
-
                 Aufgabe auf = DAO.DAO.addAufgabe(thema, getQueryFrage(request), getQueryHinweis(request), getQueryVerweis(request), Integer.parseInt(getQueryPunkte(request)));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort1(request), !(getQueryAntwort1Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort2(request), !(getQueryAntwort2Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort3(request), !(getQueryAntwort3Richtig(request) == null));
                 DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort4(request), !(getQueryAntwort4Richtig(request) == null));
- 
+
             }
-            
+
             //Fuege eine Pruefungsperiode hinzu.
             if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
                     && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
@@ -89,33 +101,48 @@ public class UserController {
                 Date ende = new Date(cal.getTimeInMillis());
                 cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
                 Date anmeldebeginn = new Date(cal.getTimeInMillis());
-                
-                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request))
-                        , anfang, ende, anmeldebeginn);
+
+                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
+                         anfang, ende, anmeldebeginn);
             }
-            
-            HashMap<String,Pruefungsperiode> per = (HashMap) DAO.DAO.gibUni(uniID).getPruefungsperiode();
-            model.put("pp",per);
+
+            HashMap<String, Pruefungsperiode> per = (HashMap) DAO.DAO.gibUni(uniID).getPruefungsperiode();
+            model.put("pp", per);
 //          Fuege eine Klausur hinzu.
-            if(!getQueryUhrzeit(request).equals("") && !getQueryDatum(request).equals("")
+            if (!getQueryUhrzeit(request).equals("") && !getQueryDatum(request).equals("")
                     && !getQueryOrt(request).equals("") && !getQueryHilfsmittel(request).equals("")
                     && !getQueryTyp(request).equals("") && !getQueryDauer(request).equals("")) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(sdf.parse(getQueryDatum(request)));
-            Date datum = new Date(cal.getTimeInMillis());
-            LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
-            Time uhrzeit = new Time(lt.getHour(),lt.getMinute(),lt.getSecond());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(sdf.parse(getQueryDatum(request)));
+                Date datum = new Date(cal.getTimeInMillis());
+                LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
+                Time uhrzeit = new Time(lt.getHour(), lt.getMinute(), lt.getSecond());
 
-            HashMap<String,Modul> hm =  (HashMap) DAO.DAO.getModule(uniID);
+                HashMap<String, Modul> hm = (HashMap) DAO.DAO.getModule(uniID);
 
-            DAO.DAO.addKlausur(per.get(getQueryPeriode(request)),hm.get(getQueryModulKlausur(request))
-                    , datum, uhrzeit, Short.parseShort(getQueryDauer(request))
-                    , getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
-                    
-            
+                DAO.DAO.addKlausur(per.get(getQueryPeriode(request)), hm.get(getQueryModulKlausur(request)),
+                         datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
+                         getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
+
             }
+
+            if (!getQueryModulBerechnen(request).equals(" ")) {
+                ArrayList<Modul> mod = (ArrayList) DAO.DAO.getModule(uniID);
+                Modul mo = null;
+                for (Modul modu : mod) {
+                    if (modu.getKuerzel().equals(getQueryModulBerechnen(request))) {
+                        mo = modu;
+                        break;
+                    }
+                }
+                if (mo != null) {
+                    ChatBotManager.getInstance().gibBotPool().berechneNeu(mo);
+                }
+
+            }
+
             return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
         }
     };
@@ -126,16 +153,20 @@ public class UserController {
         if (request == null) {
             System.out.println("null");
         }
-        if (name == null) {            
-            name = getQueryUsername(request);          
+        if (name == null) {
+            name = getQueryUsername(request);
         }
-        if(name != null) {
+        if (name != null) {
             uniID = DAO.DAO.getUniID(getQueryUsername(request));
-            if(!DAO.DAO.getModule(uniID).isEmpty()) {
-                ar = (ArrayList) DAO.DAO.getModule(uniID);
+            if (!DAO.DAO.getModule(uniID).isEmpty()) {
+                ArrayList<Modul> module = (ArrayList) DAO.DAO.getModule(uniID);
+
+                for (Modul mo : module) {
+                    ar.add(mo.getKuerzel());
+                }
             }
         }
-        
+
         Map<String, Object> model = new HashMap<>();
         model.put("module", ar);
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));

@@ -72,7 +72,7 @@ public class Modul implements Serializable {
         this.kuerzel = kuerzel;
         this.name = name;
     }
-    
+   
     public String getKuerzel(){
         return kuerzel;
     }

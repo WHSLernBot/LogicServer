@@ -6,6 +6,9 @@ import spark.Request;
  * Diese Klassen stellt Methoden bereit, um die Request auszulesen.
  */
 public class RequestUtil {
+    public static String getQueryModulBerechnen(Request request) {
+        return request.queryParams("modulBerechnen");
+    }
     //Klausur
     public static String getQueryPeriode(Request request) {
         return request.queryParams("periode");
@@ -138,7 +141,13 @@ public class RequestUtil {
         request.session().removeAttribute("loginRedirect");
         return loginRedirect;
     }
-
+    
+    public static boolean isAdminLogin(Request request){
+        return request.params("adminLogin").equals(true);
+    } 
+    public static boolean isUserLogin(Request request){
+        return request.params("userLogin").equals(true);
+    } 
     public static boolean clientAcceptsHtml(Request request) {
         String accept = request.headers("Accept");
         return accept != null && accept.contains("text/html");
@@ -147,5 +156,5 @@ public class RequestUtil {
     public static boolean clientAcceptsJson(Request request) {
         String accept = request.headers("Accept");
         return accept != null && accept.contains("application/json");
-    }
+    }   
 }

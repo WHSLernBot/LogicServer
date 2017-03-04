@@ -104,6 +104,18 @@
 		</div>
                 </div>
             </div>
+            <div id="rahmen">
+		<label id="text">Modul neuberechnen: </label><br><br>
+		<label id ="text" for="dModul">Modul: <select id="themaModul" name="modulBerechnen"> 
+                <option> </option>
+		#foreach ($modul in $module)
+                    <option> $modul</option>
+                #end
+		</select></label>
+		<div id="mButton">
+		<button id="mSubmit" type="submit">Bestätigen</button> 
+		</div>
+            </div>
 	</form>
 </div>
 #end

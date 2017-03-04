@@ -48,10 +48,12 @@ public class IndexController {
         // Ist  der Benutzername "admin" wird er zur Adminseite weiter geleitet.
         if(getQueryUsername(request).equals("admin")) {
             response.redirect("/admin");
+            model.put("adminLogin", true);
             return AdminController.serveAdminPage.handle(request, response);
         }
         // Wird zur Benutzerseite weitergeleitet.
         response.redirect("/user");
+        model.put("userLogin", true);
         return UserController.serveUserPage.handle(request, response);
     };
 }

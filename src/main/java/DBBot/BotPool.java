@@ -41,6 +41,10 @@ public class BotPool {
         aufgabenBots.submit(new AufgabenBot(ls));
     }
     
+    public void berechneNeu(Modul modul) {
+        aufgabenBots.submit(new AufgabenBot(modul));
+    }
+    
     public void berechneAlles() {
         
         Timestamp heute = ChatBotManager.getInstance().jetzt();
@@ -62,4 +66,6 @@ public class BotPool {
         }
         
     }
+
+    
 }
