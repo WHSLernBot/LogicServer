@@ -15,7 +15,7 @@ body,html{
 	height: 1.5%;
 }
 #logoStart {
-	margin: 0 40%;
+	margin: 0 42%;
 	padding:0 5%;
 	width: 5%;
 	height: 5%;
@@ -46,6 +46,5 @@ body,html{
 h3{
 	padding: 2% 0%;
 	font: bold 18px Arial, regular;
-	color: fff;
 	text-align: center;
 }

@@ -105,8 +105,7 @@
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
                 </div>
-            </div>
-            <div id="rahmen">
+                <div id="rahmen">
 		<label id="text">Modul neuberechnen: </label><br><br>
 		<label id ="text" for="dModul">Modul: <select id="themaModul" name="modulBerechnen"> 
                 <option> </option>
@@ -116,10 +115,8 @@
 		</select></label>
 		<div id="mButton">
 		<button id="mSubmit" type="submit">Bestätigen</button> 
-		</div>
-            </div>
+		</div>         
 	</form>
-
 #end
 <p id="text">Sie müssen sich als User anmelden!</p>
 </div>
