@@ -790,9 +790,9 @@ public class DAO {
             EMH.beginTransaction();
            
             Adresse ad = EMH.getEntityManager().find(Adresse.class, pt.getPlattform());
-            
+            System.out.println("Adresse klappt!");
             be = new Benutzer(pt.getId(),ad,witSession,name,gibDatum());
-            
+            System.out.println("Neuer benutzer: " + be.toString());
             EMH.persist(be); 
             
             EMH.commit();
@@ -841,12 +841,12 @@ public class DAO {
      * @throws java.lang.Exception
      */
     public static void setzeUni(CBBenutzer benutzer, short uni) throws Exception {
-        System.out.println("In Methode!");
+       
         try {
             
             EMH.beginTransaction();
             Uni u = EMH.getEntityManager().find(Uni.class, uni);
-            System.out.println("Wir haben eine Uni: " + u.toString());
+            
             synchronized(benutzer) {
                 
                 Benutzer b = benutzer.getBenutzer();

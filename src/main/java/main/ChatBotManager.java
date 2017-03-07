@@ -113,14 +113,15 @@ public class ChatBotManager {
         CBBenutzer be = null;
         benutzerLock.lock();
         try {
+            
            be = benutzer.get(pt); 
            if(be == null) {
                be = DAO.sucheBenutzer(pt);
                
                if(be == null) {
                    Benutzer b = DAO.neuerBenutzer(pt, "", session);
-                   
                    be = new CBBenutzer(b);
+                   System.out.println(be.getBenutzer().toString());
                }
                
                benutzer.put(pt, be);

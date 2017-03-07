@@ -91,11 +91,17 @@ public class Controller {
         ChatBotManager manager = ChatBotManager.getInstance();
         
         JsonObject userOb = json.getAsJsonObject(USER_OBJEKT);
+        
+        
 
         CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
                 userOb.get(USER_PLATTFORM).getAsShort());
+        
+        
 
         CBBenutzer benutzer = manager.gibBenutzer(pt,userOb.get(USER_SESSION).getAsString());
+        
+       
         
         Nachricht nachricht = new Nachricht(benutzer);
         
@@ -159,7 +165,7 @@ public class Controller {
                     MessageCreator.erstelleBenutzerInfoNachricht(nachricht.getJson(),benutzer);
                     break;
                 case METHODE_SETZE_UNI:
-                    System.out.println("Richtige Methode!");
+                  
                     
                     DAO.setzeUni(benutzer, json.get(UNI_ID).getAsShort());
                     break;
@@ -246,7 +252,7 @@ public class Controller {
             MessageCreator.exception(nachricht.getJson(),e);
         }
         benutzer.release();
-        System.out.println(nachricht);
+    
         return nachricht;
     }
 }

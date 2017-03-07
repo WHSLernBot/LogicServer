@@ -76,11 +76,9 @@ public class Main {
             
             //User Object
             JsonObject a = new JsonObject();
-            a.addProperty("userID", 1234);
+            a.addProperty("userID", "1234");
             a.addProperty("plattformID", 1);
-            a.addProperty("witSession", 5678);
-            
-            //Module Array Object
+            a.addProperty("witSession", "12345");
             
             
             //Füllen des Body
@@ -89,7 +87,7 @@ public class Main {
             body.addProperty("uniID", 1);
             
             
-                
+            System.out.println(body.toString());   
             try {
                 
                 System.out.println("Versuch wird gestartet");
@@ -113,7 +111,7 @@ public class Main {
             JsonObject a = new JsonObject();
             a.addProperty("userID", 1234);
             a.addProperty("plattformID", 1);
-            a.addProperty("witSession", 5678);
+            a.addProperty("witSession", 12345);
             
             //Module Array Object
             JsonArray ja = new JsonArray();
