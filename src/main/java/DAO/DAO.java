@@ -841,18 +841,20 @@ public class DAO {
      * @throws java.lang.Exception
      */
     public static void setzeUni(CBBenutzer benutzer, short uni) throws Exception {
-        
+        System.out.println("In Methode!");
         try {
             
             EMH.beginTransaction();
             Uni u = EMH.getEntityManager().find(Uni.class, uni);
-    
+            System.out.println("Wir haben eine Uni: " + u.toString());
             synchronized(benutzer) {
+                
                 Benutzer b = benutzer.getBenutzer();
-               
+                
                 b.setUni(u);
-            
+                
                 EMH.getEntityManager().merge(benutzer.getBenutzer());
+                
             }
             EMH.commit();
             
@@ -1225,9 +1227,12 @@ public class DAO {
      */
     public static void meldeAn(CBBenutzer b, String modul) throws Exception {
         
+        System.out.println(b.getBenutzer().getUni().getId());
+        
         modul = modul.toUpperCase();
         
-        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(),modul));
+        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(), modul));
+        System.out.println("Modul variable erstellt!");
         
         if(m == null) {
             throw new Exception(modul + " konnte nicht gefunden werden.");
@@ -2188,8 +2193,6 @@ public class DAO {
         String name = "WHS Informatik";
         
         if(DAO.getUniID(name) != -1) {
-            
-            System.out.println("uni gefunden");
             return;
         }
         

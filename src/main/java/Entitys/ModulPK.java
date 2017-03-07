@@ -16,11 +16,15 @@ public class ModulPK implements Serializable {
     private String kuerzel;
 
     public ModulPK(short uni, String kuerzel) {
+        
         this.uni = uni;
         this.kuerzel = kuerzel;
+        System.out.println("ModulPK Erstellt");
     }
 
-    public ModulPK() {}
+    public ModulPK() {
+    
+    }
 
     public short getUni() {
         return uni;

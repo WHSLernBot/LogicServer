@@ -61,11 +61,8 @@ public class Main {
             objBody = obj.get("body").getAsJsonObject();
             
             
-            Rand rd = new Rand(objBody.get("key").getAsInt());
-                
             
-            System.out.println(rd.toString());
-            return rd.toString() + ". Zeit: " + ChatBotManager.getInstance().jetzt();
+            return "test";
       
         });
         
@@ -73,7 +70,42 @@ public class Main {
         /**
          * Name ist Programm
          */
-        http.get("/testVerbindung", (req, res) -> {
+        http.get("/setzeUni", (req, res) -> {
+            //Json Body
+            JsonObject body = new JsonObject();
+            
+            //User Object
+            JsonObject a = new JsonObject();
+            a.addProperty("userID", 1234);
+            a.addProperty("plattformID", 1);
+            a.addProperty("witSession", 5678);
+            
+            //Module Array Object
+            
+            
+            //Füllen des Body
+            body.add("user", a);
+            body.addProperty("methode", "setzeUni");
+            body.addProperty("uniID", 1);
+            
+            
+                
+            try {
+                
+                System.out.println("Versuch wird gestartet");
+                Nachricht na = Controller.Controller.loese(body);
+                return na;
+                
+            } catch(Exception e) {
+                
+                System.out.println("FEHLER NACHRICHT = " + e.getMessage());
+                return e.getMessage() + "";
+                
+            }
+
+        });
+        
+        http.get("/setzeModul", (req, res) -> {
             //Json Body
             JsonObject body = new JsonObject();
             
@@ -96,9 +128,9 @@ public class Main {
                 
             try {
                 
-                
+                System.out.println("Versuch wird gestartet");
                 Nachricht na = Controller.Controller.loese(body);
-                return na.getJson();
+                return na;
                 
             } catch(Exception e) {
                 
@@ -108,6 +140,7 @@ public class Main {
             }
 
         });
+
         
         /**
          * Erstellt Test Einträge!

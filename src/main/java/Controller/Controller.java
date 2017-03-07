@@ -159,6 +159,8 @@ public class Controller {
                     MessageCreator.erstelleBenutzerInfoNachricht(nachricht.getJson(),benutzer);
                     break;
                 case METHODE_SETZE_UNI:
+                    System.out.println("Richtige Methode!");
+                    
                     DAO.setzeUni(benutzer, json.get(UNI_ID).getAsShort());
                     break;
                 case METHODE_GIB_UNIS:
@@ -202,10 +204,12 @@ public class Controller {
                     break;
                 case METHODE_MELDE_MODUL_AN:
                     
+                    
                     String fehler = "";
                     for(JsonElement je : json.get(MODUL_ARRAY).getAsJsonArray()) {
                         
                         try {
+                            
                             DAO.meldeAn(benutzer,je.getAsString());
                         } catch (Exception e) {
                             fehler += e.getMessage();
@@ -242,7 +246,7 @@ public class Controller {
             MessageCreator.exception(nachricht.getJson(),e);
         }
         benutzer.release();
-        
+        System.out.println(nachricht);
         return nachricht;
     }
 }
