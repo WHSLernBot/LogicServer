@@ -33,6 +33,8 @@ public class Nachricht {
      */
     public Nachricht(CBBenutzer benutzer) {
         
+        this.json = new JsonObject();
+        
         JsonObject jUser = new JsonObject();
        
         
