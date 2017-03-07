@@ -70,6 +70,8 @@ public class Controller {
     
     private static final String AUFGABE = "aufgabenID";
     
+    private static final String LIKE = "likeAufgabe";
+    
     private static final String MODUL = "modul";
     private static final String MODUL_ARRAY = "module";
     private static final String PERIODE = "pruefungsperiode";
@@ -192,7 +194,7 @@ public class Controller {
 //                    break;
                 case METHODE_GIB_KLAUSUR_INFOS:
                     Klausur klausur = DAO.gibKlausur(benutzer,
-                            json.get("modul").getAsString());
+                            json.get(MODUL).getAsString());
 
                     MessageCreator.erstelleKlausurInfoJson(nachricht.getJson(), klausur);
                     break;
@@ -202,7 +204,7 @@ public class Controller {
                     break;
                 case METHODE_BEWERTE_AUFGABE:
                     DAO.bewerteAufgabe(benutzer,json.get(AUFGABE).getAsLong(),
-                                json.get("bewerte").getAsBoolean());
+                                json.get(LIKE).getAsBoolean());
                     
                     break;
                 case METHODE_GIB_NICHT_ANGEMELDETE_MODULE:

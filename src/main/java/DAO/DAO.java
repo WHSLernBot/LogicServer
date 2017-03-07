@@ -1149,7 +1149,12 @@ public class DAO {
         }
         
         //Modul als inaktiv kennzeichnen
-        setzeInaktiv(b,modul);
+        if(note == 50) {
+            setzeInaktiv(b,modul);
+        } else {
+            setzeBeendet(b,modul);
+        }
+        
         
         //Sollten weitere Anmeldungen (weshalb auch immer) exestieren.
         meldePruefungAb(b,modul);
