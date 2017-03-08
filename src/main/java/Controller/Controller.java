@@ -147,6 +147,7 @@ public class Controller {
                     break;
                 case METHODE_SETZE_NAME:
                     DAO.setzeName(benutzer, json.get(NAME).getAsString());
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_GIB_NAME:
                     MessageCreator.erstelleNameJson(nachricht.getJson(),benutzer);
@@ -159,17 +160,20 @@ public class Controller {
                             ant.get(ANTWORT_KENNUNG).getAsInt(),
                             ant.get(ANTWORT_NUMMER).getAsShort(),
                             ant.get(ANTWORT_HINWEIS).getAsBoolean());
+                    
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_SPEICHERE_NOTE:
                     DAO.speichereNote(benutzer, json.get(MODUL).getAsString(), json.get(NOTE).getAsShort());
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_GIB_INFOS:
                     MessageCreator.erstelleBenutzerInfoNachricht(nachricht.getJson(),benutzer);
                     break;
-                case METHODE_SETZE_UNI:
-                  
-                    
+                case METHODE_SETZE_UNI:  
                     DAO.setzeUni(benutzer, json.get(UNI_ID).getAsShort());
+                    
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_GIB_UNIS:
                     Collection<Uni> cUnis = DAO.gibUnis();
@@ -182,9 +186,12 @@ public class Controller {
                     DAO.meldePruefungAn(benutzer, json.get(MODUL).getAsString(),
                             json.get(PERIODE).getAsShort(),
                             json.get(PERIODE_JAHR).getAsShort());
+                    
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_PRUEFUNG_ABMELDEN:
                     DAO.meldePruefungAb(benutzer, json.get(MODUL).getAsString());
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
 //                    --------- nicht mehr vorgesehen -----------
 //                case METHODE_NEUEAUFGABE:
@@ -206,6 +213,7 @@ public class Controller {
                     DAO.bewerteAufgabe(benutzer,json.get(AUFGABE).getAsLong(),
                                 json.get(LIKE).getAsBoolean());
                     
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_GIB_NICHT_ANGEMELDETE_MODULE:
                     MessageCreator.erstlleModulListe(nachricht.getJson(), DAO.gibNichtangemeldete(benutzer));
@@ -229,9 +237,13 @@ public class Controller {
                         throw new Exception(fehler);
                     }
                     
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
+                    
                     break;
                 case METHODE_SETZE_INAKTIV:
                     DAO.setzeInaktiv(benutzer,json.get(MODUL).getAsString());
+                    
+                    MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
                 case METHODE_GIB_ANGEMELDETE_MOULE:
                     MessageCreator.erstlleModulListe(nachricht.getJson(), DAO.gibAngemeldete(benutzer));
@@ -251,6 +263,7 @@ public class Controller {
                     throw new Exception("Methode konnte nicht ausgewertet werden.");
             }     
         } catch (Exception e) {
+            MessageCreator.erstelleResultFeld(nachricht.getJson(), 500);
             MessageCreator.exception(nachricht.getJson(),e);
         }
         benutzer.release();

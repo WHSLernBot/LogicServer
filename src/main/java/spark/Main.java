@@ -1,5 +1,6 @@
 package spark;
 
+import Controller.Controller;
 import Message.Nachricht;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -10,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.ChatBotManager;
 import static spark.Service.ignite;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -91,7 +91,7 @@ public class Main {
             try {
                 
                 System.out.println("Versuch wird gestartet");
-                Nachricht na = Controller.Controller.loese(body);
+                Nachricht na = Controller.loese(body);
                 return na;
                 
             } catch(Exception e) {
@@ -127,7 +127,7 @@ public class Main {
             try {
                 
                 System.out.println("Versuch wird gestartet");
-                Nachricht na = Controller.Controller.loese(body);
+                Nachricht na = Controller.loese(body);
                 return na;
                 
             } catch(Exception e) {

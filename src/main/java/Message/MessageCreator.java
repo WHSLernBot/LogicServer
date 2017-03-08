@@ -67,6 +67,8 @@ public class MessageCreator {
     private static final String NACHRICHT = "nachricht";
     private static final String FEHLER = "fehler";
     
+    private static final String RESULT = "result";
+    
     private static final int BEWERTUNG_ABFRAGE = 8;
     
     public static enum TEXTE {
@@ -140,6 +142,10 @@ public class MessageCreator {
             
         }
         
+    }
+    
+    public static void erstelleResultFeld(JsonObject nachricht, int nummer) {
+        nachricht.addProperty(RESULT, nummer);
     }
     
     public static void erstlleTextNachricht(JsonObject nachricht, String text) {
