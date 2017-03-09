@@ -34,7 +34,7 @@ public class Controller {
     private static final String METHODE_GIB_UNIS = "gibUnis";
     private static final String METHODE_PRUEFUNG_ANMELDEN = "setzePruefung";
     private static final String METHODE_PRUEFUNG_ABMELDEN = "pruefungAbmelden";
-    private static final String METHODE_NEUE_AUFGABE = "neueAufgabe";
+//    private static final String METHODE_NEUE_AUFGABE = "neueAufgabe";
     private static final String METHODE_GIB_KLAUSUR_INFOS = "gibKlausurInfos";
     private static final String METHODE_GIB_MODUL_INFOS = "gibModulInfos";
     private static final String METHODE_BEWERTE_AUFGABE = "bewerteAufgabe";
@@ -43,7 +43,7 @@ public class Controller {
     private static final String METHODE_MELDE_MODUL_AN = "meldeFuerModulAn";
     private static final String METHODE_SETZE_INAKTIV = "setzeInaktiv";
     private static final String METHODE_GIB_PRUEFUNGEN = "gibPruefungen";
-    private static final String METHODE_NEUE_VERVINDUNG = "neueVerbindung";
+    private static final String METHODE_NEUE_VERBINDUNG = "neueVerbindung";
     
     private static final String USER_OBJEKT = "user";
     private static final String USER_ID = "userID";
@@ -90,11 +90,13 @@ public class Controller {
      * @return Nachricht mit den geforderten Informationen.
      */
     public static Nachricht loese(JsonObject json) {
+        String methode = json.get(METHODE).getAsString();
+        
         ChatBotManager manager = ChatBotManager.getInstance();
         
+        
+        
         JsonObject userOb = json.getAsJsonObject(USER_OBJEKT);
-        
-        
 
         CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
                 userOb.get(USER_PLATTFORM).getAsShort());
@@ -111,7 +113,7 @@ public class Controller {
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
         dem entsprechend ausgefuehrt.*/
         try {
-            switch (json.get(METHODE).getAsString()) {
+            switch (methode) {
                 case METHODE_GIB_AUFGABE:
                     Aufgabe aufgabe;
                     if(!json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).isJsonNull()) {
@@ -156,7 +158,7 @@ public class Controller {
                     
                     JsonObject ant = json.getAsJsonObject(ANTWORT_OBJEKT);
                     DAO.speichereAntwort(benutzer,
-                            json.get(AUFGABE).getAsLong(),
+                            ant.get(AUFGABE).getAsLong(),
                             ant.get(ANTWORT_KENNUNG).getAsInt(),
                             ant.get(ANTWORT_NUMMER).getAsShort(),
                             ant.get(ANTWORT_HINWEIS).getAsBoolean());
@@ -252,7 +254,7 @@ public class Controller {
                     MessageCreator.erstlleKlausurListe(nachricht.getJson(), 
                             DAO.gibPruefungen(benutzer, json.get(MODUL).getAsString()));
                     break;
-                case METHODE_NEUE_VERVINDUNG:
+                case METHODE_NEUE_VERBINDUNG:
                     JsonObject ad = json.get(ADRESSE_OBJEKT).getAsJsonObject();
                     
                     String s = DAO.neueVerbindung(ad.get(ADRESSE_NUMMER).getAsShort(),ad.get(ADRESSE_URL).getAsString());
@@ -270,4 +272,5 @@ public class Controller {
     
         return nachricht;
     }
+    
 }

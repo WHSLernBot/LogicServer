@@ -124,7 +124,7 @@ public class MessageCreator {
         jAufgabe.add(AUFGABE_ANTWORT_ARRAY, jAnt);
         
         nachricht.add(AUFGABE_OBJEKT,jAufgabe);
-        nachricht.addProperty(NACHRICHT, gibText(TEXTE.AUFGABE));
+//        nachricht.addProperty(NACHRICHT, gibText(TEXTE.AUFGABE));
     }
     
     /**
@@ -175,7 +175,7 @@ public class MessageCreator {
         }
            
         nachricht.add(UNIS_ARRAY, jUnis);
-        nachricht.addProperty(NACHRICHT, gibText(TEXTE.UNI));
+//        nachricht.addProperty(NACHRICHT, gibText(TEXTE.UNI));
     }
     
     /**
@@ -213,16 +213,42 @@ public class MessageCreator {
      * @param benutzer
      */
     public static void erstelleBenutzerInfoNachricht(JsonObject nachricht, CBBenutzer benutzer) {
-//        JsonObject jInfo = new JsonObject();
-//        
-//        Collection<LernStatus> stadi = benutzer.getBenutzer().getLernStadi();
-//        int i = 0;
-//        for (LernStatus status : stadi) {
-//            jUni.addProperty("status" + i, status.getSumPunkte());
-//            i++;
-//        }
-//        nachricht.add("info", jInfo);     
-        nachricht.addProperty(NACHRICHT, gibText(TEXTE.INFO));
+        
+        String text = "Angemeldet fuer die Module:\n\n";
+        
+        LinkedList<String> module = new LinkedList<>();
+        
+        boolean komma = false;
+        
+        for(Object o : DAO.gibAngemeldete(benutzer)) {
+            
+            if(komma) {
+                text += ", ";
+            } else {
+                komma = true;
+            }
+            
+            String krz =((Modul) o).getKuerzel();
+            
+            module.add(krz);
+            
+            text += krz;
+            
+        }
+        
+        text += "\n angemeldet fuer die Klausuren:\n\n";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        for(String s : module) {
+            
+            Klausur k = DAO.gibKlausur(benutzer, s);
+            
+            if(k != null) {
+                text += s + " : " + sdf.format(k.getDatum()) + "\n";
+            }
+            
+        }
+
+        nachricht.addProperty(NACHRICHT, text);
     }
     
     /**
@@ -329,26 +355,26 @@ public class MessageCreator {
         
     }
     
-    /**
-     * Erzeugt einen Text, fuer die entsprechende Methode.
-     * @param methode Gibt an, fuer welche Methode der Text erzeugt werden soll.
-     * @return Gibt den entsprechenden Text zurueck.
-     */
-    private static String gibText(TEXTE methode) {
-        String text = "Ups... da ist ein fehler unterlaufen!";
-        switch(methode) {
-            case AUFGABE:
-                text = "Hier ist eine neue Aufage: ";
-                break;
-            case UNI:
-                text = "Das sind alle verfuegbaren Uni's";
-                break;
-            case INFO:
-                text = "Hier hast du die gewuenschten Info's!";
-                break;
-        }
-        return text;
-    }
+//    /**
+//     * Erzeugt einen Text, fuer die entsprechende Methode.
+//     * @param methode Gibt an, fuer welche Methode der Text erzeugt werden soll.
+//     * @return Gibt den entsprechenden Text zurueck.
+//     */
+//    private static String gibText(TEXTE methode) {
+//        String text = "Ups... da ist ein fehler unterlaufen!";
+//        switch(methode) {
+//            case AUFGABE:
+//                text = "Hier ist eine neue Aufage: ";
+//                break;
+//            case UNI:
+//                text = "Das sind alle verfuegbaren Uni's";
+//                break;
+//            case INFO:
+//                text = "Hier hast du die gewuenschten Info's!";
+//                break;
+//        }
+//        return text;
+//    }
     
     public static void exception(JsonObject nachricht, Exception e) {
         

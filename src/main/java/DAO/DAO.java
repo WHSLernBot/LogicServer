@@ -163,7 +163,7 @@ public class DAO {
             + "and VERAENDERT = true";
     
     private static final String GIB_AEHNLICHE_ERGEBNISSE = "select object(t) "
-            + "from Teilname t "
+            + "from Teilnahme t "
             + "where KLAUSUR_MODUL_KUERZEL = :KRZ and KLAUSUR_MODUL_UNI_ID = :UID "
             + "and PROZENT >= :MIN and PROZENT <= :MAX order by PROZENT ASC";
     
@@ -302,6 +302,8 @@ public class DAO {
         long aid = -1;
         long bId = be.getBenutzer().getId();
         int kennung;
+        
+        LernStatus lernStatus = null;
         
         //Herausfinden ob ein token ein Modul in der Datenbank ist.
         Modul m = null;
@@ -468,17 +470,17 @@ public class DAO {
             
             a = EMH.getEntityManager().find(Aufgabe.class, aid);
             
-            LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(bId,a.getThema().getId()));
+            lernStatus = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(bId,a.getThema().getId()));
             
-            kennung = ls.getKennungBe();
+            kennung = lernStatus.getKennungBe();
             
-            EMH.persist(new BeAufgabe(a,ls,kennung,false,gibDatum(),false,false));
-            ls.addedBeAufgabe();
+            EMH.persist(new BeAufgabe(a,lernStatus,kennung,false,gibDatum(),false,false));
+            lernStatus.addedBeAufgabe();
             
-            EMH.persist(new XGAufgabe(a,ls,ls.getKennungXG()));
-            ls.addedXGAufgabe();
+            EMH.persist(new XGAufgabe(a,lernStatus,lernStatus.getKennungXG()));
+            lernStatus.addedXGAufgabe();
             
-            EMH.merge(ls);
+            EMH.merge(lernStatus);
             
             EMH.commit();
             
@@ -486,6 +488,16 @@ public class DAO {
             EMH.rollback();
             throw new Exception("Aufgabe konnte nicht gefunden werden.");
         }
+        
+        //Pruefen auf naechste Aufgabe
+        if(lernStatus != null) {
+            ZuAufgabe zu = EMH.getEntityManager().find(ZuAufgabe.class, new ZuAufgabePK(new LernStatusPK(bId,a.getThema().getId()),lernStatus.getKennungZu()));
+        
+            if(zu == null) {
+                ChatBotManager.getInstance().gibBotPool().berechneLS(lernStatus);
+            }
+        }
+        
         
         a.setBekennung(kennung);   
         
@@ -646,9 +658,9 @@ public class DAO {
          
         Aufgabe aufgabe = EMH.getEntityManager().find(Aufgabe.class, id);
         
+        System.out.println(aufgabe);
+        
         LernStatus ls = DAO.gibLernstatus(b, aufgabe.getThema().getId());
-            
-        System.out.println(id);
         
         if(ls == null) {
             throw new Exception("Sie sind garnicht am Modul angemeldet.");
@@ -745,20 +757,21 @@ public class DAO {
             boolean richtig = aw.getRichtig();
             
             EMH.merge(aw);
-            System.out.println("aa");
             q = EMH.getEntityManager().createQuery(GIB_BEAUFGABE);
             q.setParameter("AID", aufgabe);
             q.setParameter("BID", b.getBenutzer().getId());
             q.setParameter("K", kennung);
             
             BeAufgabe be = (BeAufgabe) q.getResultList().get(0);
-            System.out.println("b");
             LernStatus ls = be.getLernStatus();
             
             ls.neueGeloest(gibDatum());
             
+            if(richtig) {
+                ls.richtigGeloest();
+            }
+            
             be.setzeAntwort(richtig, hinweis, gibDatum());
-            System.out.println("v");
             EMH.getEntityManager().merge(be);
             EMH.getEntityManager().merge(ls);
             
@@ -790,9 +803,9 @@ public class DAO {
             EMH.beginTransaction();
            
             Adresse ad = EMH.getEntityManager().find(Adresse.class, pt.getPlattform());
-            System.out.println("Adresse klappt!");
+            
             be = new Benutzer(pt.getId(),ad,witSession,name,gibDatum());
-            System.out.println("Neuer benutzer: " + be.toString());
+            
             EMH.persist(be); 
             
             EMH.commit();
@@ -841,20 +854,18 @@ public class DAO {
      * @throws java.lang.Exception
      */
     public static void setzeUni(CBBenutzer benutzer, short uni) throws Exception {
-       
+        
         try {
             
             EMH.beginTransaction();
             Uni u = EMH.getEntityManager().find(Uni.class, uni);
-            
+    
             synchronized(benutzer) {
-                
                 Benutzer b = benutzer.getBenutzer();
-                
+               
                 b.setUni(u);
-                
+            
                 EMH.getEntityManager().merge(benutzer.getBenutzer());
-                
             }
             EMH.commit();
             
@@ -1071,6 +1082,7 @@ public class DAO {
         synchronized(b) {
             mPK = new ModulPK(b.getBenutzer().getUni().getId(),modul);   
             qPeriode.setParameter("UID", b.getBenutzer().getUni().getId());
+//            qPeriode.setParameter("HEUTE", new Date(gibDatum().getTime() - 48 * 60 * 60 * 1000),TemporalType.DATE);
             qPeriode.setParameter("HEUTE", gibDatum(),TemporalType.DATE);
             qTeilnahme.setParameter("BID", b.getBenutzer().getId());
             qTeilnahme.setParameter("KRZ", modul);
@@ -1149,9 +1161,8 @@ public class DAO {
         }
         
         //Modul als inaktiv kennzeichnen
+        setzeInaktiv(b,modul);
         if(note == 50) {
-            setzeInaktiv(b,modul);
-        } else {
             setzeBeendet(b,modul);
         }
         
@@ -1232,12 +1243,9 @@ public class DAO {
      */
     public static void meldeAn(CBBenutzer b, String modul) throws Exception {
         
-        System.out.println(b.getBenutzer().getUni().getId());
-        
         modul = modul.toUpperCase();
         
-        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(), modul));
-        System.out.println("Modul variable erstellt!");
+        Modul m = EMH.getEntityManager().find(Modul.class, new ModulPK(b.getBenutzer().getUni().getId(),modul));
         
         if(m == null) {
             throw new Exception(modul + " konnte nicht gefunden werden.");
@@ -1417,6 +1425,8 @@ public class DAO {
                     mod.addProperty(MODULE_KUERZEL, modul);  
                     mod.addProperty(MODULE_NAME, name);
                     mod.add(MODULE_THEMEN_ARRAY, themen);
+                    
+                    module.add(mod);
                     
                     themen = new JsonArray();
                 }
@@ -2198,6 +2208,8 @@ public class DAO {
         String name = "WHS Informatik";
         
         if(DAO.getUniID(name) != -1) {
+            
+            System.out.println("uni gefunden");
             return;
         }
         
