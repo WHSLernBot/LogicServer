@@ -136,7 +136,7 @@ public class Aufgabe implements Serializable {
     public Collection<Antwort> getAntworten(){
         Collection<Antwort> result;
         
-        String sql = "select object(x) from XGAufgabe x "
+        String sql = "select object(a) from Antwort a "
                 + "where AUFGABE_AUFGABENID = :AID";
         
         Query q = EMH.getEntityManager().createQuery(sql);
