@@ -116,7 +116,7 @@ public class Controller {
             switch (methode) {
                 case METHODE_GIB_AUFGABE:
                     Aufgabe aufgabe;
-                    if(!json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).isJsonNull()) {
+                    if(json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong() != -1) {
                         LernStatus ls = DAO.gibLernstatus(benutzer, 
                             json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong());
 
