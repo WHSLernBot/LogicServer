@@ -74,6 +74,10 @@ public class Main {
             //Json Body
             JsonObject body = new JsonObject();
             
+            short i = 1;
+            
+            DAO.DAO.neueVerbindung(i, "immense-journey-49192");
+            
             //User Object
             JsonObject a = new JsonObject();
             a.addProperty("userID", "1234");
