@@ -47,7 +47,7 @@ public class Main {
         
         http.get("/", (req, res) -> "Ja es geht zumindest.");
         
-        http.post("/messageBot", (req, res) -> {
+        http.get("/messageBot", (req, res) -> {
             
             JsonParser parser = new JsonParser();
             
@@ -62,7 +62,7 @@ public class Main {
             
             
             
-            return "test";
+            return objBody.toString();
       
         });
         
@@ -71,12 +71,14 @@ public class Main {
          * Name ist Programm
          */
         http.get("/setzeUni", (req, res) -> {
+            short i = 1;
+            DAO.DAO.neueVerbindung(i, "immense-journey-49192");
+            
+            
             //Json Body
             JsonObject body = new JsonObject();
             
-            short i = 1;
             
-            DAO.DAO.neueVerbindung(i, "immense-journey-49192");
             
             //User Object
             JsonObject a = new JsonObject();
@@ -96,7 +98,7 @@ public class Main {
                 
                 System.out.println("Versuch wird gestartet");
                 Nachricht na = Controller.loese(body);
-                return na;
+                return na.getJson();
                 
             } catch(Exception e) {
                 
