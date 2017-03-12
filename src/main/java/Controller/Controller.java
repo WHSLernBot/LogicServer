@@ -90,6 +90,7 @@ public class Controller {
      * @return Nachricht mit den geforderten Informationen.
      */
     public static Nachricht loese(JsonObject json) {
+        
         String methode = json.get(METHODE).getAsString();
         
         ChatBotManager manager = ChatBotManager.getInstance();
@@ -97,7 +98,7 @@ public class Controller {
         
         
         JsonObject userOb = json.getAsJsonObject(USER_OBJEKT);
-
+        
         CBPlattform pt = new CBPlattform(userOb.get(USER_ID).getAsString(),
                 userOb.get(USER_PLATTFORM).getAsShort());
         
@@ -109,12 +110,15 @@ public class Controller {
         
         Nachricht nachricht = new Nachricht(benutzer);
         
+        
+        System.out.println("Alles vor der Switch erstellt!");
                 
         /*Es wird kontrolliert welche Methode im Json uebergeben wurde und
         dem entsprechend ausgefuehrt.*/
         try {
             switch (methode) {
                 case METHODE_GIB_AUFGABE:
+                    
                     Aufgabe aufgabe;
                     if(json.getAsJsonObject(THEMA_OBJEKT).get(THEMA_ID).getAsLong() != -1) {
                         LernStatus ls = DAO.gibLernstatus(benutzer, 
@@ -148,6 +152,8 @@ public class Controller {
 
                     break;
                 case METHODE_SETZE_NAME:
+                    
+                    System.out.println("Setze Name Methode gefunden!");
                     DAO.setzeName(benutzer, json.get(NAME).getAsString());
                     MessageCreator.erstelleResultFeld(nachricht.getJson(), 200);
                     break;
