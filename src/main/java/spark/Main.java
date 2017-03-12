@@ -50,21 +50,22 @@ public class Main {
         http.get("/messageBot", (req, res) -> {
             short i = 1;
             DAO.DAO.neueVerbindung(i, "https://safe-river-64090.herokuapp.com/");
-            
+            System.out.println("Route erstellt!");
             JsonParser parser = new JsonParser();
-            
+            System.out.println("PARSER erstellt");
             String s = req.body();
             
             JsonObject obj= new JsonObject();
-            
-            JsonObject objBody;
-            
+           
             obj.add("body", parser.parse(s));
-            objBody = obj.get("body").getAsJsonObject();
+            System.out.println("JSONBODY erstellt");
+            System.out.println(obj.toString());
             
             
             
-            return objBody.toString();
+            
+            
+            return obj.toString();
       
         });
         
