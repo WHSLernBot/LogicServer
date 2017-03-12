@@ -48,6 +48,8 @@ public class Main {
         http.get("/", (req, res) -> "Ja es geht zumindest.");
         
         http.get("/messageBot", (req, res) -> {
+            short i = 1;
+            DAO.DAO.neueVerbindung(i, "https://safe-river-64090.herokuapp.com/");
             
             JsonParser parser = new JsonParser();
             
