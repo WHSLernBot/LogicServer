@@ -4,6 +4,7 @@ import Controller.Controller;
 import Message.Nachricht;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
@@ -45,38 +46,34 @@ public class Main {
                       .threadPool(POOL_SIZE)
                       .staticFileLocation("/public");
         
-        http.get("/", (req, res) -> "Ja es geht zumindest.");
+        http.get("/", (req, res) -> "Diese Seite gehört ");
         
         http.get("/messageBot", (req, res) -> {
+            
+            Gson gson = new Gson();
             short i = 1;
-            DAO.DAO.neueVerbindung(i, "https://safe-river-64090.herokuapp.com/");
-            System.out.println("Route erstellt!");
             JsonParser parser = new JsonParser();
-            System.out.println("PARSER erstellt");
-            String s = req.body();
             
-            JsonObject obj= new JsonObject();
+            JsonElement je = gson.fromJson(req.body(), JsonElement.class);
+            JsonObject jb = je.getAsJsonObject();
             
-            JsonObject objBody;
-            
-            obj.add("body", (JsonObject) parser.parse(s));
-            System.out.println("JSONBODY erstellt");
-            System.out.println(obj.toString());
-            objBody = obj.get("body").getAsJsonObject();
-            
-            System.out.println("Body wieder extrahiert!");
-            
-            
-            
-            return objBody.toString();
-      
+            try {
+                
+                Nachricht na = Controller.loese(jb);
+                return na.getJson();
+                
+            } catch(Exception e) {
+                
+                return "Fehler";
+            }
         });
-        
         
         /**
          * Name ist Programm
          */
         http.get("/setzeUni", (req, res) -> {
+            
+            
             short i = 1;
             DAO.DAO.neueVerbindung(i, "immense-journey-49192");
             
