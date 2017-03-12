@@ -22,6 +22,6 @@ public class LoginController {
             return false;
         }
         short uni = DAO.DAO.getUniID(username);
-        return DAO.DAO.pruefePassword(uni, password) && DAO.DAO.getUsername(uni).equals(username);
+        return DAO.DAO.pruefePassword(uni, password);
     }
 }
