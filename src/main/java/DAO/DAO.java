@@ -1467,10 +1467,18 @@ public class DAO {
             
             loescheZuAufgaben(ls);  
             
+            LernStatusPK PK = new LernStatusPK(ls.getBenutzer().getId(),ls.getThema().getId());
+            
             for(aufgabenItem ai : aufgaben) {
             
                 Aufgabe a = ai.getAufgabe();
 
+                ZuAufgabe za = EMH.getEntityManager().find(ZuAufgabe.class, new ZuAufgabePK(PK, kennung));
+                
+                if(za != null) {
+                    EMH.remove(za);
+                }
+                
                 EMH.persist(new ZuAufgabe(ls,a,kennung));
                 
                 kennung++;
@@ -1502,11 +1510,15 @@ public class DAO {
         
         Collection<ZuAufgabe> zu = q.getResultList();
         
-        for(ZuAufgabe z : zu) {
-//            System.out.println(z.getKennung());
-            EMH.remove(z);
-        }
-           
+            for(ZuAufgabe z : zu) {
+                try {
+                EMH.remove(z);
+                } catch (Exception e) {
+                    System.out.println("Fehler beim löschen");
+                }
+                
+            }
+        
     }
     
     /**
@@ -2120,6 +2132,11 @@ public class DAO {
             
             Uni u = EMH.getEntityManager().find(Uni.class, id);
             
+            p = EMH.getEntityManager().find(Pruefungsperiode.class, new PruefungsperiodePK(jahr,id,phase));
+            
+            if(p != null) {
+                return p;
+            }
             p = new Pruefungsperiode(u,jahr,phase,anmeldebeginn, anfang,ende);
             
             EMH.persist(p);
