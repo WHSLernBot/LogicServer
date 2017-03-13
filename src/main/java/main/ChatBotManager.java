@@ -187,7 +187,7 @@ public class ChatBotManager {
                             
                             b.getBenutzer().setLetzteAntwort(DAO.gibDatum());
                             
-                            EMH.persist(b.getBenutzer());
+                            EMH.merge(b.getBenutzer());
                             
                             EMH.commit();
                             
