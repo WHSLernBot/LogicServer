@@ -41,7 +41,7 @@ public class EMH {
         properties.put(JDBC_DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(JDBC_USERNAME, userName);
         properties.put(JDBC_PASSWORD, password);
-        properties.put(JDBC_POOL, POOL_SIZE);
+//        properties.put(JDBC_POOL, POOL_SIZE);
         properties.put(JDBC_HBM, HBM_TYPE);
         properties.put(JDBC_SESSION_CONTEXT, SESSION_CONTEXT_TYPE);
         EMF = Persistence.createEntityManagerFactory("LernServletPU", properties);
