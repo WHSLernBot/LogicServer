@@ -24,10 +24,6 @@
     <properties>
       <property name="hibernate.archive.autodetection" value="class"/>
       <property name="hibernate.show_sql" value="false"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/chatbot"/>
-      <property name="javax.persistence.jdbc.user" value="chat"/>
-      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-      <property name="javax.persistence.jdbc.password" value="123456"/>
     </properties>
   </persistence-unit>
 </persistence>

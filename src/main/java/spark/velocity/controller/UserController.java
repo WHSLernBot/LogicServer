@@ -54,7 +54,7 @@ public class UserController {
             ArrayList<Pruefungsperiode> per = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
 
             for (Pruefungsperiode peri : per) {
-                if (!periode.contains(peri.getJahr())) {
+                if (!periode.contains(peri.getAnfang())) {
                     periode.add(peri.getAnfang());
                 }
             }
@@ -101,27 +101,29 @@ public class UserController {
             }
 
             //Fuege eine Pruefungsperiode hinzu.
-//            if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
-//                    && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
-//                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-//                Calendar cal = Calendar.getInstance();
-//                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
-//                Date anfang = new Date(cal.getTimeInMillis());
-//                cal.setTime(sdf.parse(getQueryEndePP(request)));
-//                Date ende = new Date(cal.getTimeInMillis());
-//                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
-//                Date anmeldebeginn = new Date(cal.getTimeInMillis());
-//                periode.add(DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
-//                        anfang, ende, anmeldebeginn));
-//            }
+            if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
+                    && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
+                Date anfang = new Date(cal.getTimeInMillis());
+                cal.setTime(sdf.parse(getQueryEndePP(request)));
+                Date ende = new Date(cal.getTimeInMillis());
+                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
+                Date anmeldebeginn = new Date(cal.getTimeInMillis());
+                try{
+                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
+                        anfang, ende, anmeldebeginn);
+                } catch(Exception e){
+                    System.out.println("fehler");
+                }
+            }
 
 //          Fuege eine Klausur hinzu.
             ArrayList<Pruefungsperiode> pruf = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
             Pruefungsperiode peri = null;
-            System.out.println(pruf);
             for (Pruefungsperiode p : pruf) {
                 if (p.getAnfang().toString().equals(getQueryPeriode(request))) {
-                    System.out.println(p);
                     peri = p;
                 }
             }
@@ -145,6 +147,7 @@ public class UserController {
 
                 DAO.DAO.addKlausur(peri, module2, datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
                         getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
+                
             }
 
             if (!getQueryModulBerechnen(request).equals(" ")) {
