@@ -29,11 +29,7 @@ public class Main {
    
 
     public static void main(String[] args) {
-//        try {
-//            DAO.DAO.erstelleEintraege();
-//        } catch (Exception ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+
         igniteFirstSpark();  
        
     }
@@ -141,7 +137,7 @@ public class Main {
                 
                 System.out.println("Versuch wird gestartet");
                 Nachricht na = Controller.loese(body);
-                return na;
+                return na.getJson();
                 
             } catch(Exception e) {
                 
