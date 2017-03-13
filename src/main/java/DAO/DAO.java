@@ -6,8 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1255,30 +1253,31 @@ public class DAO {
         }
         try {
             EMH.beginTransaction();
-            
+            Benutzer be;
 
             synchronized(b) {
-                Benutzer be = b.getBenutzer();
-                Date datum = gibDatum();
-                
-                Collection<Thema> themen = DAO.getThemen(m);
-                
-                for(Thema t : themen) {
-                    LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
-                    if(ls == null) {
-                        ls = new LernStatus(be,t,datum);
-                        
-                        EMH.persist(ls);  
-                    } else {
-                        if(ls.isBeendet()) {
-                            throw new Exception(modul + " haben Sie schon erfolgreich absolviert.");
-                        }
-                        ls.setAktiv(true);
-                        EMH.merge(ls);
-                    }
-
-                }
+                be = b.getBenutzer();
             }
+            Date datum = gibDatum();
+
+            Collection<Thema> themen = DAO.getThemen(m);
+
+            for(Thema t : themen) {
+                LernStatus ls = EMH.getEntityManager().find(LernStatus.class, new LernStatusPK(be.getId(),t.getId()));
+                if(ls == null) {
+                    ls = new LernStatus(be,t,datum);
+
+                    EMH.persist(ls);  
+                } else {
+                    if(ls.isBeendet()) {
+                        throw new Exception(modul + " haben Sie schon erfolgreich absolviert.");
+                    }
+                    ls.setAktiv(true);
+                    EMH.merge(ls);
+                }
+
+            }
+
             EMH.commit();
         } catch (Exception e) {
             EMH.rollback();
