@@ -1257,6 +1257,10 @@ public class DAO {
 
             synchronized(b) {
                 be = b.getBenutzer();
+                
+                if(be == null) {
+                    throw new Exception("Benutzer nicht gefunden");
+                }
             }
             Date datum = gibDatum();
 
