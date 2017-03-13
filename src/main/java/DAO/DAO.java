@@ -6,7 +6,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2273,6 +2276,60 @@ public class DAO {
             EMH.persist(t2);
             
             EMH.commit();
+            
+            
+            short phase1 = 1;
+            short phase2 = 2;
+            short phase3 = 3;
+            short phase4 = 4;
+            short jahr = 2017;
+            short note = 20;
+            
+            Calendar c = Calendar.getInstance();
+            
+            c.set(2016, 11, 26, 0, 0, 0);
+            Date aAnfang1 = new Date(c.getTime().getTime());      
+            
+            c.set(2017, 0, 23, 0, 0, 0);
+            Date Anfang1 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 0, 27, 0, 0, 0);
+            Date Ende1 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 2, 6, 0, 0, 0);
+            Date aAnfang2 = new Date(c.getTime().getTime());      
+            
+            c.set(2017, 3, 4, 0, 0, 0);
+            Date Anfang2 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 3, 7, 0, 0, 0);
+            Date Ende2 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 5, 12, 0, 0, 0);
+            Date aAnfang3 = new Date(c.getTime().getTime());      
+            
+            c.set(2017, 6, 17, 0, 0, 0);
+            Date Anfang3 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 6, 21, 0, 0, 0);
+            Date Ende3 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 8, 4, 0, 0, 0);
+            Date aAnfang4 = new Date(c.getTime().getTime());      
+            
+            c.set(2017, 9, 2, 0, 0, 0);
+            Date Anfang4 = new Date(c.getTime().getTime());
+            
+            c.set(2017, 9, 13, 0, 0, 0);
+            Date Ende4 = new Date(c.getTime().getTime());
+            
+            
+            DAO.addPruefungsphase(u.getId(), jahr, phase1, Anfang1 , Ende1, aAnfang1);
+            DAO.addPruefungsphase(u.getId(), jahr, phase2, Anfang2 , Ende2, aAnfang2);
+            DAO.addPruefungsphase(u.getId(), jahr, phase3, Anfang3 , Ende3, aAnfang3);
+            DAO.addPruefungsphase(u.getId(), jahr, phase4, Anfang4 , Ende4, aAnfang4);
+
+            
         } catch (Exception e) {
             EMH.rollback();
             throw new Exception("Eintraege konnten nich erstellt werden.");
