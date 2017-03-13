@@ -1,6 +1,6 @@
 #parse("/velocity/layout.vm")
 #@mainLayout()
-#if($adminLogin)
+
 <div>
     <img id="logoStart" src="logo.png"/><br><br><br>
     <form id="addUser" method="post">
@@ -19,6 +19,6 @@
         <p id="text">User wurde angelegt!<p>
        #end
 </div>
-#end
+
 <p id="text">Sie müssen sich als Admin anmelden!</p>
 #end

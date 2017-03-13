@@ -29,7 +29,11 @@ public class Main {
    
 
     public static void main(String[] args) {
-        
+        try {
+            DAO.DAO.erstelleEintraege();
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         igniteFirstSpark();  
        
     }

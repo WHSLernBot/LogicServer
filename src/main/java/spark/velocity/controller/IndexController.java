@@ -35,10 +35,9 @@ public class IndexController {
             System.out.println("null");
         }
         Map<String, Object> model = new HashMap<>();
+        System.out.println("anmelden" + !LoginController.authenticate(getQueryUsername(request), getQueryPassword(request)));
         if(!LoginController.authenticate(getQueryUsername(request), getQueryPassword(request))){
-            short uni = DAO.DAO.getUniID(getQueryUsername(request));
             model.put("authenticationFailed", true);
-            model.put("test", "UniID: " + uni + "DAO Funktion" + DAO.DAO.pruefePassword(uni, getQueryPassword(request)));
             return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_INDEX));
         }
         

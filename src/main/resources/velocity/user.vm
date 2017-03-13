@@ -3,7 +3,7 @@
 
 <img id="logoStart" src="logo.png"/><br><br><br>
 <div align="center">
-#if($userLogin)
+
 <form method="post">
             <div id="rahmen">
 		<label id="text">Modul hinzufügen</label><br><br>
@@ -117,7 +117,5 @@
 		<button id="mSubmit" type="submit">Bestätigen</button> 
 		</div>         
 	</form>
-#end
-<p id="text">Sie müssen sich als User anmelden!</p>
 </div>
 #end

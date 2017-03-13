@@ -35,6 +35,8 @@ import spark.velocity.util.VelocityTemplateEngine;
 public class UserController {
 
     private static ArrayList ar = new ArrayList();
+    private static ArrayList th = new ArrayList();
+    private static ArrayList periode = new ArrayList();
     private static HashMap hm = new HashMap();
     private static short uniID;
     private static String name = null;
@@ -45,40 +47,48 @@ public class UserController {
     public static Route handleModulPost = new Route() {
         @Override
         public Object handle(Request request, Response response) throws Exception {
-            System.out.println("HandleModul");
-            if (request == null) {
-                System.out.println("null");
-            }
-            ArrayList<Modul> module = (ArrayList) DAO.DAO.getModule(uniID);
 
-            for (Modul mo : module) {
-                ar.add(mo.getKuerzel());
-            }
             Map<String, Object> model = new HashMap<>();
             model.put("module", ar);
 
+            ArrayList<Pruefungsperiode> per = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
+
+            for (Pruefungsperiode peri : per) {
+                if (!periode.contains(peri.getJahr())) {
+                    periode.add(peri.getAnfang());
+                }
+            }
+            model.put("pp", periode);
             //Fuege Modul hinzu.
             if (!getQueryModul(request).isEmpty() && !getQueryKuerzel(request).isEmpty() && !ar.contains(getQueryModul(request))) {
-                ar.add(getQueryKuerzel(request));
-                DAO.DAO.addModul(uniID, getQueryModul(request), getQueryKuerzel(request));
+                if (!ar.contains(getQueryKuerzel(request))) {
+                    ar.add(getQueryKuerzel(request));
+                    DAO.DAO.addModul(uniID, getQueryModul(request), getQueryKuerzel(request));
+                }
             }
             //Fuege einem Modul ein Thema mit Anteil hinzu.
             if (!getQueryThemaModul(request).isEmpty() && !getQueryThema(request).isEmpty() && !getQueryThemaAnteil(request).isEmpty()) {
                 //Modul in DB schreiben.
                 short anteil = Short.parseShort(getQueryThemaAnteil(request));
-                DAO.DAO.addThema(getQueryKuerzel(request), uniID, getQueryThema(request), anteil);
-                model.put("themen", DAO.DAO.getThemen(uniID, getQueryThemaModul(request)));
+                System.out.println(getQueryKuerzel(request) + ": " + uniID + ": " + getQueryThema(request) + ": " + anteil);
+                DAO.DAO.addThema(getQueryThemaModul(request), uniID, getQueryThema(request), anteil);
+                ArrayList<Thema> the = (ArrayList) DAO.DAO.getThemen(uniID, getQueryThemaModul(request));
+                for (Thema them : the) {
+                    if (!th.contains(them.getName())) {
+                        th.add(them.getName());
+                    }
+                }
+                model.put("themen", th);
             }
             //Fuege eine Frage mit Antworten hinzu.
-            ArrayList<Thema> the = (ArrayList) DAO.DAO.getThemen(uniID, getQueryModulFrage(request));
+            ArrayList<Thema> themen = (ArrayList) DAO.DAO.getThemen(uniID, getQueryModulFrage(request));
             Thema thema = null;
-            for (Thema th : the) {
-                if (th.equals(getQueryThemaFrage(request))) {
+            for (Thema th : themen) {
+                if (th.getName().equals(getQueryThemaFrage(request))) {
                     thema = th;
                     break;
                 }
             }
-
             if (thema != null && !getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
                     && !getQueryAntwort2(request).equals("") && !getQueryAntwort3(request).equals("")
                     && !getQueryAntwort4(request).equals("") && !getQueryPunkte(request).equals("")) {
@@ -91,24 +101,37 @@ public class UserController {
             }
 
             //Fuege eine Pruefungsperiode hinzu.
-            if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
-                    && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
-                Date anfang = new Date(cal.getTimeInMillis());
-                cal.setTime(sdf.parse(getQueryEndePP(request)));
-                Date ende = new Date(cal.getTimeInMillis());
-                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
-                Date anmeldebeginn = new Date(cal.getTimeInMillis());
+//            if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
+//                    && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
+//                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
+//                Date anfang = new Date(cal.getTimeInMillis());
+//                cal.setTime(sdf.parse(getQueryEndePP(request)));
+//                Date ende = new Date(cal.getTimeInMillis());
+//                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
+//                Date anmeldebeginn = new Date(cal.getTimeInMillis());
+//                periode.add(DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
+//                        anfang, ende, anmeldebeginn));
+//            }
 
-                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
-                         anfang, ende, anmeldebeginn);
-            }
-
-            HashMap<String, Pruefungsperiode> per = (HashMap) DAO.DAO.gibUni(uniID).getPruefungsperiode();
-            model.put("pp", per);
 //          Fuege eine Klausur hinzu.
+            ArrayList<Pruefungsperiode> pruf = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
+            Pruefungsperiode peri = null;
+            System.out.println(pruf);
+            for (Pruefungsperiode p : pruf) {
+                if (p.getAnfang().toString().equals(getQueryPeriode(request))) {
+                    System.out.println(p);
+                    peri = p;
+                }
+            }
+            ArrayList<Modul> module1 = (ArrayList) DAO.DAO.getModule(uniID);
+            Modul module2 = null;
+            for (Modul m : module1) {
+                if (m.getKuerzel().equals(getQueryModulKlausur(request))) {
+                    module2 = m;
+                }
+            }
             if (!getQueryUhrzeit(request).equals("") && !getQueryDatum(request).equals("")
                     && !getQueryOrt(request).equals("") && !getQueryHilfsmittel(request).equals("")
                     && !getQueryTyp(request).equals("") && !getQueryDauer(request).equals("")) {
@@ -120,12 +143,8 @@ public class UserController {
                 LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
                 Time uhrzeit = new Time(lt.getHour(), lt.getMinute(), lt.getSecond());
 
-                HashMap<String, Modul> hm = (HashMap) DAO.DAO.getModule(uniID);
-
-                DAO.DAO.addKlausur(per.get(getQueryPeriode(request)), hm.get(getQueryModulKlausur(request)),
-                         datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
-                         getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
-
+                DAO.DAO.addKlausur(peri, module2, datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
+                        getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
             }
 
             if (!getQueryModulBerechnen(request).equals(" ")) {
@@ -155,21 +174,33 @@ public class UserController {
         }
         if (name == null) {
             name = getQueryUsername(request);
+            System.out.println(name);
         }
-        if (name != null) {
-            uniID = DAO.DAO.getUniID(getQueryUsername(request));
-            if (!DAO.DAO.getModule(uniID).isEmpty()) {
-                ArrayList<Modul> module = (ArrayList) DAO.DAO.getModule(uniID);
+        uniID = DAO.DAO.getUniID(name);
+        ArrayList<Modul> mod = (ArrayList) DAO.DAO.getModule(uniID);
 
-                for (Modul mo : module) {
-                    ar.add(mo.getKuerzel());
-                }
+        for (Modul mo : mod) {
+            if (!ar.contains(mo.getKuerzel())) {
+                ar.add(mo.getKuerzel());
             }
         }
+        ArrayList<Thema> the = (ArrayList) DAO.DAO.getThemen(uniID, ar.get(0).toString());
+        for (Thema them : the) {
+            if (!th.contains(them.getName())) {
+                th.add(them.getName());
+            }
+        }
+        ArrayList<Pruefungsperiode> per = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
 
+        for (Pruefungsperiode peri : per) {
+            if (!periode.contains(peri.getJahr())) {
+                periode.add(peri.getAnfang());
+            }
+        }
         Map<String, Object> model = new HashMap<>();
         model.put("module", ar);
+        model.put("themen", th);
+        model.put("pp", periode);
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
     };
-
 }
