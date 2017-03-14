@@ -34,12 +34,22 @@ import spark.velocity.util.VelocityTemplateEngine;
  */
 public class UserController {
 
-    private static ArrayList ar = new ArrayList();
-    private static ArrayList th = new ArrayList();
-    private static ArrayList periode = new ArrayList();
-    private static HashMap hm = new HashMap();
+    private static ArrayList ar;
+    private static ArrayList th;
+    private static ArrayList periode;
     private static short uniID;
-    private static String name = null;
+    private static String name;
+
+    private static String FEHLER_DATUM = "Falsches Format, bitte geben Sie das Datum im Format:'dd.mm.yy' an!";
+    private static String FEHLER_PUNKTE = "Bitte geben Sie eine ganzzahlige Punktzahl ein!";
+
+    UserController() {
+        ar = new ArrayList();
+        th = new ArrayList();
+        periode = new ArrayList();
+        name = null;
+    }
+
     /**
      * Diese Variable beinhaltet eine Route, die neue Datensätze in die
      * Datenbank einträgt.
@@ -80,42 +90,45 @@ public class UserController {
                 }
                 model.put("themen", th);
             }
-            //Fuege eine Frage mit Antworten hinzu.
-            ArrayList<Thema> themen = (ArrayList) DAO.DAO.getThemen(uniID, getQueryModulFrage(request));
-            Thema thema = null;
-            for (Thema th : themen) {
-                if (th.getName().equals(getQueryThemaFrage(request))) {
-                    thema = th;
-                    break;
+            try {
+                //Fuege eine Frage mit Antworten hinzu.
+                ArrayList<Thema> themen = (ArrayList) DAO.DAO.getThemen(uniID, getQueryModulFrage(request));
+                Thema thema = null;
+                for (Thema th : themen) {
+                    if (th.getName().equals(getQueryThemaFrage(request))) {
+                        thema = th;
+                        break;
+                    }
                 }
-            }
-            if (thema != null && !getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
-                    && !getQueryAntwort2(request).equals("") && !getQueryAntwort3(request).equals("")
-                    && !getQueryAntwort4(request).equals("") && !getQueryPunkte(request).equals("")) {
-                Aufgabe auf = DAO.DAO.addAufgabe(thema, getQueryFrage(request), getQueryHinweis(request), getQueryVerweis(request), Integer.parseInt(getQueryPunkte(request)));
-                DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort1(request), !(getQueryAntwort1Richtig(request) == null));
-                DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort2(request), !(getQueryAntwort2Richtig(request) == null));
-                DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort3(request), !(getQueryAntwort3Richtig(request) == null));
-                DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort4(request), !(getQueryAntwort4Richtig(request) == null));
+                if (thema != null && !getQueryFrage(request).equals("") && !getQueryAntwort1(request).equals("")
+                        && !getQueryAntwort2(request).equals("") && !getQueryAntwort3(request).equals("")
+                        && !getQueryAntwort4(request).equals("") && !getQueryPunkte(request).equals("")) {
+                    Aufgabe auf = DAO.DAO.addAufgabe(thema, getQueryFrage(request), getQueryHinweis(request), getQueryVerweis(request), Integer.parseInt(getQueryPunkte(request)));
+                    DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort1(request), !(getQueryAntwort1Richtig(request) == null));
+                    DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort2(request), !(getQueryAntwort2Richtig(request) == null));
+                    DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort3(request), !(getQueryAntwort3Richtig(request) == null));
+                    DAO.DAO.addAntwort(auf.getAufgabenID(), getQueryAntwort4(request), !(getQueryAntwort4Richtig(request) == null));
 
+                }
+            } catch (Exception e) {
+                model.put("punkte", FEHLER_PUNKTE);
             }
-
             //Fuege eine Pruefungsperiode hinzu.
             if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
                     && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdf.parse(getQueryAnfangPP(request)));
-                Date anfang = new Date(cal.getTimeInMillis());
-                cal.setTime(sdf.parse(getQueryEndePP(request)));
-                Date ende = new Date(cal.getTimeInMillis());
-                cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
-                Date anmeldebeginn = new Date(cal.getTimeInMillis());
-                try{
-                DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
-                        anfang, ende, anmeldebeginn);
-                } catch(Exception e){
-                    System.out.println("fehler");
+                try {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(sdf.parse(getQueryAnfangPP(request)));
+                    Date anfang = new Date(cal.getTimeInMillis());
+                    cal.setTime(sdf.parse(getQueryEndePP(request)));
+                    Date ende = new Date(cal.getTimeInMillis());
+                    cal.setTime(sdf.parse(getQueryAnmeldeBeginn(request)));
+                    Date anmeldebeginn = new Date(cal.getTimeInMillis());
+                    DAO.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
+                            anfang, ende, anmeldebeginn);
+                } catch (Exception e) {
+                    model.put("datum", FEHLER_DATUM);
                 }
             }
 
@@ -138,16 +151,18 @@ public class UserController {
                     && !getQueryOrt(request).equals("") && !getQueryHilfsmittel(request).equals("")
                     && !getQueryTyp(request).equals("") && !getQueryDauer(request).equals("")) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                try {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(sdf.parse(getQueryDatum(request)));
+                    Date datum = new Date(cal.getTimeInMillis());
+                    LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
+                    Time uhrzeit = new Time(lt.getHour(), lt.getMinute(), lt.getSecond());
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(sdf.parse(getQueryDatum(request)));
-                Date datum = new Date(cal.getTimeInMillis());
-                LocalTime lt = LocalTime.parse(getQueryUhrzeit(request));
-                Time uhrzeit = new Time(lt.getHour(), lt.getMinute(), lt.getSecond());
-
-                DAO.DAO.addKlausur(peri, module2, datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
-                        getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
-                
+                    DAO.DAO.addKlausur(peri, module2, datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
+                            getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
+                } catch (Exception e) {
+                    model.put("datum", FEHLER_DATUM);
+                }
             }
 
             if (!getQueryModulBerechnen(request).equals(" ")) {

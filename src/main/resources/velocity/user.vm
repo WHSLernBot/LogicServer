@@ -29,6 +29,7 @@
 		</div>
             </div>
             <div id="rahmen">
+                <label id="text">Frage hinzufügen</label><br><br>
 		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulFrage"> 
 		#foreach ($modul in $module)
                     <option> $modul</option>
@@ -39,7 +40,7 @@
                         <option> $thema </option>
                     #end
 		</select></label><br><br>
-		<label id="text">Frage hinzufügen</label><br><br>
+		
 		<label id ="text" for="textarea">Frage: <textarea id="textarea" name="frage"></textarea></label>
                 <label id ="text" for="textarea">Hinweis: <textarea id="textarea" name="hinweis"></textarea></label><br>
                 <label id ="text" for="textarea">Verweis: <textarea id="textarea" name="verweis"></textarea></label>
@@ -50,16 +51,16 @@
 		<label id ="text" for="textarea">Antwort 4: <textarea id="textarea" name="antwort4"></textarea></label><br><br>
 		<fieldset> 
 		<label id="text">Richtige Antwort: </label><br>
-		<input type="radio" id="a1" name="antwort1Richtig" value="true"> 
-		<label for="a1"> Antwort 1</label><br> 
-		<input type="radio" id="a2" name="antwort2Richtig" value="true"> 
-		<label for="a2"> Antwort 2</label><br> 
-		<input type="radio" id="a3" name="antwort3Richtig" value="true"> 
-		<label for="a3"> Antwort 3</label><br>
-		<input type="radio" id="a4" name="antwort4Richtig" value="true"> 
-		<label for="a4"> Antwort 4</label> 
+		<input id="text"type="radio" id="a1" name="antwort1Richtig" value="true"> 
+		<label id="text"for="a1"> Antwort 1</label><br> 
+		<input id="text"type="radio" id="a2" name="antwort2Richtig" value="true"> 
+		<label id="text"for="a2"> Antwort 2</label><br> 
+		<input id="text"type="radio" id="a3" name="antwort3Richtig" value="true"> 
+		<label id="text"for="a3"> Antwort 3</label><br>
+		<input id="text"type="radio" id="a4" name="antwort4Richtig" value="true"> 
+		<label id="text"for="a4"> Antwort 4</label> 
 		</fieldset>
-            
+                $datum
 		<div id="mButton">
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
@@ -78,6 +79,7 @@
                 <label id ="text" for="ende">Ende der PP.: <input id="ende" name="ende"> </label><br>
                 <label id ="text" for="beginn">Beginn der Anmeldung: <input id="beginn" name="beginn"> </label>
 		<div id="mButton">
+                $datum
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
 		</div>
