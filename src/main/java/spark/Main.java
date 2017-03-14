@@ -118,9 +118,9 @@ public class Main {
             
             //User Object
             JsonObject a = new JsonObject();
-            a.addProperty("userID", 1234);
+            a.addProperty("userID", "1234");
             a.addProperty("plattformID", 1);
-            a.addProperty("witSession", 12345);
+            a.addProperty("witSession", "12345");
             
             //Module Array Object
             JsonArray ja = new JsonArray();
