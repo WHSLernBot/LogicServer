@@ -1,5 +1,6 @@
 package main;
 
+import DAO.EMH;
 import Entitys.Benutzer;
 import java.sql.Timestamp;
 
@@ -11,15 +12,16 @@ public class CBBenutzer {
 
     private static final int RESTSPEICHERZEIT_MINUTEN = 30;
     
-    private final Benutzer benutzer;
+//    private final Benutzer benutzer;
+    private final Long benutzerID;
     
     private Timestamp zuletzt;
     
     private int lock;
     
     public CBBenutzer(Benutzer benutzer) {
-        this.benutzer = benutzer;
-        
+//        this.benutzer = benutzer;
+        this.benutzerID = benutzer.getId();
         zuletzt = ChatBotManager.getInstance().jetzt();
         
         lock = 0;
@@ -57,7 +59,8 @@ public class CBBenutzer {
     }
 
     public Benutzer getBenutzer() {
-        return benutzer;
+        return EMH.getEntityManager().find(Benutzer.class, this.benutzerID);
+//        return benutzer;
     }
     
 }
