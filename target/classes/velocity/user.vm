@@ -29,6 +29,7 @@
 		</div>
             </div>
             <div id="rahmen">
+                <label id="text">Frage hinzufügen</label><br><br>
 		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulFrage"> 
 		#foreach ($modul in $module)
                     <option> $modul</option>
@@ -39,7 +40,7 @@
                         <option> $thema </option>
                     #end
 		</select></label><br><br>
-		<label id="text">Frage hinzufügen</label><br><br>
+		
 		<label id ="text" for="textarea">Frage: <textarea id="textarea" name="frage"></textarea></label>
                 <label id ="text" for="textarea">Hinweis: <textarea id="textarea" name="hinweis"></textarea></label><br>
                 <label id ="text" for="textarea">Verweis: <textarea id="textarea" name="verweis"></textarea></label>
@@ -59,7 +60,6 @@
 		<input type="radio" id="a4" name="antwort4Richtig" value="true"> 
 		<label for="a4"> Antwort 4</label> 
 		</fieldset>
-            
 		<div id="mButton">
 		<button id="mSubmit">Bestätigen</button> 
 		<button id="mCancel" type="reset">Abbrechen</button> 
