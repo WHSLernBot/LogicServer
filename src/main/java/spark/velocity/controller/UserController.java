@@ -60,7 +60,7 @@ public class UserController {
 
             Map<String, Object> model = new HashMap<>();
             model.put("module", ar);
-
+            model.put("themen", th);
             ArrayList<Pruefungsperiode> per = (ArrayList) DAO.DAO.gibUni(uniID).getPruefungsperiode();
 
             for (Pruefungsperiode peri : per) {
