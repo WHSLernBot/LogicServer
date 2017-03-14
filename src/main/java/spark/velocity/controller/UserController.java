@@ -34,22 +34,15 @@ import spark.velocity.util.VelocityTemplateEngine;
  */
 public class UserController {
 
-    private static ArrayList ar;
-    private static ArrayList th;
-    private static ArrayList periode;
+    private static ArrayList ar = new ArrayList();
+    private static ArrayList th = new ArrayList();
+    private static ArrayList periode = new ArrayList();
     private static short uniID;
-    private static String name;
+    private static String name = null;;
 
     private static String FEHLER_DATUM = "Falsches Format, bitte geben Sie das Datum im Format:'dd.mm.yy' an!";
     private static String FEHLER_PUNKTE = "Bitte geben Sie eine ganzzahlige Punktzahl ein!";
-
-    UserController() {
-        ar = new ArrayList();
-        th = new ArrayList();
-        periode = new ArrayList();
-        name = null;
-    }
-
+     
     /**
      * Diese Variable beinhaltet eine Route, die neue Datensätze in die
      * Datenbank einträgt.
