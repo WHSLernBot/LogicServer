@@ -13,7 +13,7 @@ import main.CBBenutzer;
 import main.ChatBotManager;
 
 /**
- *
+ * Diese Klasse verwaltet alle BenutzerBots und AufgabenBots.
  * @author Seve
  */
 public class BotPool {
@@ -32,19 +32,36 @@ public class BotPool {
 
     }
     
+    /**
+     * Startet einen AufgabenBot, der alle Daten eines Benutzers neu berechnet.
+     * @param benutzer 
+     */
     public void berechneNeu(CBBenutzer benutzer) {
         aufgabenBots.submit(new AufgabenBot(benutzer));
         
     }
     
+    /**
+     * Startet einen AufgabenBot, der nur einen LernStatus neu Berechnet.
+     * @param ls 
+     */
     public void berechneLS(LernStatus ls) {
         aufgabenBots.submit(new AufgabenBot(ls));
     }
     
+    /**
+     * Startet einen AufgabenBot, der die Aufgaben eines ganzen Moduls berechnet. 
+     * Und damit auch die Klausurergebnisse auswertet.
+     * @param modul 
+     */
     public void berechneNeu(Modul modul) {
         aufgabenBots.submit(new AufgabenBot(modul));
     }
     
+    /**
+     * Startet AufgabenBots und BenutzerBots um alle Informationen in der 
+     * Datenbank neu zu berechnen.
+     */
     public void berechneAlles() {
         
         Timestamp heute = ChatBotManager.getInstance().jetzt();

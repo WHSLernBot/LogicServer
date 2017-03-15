@@ -1,6 +1,7 @@
 package Controller;
 
 import DAO.DAO;
+import DAO.EMH;
 import Entitys.Aufgabe;
 import Entitys.Klausur;
 import Entitys.LernStatus;
@@ -275,6 +276,7 @@ public class Controller {
         }
         benutzer.release();
     
+        EMH.closeEntityManager();
         return nachricht;
     }
     

@@ -3,7 +3,8 @@ package DBBot;
 import Entitys.BeAufgabe;
 
 /**
- *
+ * Diese Klasse speichert wie viele Punkte bei der Beantwortung einer Frage
+ * moeglich waren und wie viele davon tatsaechlich erreicht wurden.
  * @author Seve
  */
 public class AntwortItem {
@@ -21,6 +22,10 @@ public class AntwortItem {
         
     }
     
+    /**
+     * Fuegt dem Item eine neue Antwort hinzu.
+     * @param be 
+     */
     public void addAntwort(BeAufgabe be) {
         
         if(be.istBeantwortet()) {
@@ -44,6 +49,15 @@ public class AntwortItem {
         return punkteMoeglich;
     }
     
+    /**
+     * Rechnet den Anteil aus, zu wie viel Prozent die Aufgabe richtig 
+     * bearbeitet wurde.
+     * 
+     * Achtung! Es wird nur beim ersten Aufruf ausgerechnet und dann das Ergebniss
+     * aus effizienzgruenden gespeichert.
+     * 
+     * @return Die errechnete Prozentzahl.
+     */
     public int gibProzent() {
         
         if(prozent == -1) {

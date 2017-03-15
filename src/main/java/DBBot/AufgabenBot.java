@@ -1,6 +1,7 @@
 package DBBot;
 
 import DAO.DAO;
+import DAO.EMH;
 import Entitys.Aufgabe;
 import Entitys.BeAufgabe;
 import Entitys.LernStatus;
@@ -93,33 +94,35 @@ public class AufgabenBot implements Runnable {
             //evet. hier nachricht an den Benutzer senden
             benutzer.release();
         }
+        
+        EMH.closeEntityManager();
     }
     
-        public void runsingle() {
-        
-        Collection<LernStatus> stadi;
-        
-        if(lernStatus != null) {
-            stadi = new LinkedList<>();
-            stadi.add(lernStatus);
-            berechne(stadi,null);
-        } else if(benutzer != null) {
-            stadi = benutzer.getBenutzer().getLernStadi();
-            berechne(stadi,null);
-        } else {
-            DeepThoughtPrio rechner = new DeepThoughtPrio(modul,heute);
-            
-            for(Thema t : modul.getThemen()) {
-                stadi = t.getLernStadi();
-                berechne(stadi,rechner);
-            }
-        }  
-        
-        if(benutzer != null) {
-            //evet. hier nachricht an den Benutzer senden
-            benutzer.release();
-        }
-    }
+//        public void runsingle() {
+//        
+//        Collection<LernStatus> stadi;
+//        
+//        if(lernStatus != null) {
+//            stadi = new LinkedList<>();
+//            stadi.add(lernStatus);
+//            berechne(stadi,null);
+//        } else if(benutzer != null) {
+//            stadi = benutzer.getBenutzer().getLernStadi();
+//            berechne(stadi,null);
+//        } else {
+//            DeepThoughtPrio rechner = new DeepThoughtPrio(modul,heute);
+//            
+//            for(Thema t : modul.getThemen()) {
+//                stadi = t.getLernStadi();
+//                berechne(stadi,rechner);
+//            }
+//        }  
+//        
+//        if(benutzer != null) {
+//            //evet. hier nachricht an den Benutzer senden
+//            benutzer.release();
+//        }
+//    }
     
     
     /**
