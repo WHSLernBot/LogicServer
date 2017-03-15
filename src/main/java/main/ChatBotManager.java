@@ -24,6 +24,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ChatBotManager {
     
+    /**
+     * Die Zeit in Minuten, wann geprueft werden soll, ob CBBenutzer aus der
+     * Map geloescht werden koennen.
+     */
     private static final int LOESCHPHASE_MINTUEN = 15;
     
     private static ChatBotManager manager;
@@ -89,6 +93,9 @@ public class ChatBotManager {
         return manager;
     }
     
+    /**
+     * @return Die akteulle Zeit.
+     */
     public Timestamp jetzt() {
         return new Timestamp(calendar.getTime().getTime());
     }
@@ -104,9 +111,9 @@ public class ChatBotManager {
     /**
      * Gibt den Benutzer zur zugehoerigen Plattform zurueck.
      * 
-     * @param pt
-     * @param session
-     * @return 
+     * @param pt Ein CBPlattform Objekt, in dem die Benutzer infos geschrieben wurden.
+     * @param session Die Wit-Session id (nicht mehr noetig, da nicht gebraucht)
+     * @return Den entsprechenden CBBenutzer.
      */
     public CBBenutzer gibBenutzer(CBPlattform pt, String session) {
         
@@ -139,6 +146,12 @@ public class ChatBotManager {
         
     }
     
+    /**
+     * Gibt den angegebenen Benutzer als CBBenutzer aus.
+     * 
+     * @param b
+     * @return 
+     */
     public CBBenutzer gibBenutzer(Benutzer b) {
         CBPlattform pt = new CBPlattform(b.getPlattform().getPfID(),b.getPlattform().getAdresse().getId());
         CBBenutzer cb = null;
@@ -291,6 +304,10 @@ public class ChatBotManager {
         setzeTimer();
     }
     
+    /**
+     * Setzt den Timer auf den Zeitpunkt, wann die naechste Nachricht 
+     * versendet werden muss.
+     */
     private void setzeTimer() {
         
         Timestamp now = jetzt();

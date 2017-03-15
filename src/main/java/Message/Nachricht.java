@@ -76,8 +76,12 @@ public class Nachricht {
         ttl--;
     }
     
+    /**
+     * Sagt aus, ob die nachricht schon abgelaufen ist.
+     * @return falls true, so soll die Nachricht nochmal versendet werden
+     */
     public boolean alive() {
-        return (ttl != 0);
+        return (ttl > 0);
     }
     
     public int getTTL() {

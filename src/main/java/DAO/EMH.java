@@ -7,6 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ * Diese Klasse erstellt für jeden Thread einen eigenen EntityManager fuer die
+ * Datenbank, sodass jeder Thread eine eigene Transaktion starten kann.
+ */
 public class EMH {
     
     private static final String JDBC_URL = "javax.persistence.jdbc.url";
@@ -24,8 +28,11 @@ public class EMH {
     private static final EntityManagerFactory EMF;
     private static final ThreadLocal<EntityManager> THREAD_LOCAL;
 
+    /*
+     * Initalisiertung der Datenbankverbindung fuer Heroku.
+     */
     static {
-        
+//        
         String databaseUrl = System.getenv("DATABASE_URL");
         StringTokenizer st = new StringTokenizer(databaseUrl, ":@/");
         String dbVendor = st.nextToken(); //if DATABASE_URL is set
@@ -51,6 +58,11 @@ public class EMH {
         THREAD_LOCAL = new ThreadLocal<>();
     }
 
+    /**
+     * Gibt den EntityManager fuer den Aktuellen Thread aus.
+     * 
+     * @return Der akteulle EntityManager.
+     */
     public static EntityManager getEntityManager() {
         
         EntityManager em = THREAD_LOCAL.get();
@@ -62,6 +74,9 @@ public class EMH {
         return em;
     }
 
+    /**
+     * Schließt den EntityManager eines Thread.
+     */
     public static void closeEntityManager() {
         EntityManager em = THREAD_LOCAL.get();
         if (em != null) {
@@ -70,30 +85,54 @@ public class EMH {
         }
     }
 
+    /**
+     * Schließt die EntityManagerFactory.
+     */
     public static void closeEntityManagerFactory() {
         EMF.close();
     }
 
+    /**
+     * Startet eine neue Transaktion
+     */
     public static void beginTransaction() {
         getEntityManager().getTransaction().begin();
     }
 
+    /**
+     * Setzt die letzte Transaktion zurueck.
+     */
     public static void rollback() {
         getEntityManager().getTransaction().rollback();
     }
 
+    /**
+     * Bestaetigt eine Transaktion.
+     */
     public static void commit() {
         getEntityManager().getTransaction().commit();
     }
     
+    /**
+     * Persistiert ein neues Entity Objekt ein der Datenbank.
+     * @param ent Das zu persistierende Objekt.
+     */
     public static void persist(Object ent) {
         getEntityManager().persist(ent);
     }
     
+    /**
+     * Speichert die Aenderungen einer vorhandenen Entity.
+     * @param ent Die veraenderte Entity.
+     */
     public static void merge(Object ent) {
         getEntityManager().merge(ent);
     }
     
+    /**
+     * Loescht eine Entity aus der Datenbank.
+     * @param ent Die zu loeschende Entity.
+     */
     public static void remove(Object ent) {
         getEntityManager().remove(ent);
     }

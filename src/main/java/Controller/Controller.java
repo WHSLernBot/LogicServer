@@ -17,8 +17,7 @@ import main.CBPlattform;
 import main.ChatBotManager;
 
 /**
- * Diese Klasse stellt Methoden zur Verfuegung, um ein JsonObject zu verarbeiten.
- * 
+ * Diese Klasse verarbeitet eine JSON-Anfrage an den Server.
  */
 public class Controller {
     

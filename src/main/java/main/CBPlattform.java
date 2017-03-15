@@ -3,7 +3,8 @@ package main;
 import java.util.Objects;
 
 /**
- *
+ * Diese Klasse stellt eine Plattform dar, die die Plattformspezifischen 
+ * Informationen speichert, um diese auf einen CBBenutzer zu mappen.
  * @author Seve
  */
 public class CBPlattform {
@@ -12,6 +13,12 @@ public class CBPlattform {
     
     private final short plattform;
 
+    /**
+     * Erstellt eine neue CBPlattoform.
+     * 
+     * @param id Die id des Benutzers auf der entsprechenden Plattform.
+     * @param plattform Die id der Plattfom in der Datenbank.
+     */
     public CBPlattform(String id, short plattform) {
         this.id = id;
         this.plattform = plattform;

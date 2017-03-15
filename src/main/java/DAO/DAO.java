@@ -2233,8 +2233,7 @@ public class DAO {
         if(DAO.getUniID(name) != -1) {
             
             System.out.println("uni gefunden");
-            return;
-        }
+        } else {
         
         try {
             EMH.beginTransaction();
@@ -2339,6 +2338,6 @@ public class DAO {
         }
         
     }
-    
+    }
     
 }
