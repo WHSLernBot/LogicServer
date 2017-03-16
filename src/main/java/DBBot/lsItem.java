@@ -8,7 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- *
+ * Diese Klasse wird fuer den BenutzerBot verwendet und erstellt eine Nachricht
+ * fuer ein Modul durch auswerten der zugehoerigen Lernstadi.
  * @author Seve
  */
 public class lsItem {
@@ -23,6 +24,10 @@ public class lsItem {
         this.stadi = new ArrayList<>();
     }
     
+    /**
+     * Fuegt dem Modul einen Lernstatus hinzu.
+     * @param ls 
+     */
     public void addLs(LernStatus ls) {
         stadi.add(ls);
     }
@@ -87,6 +92,15 @@ public class lsItem {
         
     }
     
+    /**
+     * Addiert auf das angegebene Datum die angegebenen Tage drauf und setzt dabei
+     * fuer eine bessere Vergelchihbarkeit Stunden,Minuten,Sekunden und
+     * Millisekunden auf 0.
+     * 
+     * @param d Datum das betrachtet werden soll.
+     * @param day Anzahl der Tage die aufs datum gerechnet werden solln.
+     * @return Das daraus resultierende Datum.
+     */
     private Date normiere(Date d, int day) {
         Calendar c = Calendar.getInstance(); 
         c.setTime(d); 

@@ -6,7 +6,7 @@ import Entitys.Statistik;
 import java.util.HashMap;
 
 /**
- * Diese Klasse Wrappt die Beziehungen zwischen Statistik und woche und kann neue
+ * Diese Klasse Wrappt die Beziehungen zwischen Statistik und Woche und kann neue
  * Statistiken erzeugen.
  * @author Seve
  */

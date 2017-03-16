@@ -1,10 +1,8 @@
 package DBBot;
 
 import DAO.DAO;
-import DAO.EMH;
 import Entitys.BeAufgabe;
 import Entitys.Modul;
-import Entitys.Statistik;
 import Entitys.Teilnahme;
 import Entitys.Thema;
 import java.sql.Timestamp;
@@ -18,12 +16,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * Diese Klasse stellt das Herz der Aufgabenberechnung dar. Dabei berechnet 
+ * Sie wie hoch die Einzelnen Aufgaben eines Themas priorisiert sind, um sie
+ * dann in die Datenbank als ZuAufgabe einzupflegen.
  * @author Seve
  */
 public class DeepThoughtPrio {
     
-    private StatMap stats;
+    private final StatMap stats;
     
     private final Timestamp heute;
     
@@ -39,8 +39,14 @@ public class DeepThoughtPrio {
     
     private final int[] prozent;
     
+    /**
+     * Erstellt einen neuen Priorisierer fuer ein Modul.
+     * 
+     * @param m
+     * @param heute Zeitpunkt auf den die Berechnung bezogen werden soll.
+     * (Meistens jetzt)
+     */
     public DeepThoughtPrio(Modul m, Timestamp heute) {
-        
         
         this.heute = heute;
         modul = m;
@@ -192,7 +198,11 @@ public class DeepThoughtPrio {
     }
     
 
-    
+    /**
+     * Fuegt dem Modul eine Bearbeitete Aufgabe hinzu um diese dann fuer die
+     * Auswertung der Klausuren zu beruecksichtigen.
+     * @param be 
+     */
     public void addAntwort(BeAufgabe be) {
         
         Long bid = be.getLernStatus().getBenutzer().getId();

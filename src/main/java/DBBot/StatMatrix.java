@@ -2,43 +2,102 @@ package DBBot;
 
 import DAO.EMH;
 import Entitys.BeAufgabe;
-import Entitys.Statistik;
 import Entitys.Teilnahme;
 import java.util.Date;
 import java.util.Calendar;
 
 /**
- *
+ * Diese Klasse stellt den Vergeleich zwischen Klausurnoten und Aufgaben
+ * ergebnissen auf und berechnet durch den Vergeleich mit anderen Statistiken
+ * in wie weit diese Ergebnisse veraendert werden muessen, sodass am Ende die
+ * Statistiken und Themenanteile so stimmen, dass dem Benutzer ein moeglichst
+ * genaues Klausurergebniss praesentiert werden kann.
+ * 
+ * Das hier implementierte System ist nur grundlegend und auf jeden Fall noch
+ * verbesserungswuerdig!
  * @author Seve
  */
 public class StatMatrix implements Comparable<StatMatrix> {
     
+    /**
+     * Anzahl der Wochen die fuer die BErechnung nur betrachtet werden soll.
+     */
     private static final int ANZAHL_WOCHEN = 10;
     
     private final short note;
     
     private final long[] themen;
     
+    /**
+     * Mapped auf jedes Thema wie viele Punkte in der jeweiligen Woche erreicht 
+     * werden konnten und erreicht wurden.
+     */
     private final AntwortItem[][] antworten;
     
+    /**
+     * Das Prozentuarisches Verhaeltniss der Einzelnen Themenergebnisse zur Note.
+     */
     private final double[] verhaeltniss;
+    
+    /**
+     * Unteschied der Verhaeltnisse des Naechsten zu dieser Matrix im Bezug auf
+     * die Themen.
+     */
     private final double[] unterschied;
+    
+    /**
+     * Unteschied der Verhaeltnisse des Naechsten zu dieser Matrix im Bezug auf
+     * die Wochen.
+     */
     private final double[] unterschiedWoche;
+    
+    /**
+     * Prozent der Thmen des Moduls mal den einzelen Themenanteile fuer die
+     * betrachteten Wochen.
+     */
     private final int[] prozentWoche;
     
+    /**
+     * Daten wann die Einzelnen Wochen beginnen.
+     */
     private final Date[] wochen;
     
+    /**
+     * Thema mit dem hoechsten Unterschied zum Naechsten.
+     */
     private int highT;
     
+    /**
+     * Thema mit dem niedrigsten Unterschied zum Naechsten.
+     */
     private int lowT;
     
+    /**
+     * Woche mit dem hoeschten Unterschied zum Naechsten.
+     */
     private short highW;
+    
+    /**
+     * Woche mit dem niedrigesten Unterschied zum Naechsten.
+     */
     private short lowW;
     
+    /**
+     * Die auf diese Matrix folgenden Matrix.
+     */
     private StatMatrix next;
     
+    /**
+     * Die zugehoerige Klausurteilnahme.
+     */
     private final Teilnahme teilnahme;
 
+    /**
+     * Erzeugt eine neue Matrix fuer eine Klausurteilnahme.
+     * 
+     * @param t Die Klausurteilnahme
+     * @param themen IDs der einzelnen Themen des Moduls der Klausur.
+     */
     public StatMatrix(Teilnahme t, long[] themen) {
         this.note = t.getNote();
         this.themen = themen;
@@ -74,10 +133,19 @@ public class StatMatrix implements Comparable<StatMatrix> {
         return note;
     }
     
+    /**
+     * Setzt die Statistik, also die naechst bessere Note die auf diese Matrix folgt.
+     * Somit wird zum vergeleich nur diese Matrix verwendet.
+     * @param sm Die naechste Matrix.
+     */
     public void setNext(StatMatrix sm) {
         this.next = sm;
     }
     
+    /**
+     * Fuegt der Matrix eine Antwort des Benutzers hinzu um sie damit zu fuellen.
+     * @param be 
+     */
     public void addAntwort(BeAufgabe be) {
         
         java.sql.Date datum = be.getDatum();
@@ -105,6 +173,22 @@ public class StatMatrix implements Comparable<StatMatrix> {
         
     }
     
+    /**
+     * Berechnet mit den angegebenen Prozenten der Themen die aus den Ergebnissen
+     * resultierenden neuen Prozentzahlen. So vergeleicht diese Funktion die
+     * Prozentzhal der eigenen Matix mit der naechsten. Falls also die eigene
+     * Prozentzahl hoeher ist als die der nachsten (die naechste Matrix ist ja
+     * immer eine bessere Note), so wird der Prozentsatz des Themas, dass den 
+     * hoehsten unterschied hat um eins erhoeht und die des niedigends um eins
+     * verringert und false ausgegeben. 
+     * Ist die prozentzahl jedoch richtig, so wird diese Funktion in der 
+     * naechsten Matrix aufgerufen.
+     * 
+     * @param prozent Prozente der Themen, bezogen auf die IDs die im
+     * Konstruktor hinterlegt wurden.
+     * @return Gibt true aus, falls eine veraenderung getaetigt wurde, somit die
+     * Berechnung von vorne beginnt.
+     */
     public boolean berechneThemen(int[] prozent) {
         
         //Wenn wir eine hoehere Prozentzahl haben, obwohl wir die schlechtere Note haben
@@ -121,6 +205,14 @@ public class StatMatrix implements Comparable<StatMatrix> {
         return (next == null) ? false : next.berechneThemen(prozent);
     }
     
+    /**
+     * Gibt die Prozentzahl, resultierend aus den Einzelnen Prozentzahlen der
+     * Themen nur fuer die letzt woche aus um eine bessere Vergeleichbarkeit
+     * der Themen zu erziehlen.
+     * 
+     * @param prozent
+     * @return Wert zwischen 0 und 1000
+     */
     private int gibProzentletzteWoche(int[] prozent) {
         
         int proz = 0;
@@ -133,6 +225,10 @@ public class StatMatrix implements Comparable<StatMatrix> {
         
     }
     
+    /**
+     * Berechnet das Verhaeltniss dieser Matrix im vergleich zur naechsten neu
+     * aus.
+     */
     public void berechneVerhaeltnisse() {
         
         for(int i = 0; i < this.verhaeltniss.length; i++) {
@@ -166,6 +262,13 @@ public class StatMatrix implements Comparable<StatMatrix> {
         
     }
     
+    /**
+     * Funktionsweise aehnlich wie bei berechneThemen nur im bezug auf die
+     * Wochen.
+     * 
+     * @param stats
+     * @return 
+     */
     public boolean berechneWochen(StatMap stats) {
         
         if(this.gibProzentGesamt(stats) > next.gibProzentGesamt(stats) && this.note > next.note) {
@@ -182,6 +285,13 @@ public class StatMatrix implements Comparable<StatMatrix> {
         
     }
     
+    /**
+     * Diese Methode setzt die prozente der Themen fuer die Berechnung der 
+     * Wochen ein. Und sollte aufgerufen werden, nachdem die Themenberechnung
+     * beendet wurde.
+     * 
+     * @param prozent 
+     */
     public void setzeAnteilThemen(int[] prozent) {
         
         for(int i = 0; i < ANZAHL_WOCHEN; i++) {
@@ -224,6 +334,11 @@ public class StatMatrix implements Comparable<StatMatrix> {
         
     }
      
+    /**
+     * Gibt die Prozentzhals aus, die 
+     * @param stats
+     * @return 
+     */
     public int gibProzentGesamt(StatMap stats) {
         
         int res = 0;

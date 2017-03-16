@@ -89,6 +89,12 @@ public class PersonaleNachricht {
 
     }
     
+    /**
+     * Gibt eine Zusammenhaengende Nachricht fuer jede einzelne Option aus.
+     * 
+     * @param option Options nummer.
+     * @return 
+     */
     private String gibOptionsnachricht(int option) {
         LinkedList<String> n = nachrichten[option];
         if(n.isEmpty()) {
