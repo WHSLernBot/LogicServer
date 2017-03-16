@@ -11,12 +11,12 @@ import java.util.List;
  * 
  * @author Seve
  */
-public class CBAufgabenItem implements Comparable<CBAufgabenItem> {
+public class AufgabenItem implements Comparable<AufgabenItem> {
         
     /**
      * Alle Beantworteten Aufgaben.
      */
-    private final List<CBBeantwortetItem> beantwortet;
+    private final List<BeantwortetItem> beantwortet;
     
     /**
      * Die fuer diese Aufgabe gegebende Punktzahl.
@@ -33,7 +33,7 @@ public class CBAufgabenItem implements Comparable<CBAufgabenItem> {
      * 
      * @param aufgabe 
      */
-    public CBAufgabenItem(Aufgabe aufgabe) {
+    public AufgabenItem(Aufgabe aufgabe) {
 
         beantwortet = new ArrayList<>();
         punkte = 0;
@@ -48,7 +48,7 @@ public class CBAufgabenItem implements Comparable<CBAufgabenItem> {
      * @param hinweis 
      */
     public void addAntwort(Date datum,boolean richtig, boolean hinweis) {
-        beantwortet.add(new CBBeantwortetItem(datum,richtig,hinweis));
+        beantwortet.add(new BeantwortetItem(datum,richtig,hinweis));
     }
 
     public Aufgabe getAufgabe() {
@@ -63,12 +63,12 @@ public class CBAufgabenItem implements Comparable<CBAufgabenItem> {
         this.punkte = prio;
     }
     
-    public List<CBBeantwortetItem> gibBeantwortet() {
+    public List<BeantwortetItem> gibBeantwortet() {
         return this.beantwortet;
     }
 
     @Override
-    public int compareTo(CBAufgabenItem o) {
+    public int compareTo(AufgabenItem o) {
         return (punkte < o.punkte) ? 1 : -1;
     }
     

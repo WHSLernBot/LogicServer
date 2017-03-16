@@ -7,7 +7,7 @@ import entitys.BeAufgabe;
  * moeglich waren und wie viele davon tatsaechlich erreicht wurden.
  * @author Seve
  */
-public class CBAntwortItem {
+public class AntwortItem {
     
     private int punkteErreicht;
     
@@ -15,7 +15,7 @@ public class CBAntwortItem {
     
     private int prozent;
     
-    public CBAntwortItem() {
+    public AntwortItem() {
         this.prozent = -1;
         this.punkteErreicht = 0;
         this.punkteMoeglich = 0;

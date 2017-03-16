@@ -8,7 +8,7 @@ import java.sql.Date;
  * 
  * @author Seve
  */
-public class CBBeantwortetItem {
+public class BeantwortetItem {
     
     private final Date datum;
     
@@ -23,7 +23,7 @@ public class CBBeantwortetItem {
      * @param richtig Falls true, so war die Antwort richtig.
      * @param hinweis Falls true, so wurde bei der Antwort der Hinweis verwendet.
      */
-    public CBBeantwortetItem(Date datum, boolean richtig, boolean hinweis) {
+    public BeantwortetItem(Date datum, boolean richtig, boolean hinweis) {
         this.datum = datum;
         this.richtig = richtig;
         this.hinweis = hinweis;
