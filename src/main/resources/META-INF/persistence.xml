@@ -3,29 +3,28 @@
   <persistence-unit name="LernServletPU" transaction-type="RESOURCE_LOCAL">
     <!--<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>-->
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <class>Entitys.Antwort</class>
-    <class>Entitys.Aufgabe</class>
-    <class>Entitys.BeAufgabe</class>
-    <class>Entitys.Benutzer</class>
-    <class>Entitys.Klausur</class>
-    <class>Entitys.LernStatus</class>
-    <class>Entitys.Modul</class>
-    <class>Entitys.Plattform</class>
-    <class>Entitys.Teilnahme</class>
-    <class>Entitys.Thema</class>
-    <class>Entitys.Token</class>
-    <class>Entitys.Uni</class>
-    <class>Entitys.Pruefungsperiode</class>
-    <class>Entitys.Statistik</class>
-    <class>Entitys.ZuAufgabe</class>
-    <class>Entitys.XGAufgabe</class>
-    <class>Entitys.Adresse</class>
-    <class>Entitys.Bewertung</class>
+    <class>entitys.Antwort</class>
+    <class>entitys.Token</class>
+    <class>entitys.Aufgabe</class>
+    <class>entitys.XGAufgabe</class>
+    <class>entitys.BeAufgabe</class>
+    <class>entitys.Adresse</class>
+    <class>entitys.Modul</class>
+    <class>entitys.Teilnahme</class>
+    <class>entitys.Plattform</class>
+    <class>entitys.Uni</class>
+    <class>entitys.LernStatus</class>
+    <class>entitys.Bewertung</class>
+    <class>entitys.ZuAufgabe</class>
+    <class>entitys.Benutzer</class>
+    <class>entitys.Statistik</class>
+    <class>entitys.Klausur</class>
+    <class>entitys.Thema</class>
+    <class>entitys.Pruefungsperiode</class>
     <properties>
       <property name="hibernate.archive.autodetection" value="class"/>
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.hbm2ddl.auto" value="create"/>
-      
     </properties>
   </persistence-unit>
 </persistence>

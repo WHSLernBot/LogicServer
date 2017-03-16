@@ -1,4 +1,4 @@
-package DBBot;
+package dbbot;
 
 import java.sql.Date;
 
@@ -8,7 +8,7 @@ import java.sql.Date;
  * 
  * @author Seve
  */
-public class beantwortetItem {
+public class CBBeantwortetItem {
     
     private final Date datum;
     
@@ -23,7 +23,7 @@ public class beantwortetItem {
      * @param richtig Falls true, so war die Antwort richtig.
      * @param hinweis Falls true, so wurde bei der Antwort der Hinweis verwendet.
      */
-    public beantwortetItem(Date datum, boolean richtig, boolean hinweis) {
+    public CBBeantwortetItem(Date datum, boolean richtig, boolean hinweis) {
         this.datum = datum;
         this.richtig = richtig;
         this.hinweis = hinweis;

@@ -1,7 +1,7 @@
 package main;
 
-import DAO.EMH;
-import Entitys.Benutzer;
+import dao.EMH;
+import entitys.Benutzer;
 import java.sql.Timestamp;
 
 /**

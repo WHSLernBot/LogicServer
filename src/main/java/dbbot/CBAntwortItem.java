@@ -1,13 +1,13 @@
-package DBBot;
+package dbbot;
 
-import Entitys.BeAufgabe;
+import entitys.BeAufgabe;
 
 /**
  * Diese Klasse speichert wie viele Punkte bei der Beantwortung einer Frage
  * moeglich waren und wie viele davon tatsaechlich erreicht wurden.
  * @author Seve
  */
-public class AntwortItem {
+public class CBAntwortItem {
     
     private int punkteErreicht;
     
@@ -15,7 +15,7 @@ public class AntwortItem {
     
     private int prozent;
     
-    public AntwortItem() {
+    public CBAntwortItem() {
         this.prozent = -1;
         this.punkteErreicht = 0;
         this.punkteMoeglich = 0;

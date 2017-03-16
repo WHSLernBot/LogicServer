@@ -1,6 +1,6 @@
-package DBBot;
+package dbbot;
 
-import Entitys.Aufgabe;
+import entitys.Aufgabe;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.List;
  * 
  * @author Seve
  */
-public class aufgabenItem implements Comparable<aufgabenItem> {
+public class CBAufgabenItem implements Comparable<CBAufgabenItem> {
         
     /**
      * Alle Beantworteten Aufgaben.
      */
-    private final List<beantwortetItem> beantwortet;
+    private final List<CBBeantwortetItem> beantwortet;
     
     /**
      * Die fuer diese Aufgabe gegebende Punktzahl.
@@ -33,7 +33,7 @@ public class aufgabenItem implements Comparable<aufgabenItem> {
      * 
      * @param aufgabe 
      */
-    public aufgabenItem(Aufgabe aufgabe) {
+    public CBAufgabenItem(Aufgabe aufgabe) {
 
         beantwortet = new ArrayList<>();
         punkte = 0;
@@ -48,7 +48,7 @@ public class aufgabenItem implements Comparable<aufgabenItem> {
      * @param hinweis 
      */
     public void addAntwort(Date datum,boolean richtig, boolean hinweis) {
-        beantwortet.add(new beantwortetItem(datum,richtig,hinweis));
+        beantwortet.add(new CBBeantwortetItem(datum,richtig,hinweis));
     }
 
     public Aufgabe getAufgabe() {
@@ -63,12 +63,12 @@ public class aufgabenItem implements Comparable<aufgabenItem> {
         this.punkte = prio;
     }
     
-    public List<beantwortetItem> gibBeantwortet() {
+    public List<CBBeantwortetItem> gibBeantwortet() {
         return this.beantwortet;
     }
 
     @Override
-    public int compareTo(aufgabenItem o) {
+    public int compareTo(CBAufgabenItem o) {
         return (punkte < o.punkte) ? 1 : -1;
     }
     

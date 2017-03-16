@@ -21,10 +21,10 @@ public class LoginController {
         if (username.isEmpty() || password.isEmpty()) {
             return false;
         }
-        short uni = DAO.DAO.getUniID(username);
+        short uni = dao.DAO.getUniID(username);
         if(uni == -1){
             return false;
         }
-        return DAO.DAO.pruefePassword(uni, password);
+        return dao.DAO.pruefePassword(uni, password);
     }
 }

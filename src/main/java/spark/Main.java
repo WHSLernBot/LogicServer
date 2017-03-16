@@ -1,7 +1,7 @@
 package spark;
 
-import Controller.Controller;
-import Message.Nachricht;
+import controller.Controller;
+import message.Nachricht;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -75,7 +75,7 @@ public class Main {
             
             
             short i = 1;
-            DAO.DAO.neueVerbindung(i, "immense-journey-49192");
+            dao.DAO.neueVerbindung(i, "immense-journey-49192");
             
             
             //Json Body
@@ -157,7 +157,7 @@ public class Main {
             
             try {
                 
-                DAO.DAO.erstelleEintraege();
+                dao.DAO.erstelleEintraege();
                 return "Einträge erstellt";
                 
             } catch (Exception e) {

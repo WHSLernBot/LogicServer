@@ -1,12 +1,12 @@
 package main;
 
-import DAO.DAO;
-import DAO.EMH;
-import DBBot.BotPool;
-import DBBot.BotTimer;
-import Entitys.Benutzer;
-import Message.MessageHandler;
-import Message.Nachricht;
+import dao.DAO;
+import dao.EMH;
+import dbbot.BotPool;
+import dbbot.BotTimer;
+import entitys.Benutzer;
+import message.MessageHandler;
+import message.Nachricht;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
