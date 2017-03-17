@@ -34,15 +34,21 @@ import spark.velocity.util.VelocityTemplateEngine;
  */
 public class UserController {
 
-    private static ArrayList ar = new ArrayList();
-    private static ArrayList th = new ArrayList();
-    private static ArrayList periode = new ArrayList();
+    private static final ArrayList MODULE = new ArrayList();
+    private static final ArrayList THEMEN = new ArrayList();
+    private static final ArrayList PERIODE = new ArrayList();
     private static short uniID;
     private static String name = null;;
 
-    private static String FEHLER_DATUM = "Falsches Format, bitte geben Sie das Datum im Format:'dd.mm.yy' an!";
-    private static String FEHLER_PUNKTE = "Bitte geben Sie eine ganzzahlige Punktzahl ein!";
-     
+    private static final String FEHLER_DATUM = "Falsches Format, bitte geben Sie das Datum im Format:'dd.mm.yy' an!";
+    private static final String FEHLER_PUNKTE = "Bitte geben Sie eine ganzzahlige Punktzahl ein!";
+    
+    private static final String DATUM_FORMAT = "dd.MM.yyyy";
+    private static final String MODEL_DATUM = "datum";
+    private static final String MODEL_PUNKTE = "punkte";
+    private static final String MODEL_MODULE = "module";
+    private static final String MODEL_THEMEN = "themen";
+    private static final String MODEL_PRUEFUNGSPERIODE = "pp";
     /**
      * Diese Variable beinhaltet eine Route, die neue Datensätze in die
      * Datenbank einträgt.
@@ -52,20 +58,21 @@ public class UserController {
         public Object handle(Request request, Response response) throws Exception {
             
             Map<String, Object> model = new HashMap<>();
-            model.put("module", ar);
-            model.put("themen", th);
+            //Module und Themen werden der Webseite zur verfuegung gestellt.
+            model.put(MODEL_MODULE, MODULE);
+            model.put(MODEL_THEMEN, THEMEN);
             ArrayList<Pruefungsperiode> per = (ArrayList) dao.DAO.gibUni(uniID).getPruefungsperiode();
 
             for (Pruefungsperiode peri : per) {
-                if (!periode.contains(peri.getAnfang())) {
-                    periode.add(peri.getAnfang());
+                if (!PERIODE.contains(peri.getAnfang())) {
+                    PERIODE.add(peri.getAnfang());
                 }
             }
-            model.put("pp", periode);
+            model.put(MODEL_PRUEFUNGSPERIODE, PERIODE);
             //Fuege Modul hinzu.
-            if (!getQueryModul(request).isEmpty() && !getQueryKuerzel(request).isEmpty() && !ar.contains(getQueryModul(request))) {
-                if (!ar.contains(getQueryKuerzel(request))) {
-                    ar.add(getQueryKuerzel(request));
+            if (!getQueryModul(request).isEmpty() && !getQueryKuerzel(request).isEmpty() && !MODULE.contains(getQueryModul(request))) {
+                if (!MODULE.contains(getQueryKuerzel(request))) {
+                    MODULE.add(getQueryKuerzel(request));
                     dao.DAO.addModul(uniID, getQueryModul(request), getQueryKuerzel(request));
                 }
             }
@@ -77,11 +84,11 @@ public class UserController {
                 dao.DAO.addThema(getQueryThemaModul(request), uniID, getQueryThema(request), anteil);
                 ArrayList<Thema> the = (ArrayList) dao.DAO.getThemen(uniID, getQueryThemaModul(request));
                 for (Thema them : the) {
-                    if (!th.contains(them.getName())) {
-                        th.add(them.getName());
+                    if (!THEMEN.contains(them.getName())) {
+                        THEMEN.add(them.getName());
                     }
                 }
-                model.put("themen", th);
+                model.put(MODEL_THEMEN, THEMEN);
             }
             try {
                 //Fuege eine Frage mit Antworten hinzu.
@@ -104,12 +111,12 @@ public class UserController {
 
                 }
             } catch (Exception e) {
-                model.put("punkte", FEHLER_PUNKTE);
+                model.put(MODEL_PUNKTE, FEHLER_PUNKTE);
             }
             //Fuege eine Pruefungsperiode hinzu.
             if (!getQueryJahr(request).equals("") && !getQueryAnmeldeBeginn(request).equals("")
                     && !getQueryAnfangPP(request).equals("") && !getQueryEndePP(request).equals("")) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                SimpleDateFormat sdf = new SimpleDateFormat(DATUM_FORMAT, Locale.GERMAN);
                 try {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(sdf.parse(getQueryAnfangPP(request)));
@@ -121,7 +128,7 @@ public class UserController {
                     dao.DAO.addPruefungsphase(uniID, Short.parseShort(getQueryJahr(request)), Short.parseShort(getQueryPhase(request)),
                             anfang, ende, anmeldebeginn);
                 } catch (Exception e) {
-                    model.put("datum", FEHLER_DATUM);
+                    model.put(MODEL_DATUM, FEHLER_DATUM);
                 }
             }
 
@@ -143,7 +150,7 @@ public class UserController {
             if (!getQueryUhrzeit(request).equals("") && !getQueryDatum(request).equals("")
                     && !getQueryOrt(request).equals("") && !getQueryHilfsmittel(request).equals("")
                     && !getQueryTyp(request).equals("") && !getQueryDauer(request).equals("")) {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
+                SimpleDateFormat sdf = new SimpleDateFormat(DATUM_FORMAT, Locale.GERMAN);
                 try {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(sdf.parse(getQueryDatum(request)));
@@ -154,7 +161,7 @@ public class UserController {
                     dao.DAO.addKlausur(peri, module2, datum, uhrzeit, Short.parseShort(getQueryDauer(request)),
                             getQueryOrt(request), getQueryHilfsmittel(request), getQueryTyp(request));
                 } catch (Exception e) {
-                    model.put("datum", FEHLER_DATUM);
+                    model.put(MODEL_DATUM, FEHLER_DATUM);
                 }
             }
 
@@ -191,27 +198,27 @@ public class UserController {
         ArrayList<Modul> mod = (ArrayList) dao.DAO.getModule(uniID);
 
         for (Modul mo : mod) {
-            if (!ar.contains(mo.getKuerzel())) {
-                ar.add(mo.getKuerzel());
+            if (!MODULE.contains(mo.getKuerzel())) {
+                MODULE.add(mo.getKuerzel());
             }
         }
-        ArrayList<Thema> the = (ArrayList) dao.DAO.getThemen(uniID, ar.get(0).toString());
+        ArrayList<Thema> the = (ArrayList) dao.DAO.getThemen(uniID, MODULE.get(0).toString());
         for (Thema them : the) {
-            if (!th.contains(them.getName())) {
-                th.add(them.getName());
+            if (!THEMEN.contains(them.getName())) {
+                THEMEN.add(them.getName());
             }
         }
         ArrayList<Pruefungsperiode> per = (ArrayList) dao.DAO.gibUni(uniID).getPruefungsperiode();
 
         for (Pruefungsperiode peri : per) {
-            if (!periode.contains(peri.getJahr())) {
-                periode.add(peri.getAnfang());
+            if (!PERIODE.contains(peri.getJahr())) {
+                PERIODE.add(peri.getAnfang());
             }
         }
         Map<String, Object> model = new HashMap<>();
-        model.put("module", ar);
-        model.put("themen", th);
-        model.put("pp", periode);
+        model.put(MODEL_MODULE, MODULE);
+        model.put(MODEL_THEMEN, THEMEN);
+        model.put(MODEL_PRUEFUNGSPERIODE, PERIODE);
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_USER));
     };
 }

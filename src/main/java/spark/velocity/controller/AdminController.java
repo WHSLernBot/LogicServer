@@ -20,6 +20,7 @@ import spark.velocity.util.VelocityTemplateEngine;
  * Indexseite und den Loginpost einer Webseite zu verarbeiten. 
  */
 public class AdminController {
+    private static final String MODEL_Angelegt = "angelegt";
     /**
      * Diese Variable beinhaltet eine Route, die einen Post zum 
      * Regestrieren neuer Benutzer verwaltet.
@@ -32,11 +33,10 @@ public class AdminController {
         Map<String, Object> model = new HashMap<>();
         if(getQueryUsernameAnlegen(request) == null
                 || getQueryUsernameAnlegen(request).equals("")){
-            System.out.println("Fehler");
         }
         if(getQueryPasswordErst(request).equals(getQueryPasswordWdh(request))){
             dao.DAO.neueUni(getQueryUsernameAnlegen(request), getQueryPasswordErst(request));
-            model.put("angelegt",true);
+            model.put(MODEL_Angelegt,true);
         }
         return new VelocityTemplateEngine().render(new ModelAndView(model, Path.T_ADMIN));
     };

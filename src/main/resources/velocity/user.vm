@@ -16,7 +16,8 @@
             </div>
             <div id="rahmen">
 		<label id="text">Thema hinzufügen</label><br><br>
-		<label id ="text" for="dModul">Modul: <select id="themaModul" name="themaModul"> 
+		<label id ="text" for="dModul">Modul: <select id="themaModul" name="themaModul">
+                <--Vorhandene Module werden in die Liste eingefuegt-->
 		#foreach ($modul in $module)
                     <option> $modul</option>
                 #end
@@ -30,12 +31,14 @@
             </div>
             <div id="rahmen">
                 <label id="text">Frage hinzufügen</label><br><br>
-		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulFrage"> 
+		<label id ="text" for="dModul1">Modul: <select id="dModul1" name="modulFrage">
+                <--Vorhandene Module werden in die Liste eingefuegt-->
 		#foreach ($modul in $module)
                     <option> $modul</option>
                 #end
 		</select></label>
-		<label id ="text" for="dModul2">Thema: <select id="dModul2" name="themaFrage">           
+		<label id ="text" for="dModul2">Thema: <select id="dModul2" name="themaFrage">
+                    <--Vorhandene Themen werden in die Liste eingefuegt-->
                     #foreach ($thema in $themen)
                         <option> $thema </option>
                     #end
@@ -84,7 +87,8 @@
             </div>
             <div id="rahmen">
 		<label id="text">Klausur hinzufügen</label><br><br>
-		<label id ="text" for="dModul1">Prüfungsperiode: <select id="dModul1" name="periode"> 
+		<label id ="text" for="dModul1">Prüfungsperiode: <select id="dModul1" name="periode">
+                <--Vorhandene Pruefungsperioden werden in die Liste eingefuegt-->
 		#foreach ($periode in $pp)
                     <option> $periode</option>
                 #end
@@ -109,6 +113,7 @@
 		<label id="text">Modul neuberechnen: </label><br><br>
 		<label id ="text" for="dModul">Modul: <select id="themaModul" name="modulBerechnen"> 
                 <option> </option>
+                <--Vorhandene Module werden in die Liste eingefuegt-->
 		#foreach ($modul in $module)
                     <option> $modul</option>
                 #end
