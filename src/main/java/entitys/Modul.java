@@ -67,6 +67,13 @@ public class Modul implements Serializable {
 
     public Modul(){}
     
+    /**
+     * Erstellt ein neues Modulobjekt.
+     * 
+     * @param uni Uni die dieses Modul anbietet
+     * @param kuerzel Kuerzel des Moduls
+     * @param name Name des Moduls
+     */
     public Modul(Uni uni, String kuerzel, String name) {
         this.uni = uni;
         this.kuerzel = kuerzel;
@@ -85,6 +92,11 @@ public class Modul implements Serializable {
         return name;
     }
 
+    /**
+     * Liefert die Themen, die zu dem Modulobjekt gehoeren.
+     * 
+     * @return Themen des Moduls
+     */
     public Collection<Thema> getThemen() {
         Collection<Thema> result;
         
@@ -105,6 +117,11 @@ public class Modul implements Serializable {
 //        return klausuren;
 //    }
 
+    /**
+     * Liefert die Statistiken, die zu dem Modulobjekt gehoeren.
+     * 
+     * @return Statistiken des Moduls
+     */
     public Collection<Statistik> getStatistiken() {
         Collection<Statistik> result;
         

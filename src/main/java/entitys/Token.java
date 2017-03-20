@@ -36,6 +36,12 @@ public class Token implements Serializable {
     
     public Token(){}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param aufgabe Aufgabe, auf die sich das Token bezieht
+     * @param token das Stichwort
+     */
     public Token(Aufgabe aufgabe, String token){
         this.aufgabe = aufgabe;
         this.token = token;

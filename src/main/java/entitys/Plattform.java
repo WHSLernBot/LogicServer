@@ -51,6 +51,14 @@ public class Plattform implements Serializable {
 
     public Plattform() {}
   
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param pfID Plattform-ID
+     * @param pfNr Plattform-Nummer.
+     * @param benutzer Benutzer, der zu der Plattform gehört
+     * @param witSession Die Wit.ai session 
+     */
     public Plattform(String pfID, Adresse pfNr,Benutzer benutzer, String witSession){
         this.pfID = pfID;
         this.pfNr = pfNr;

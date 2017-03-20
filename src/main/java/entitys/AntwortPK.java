@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Die PrmaryKey Klasse zu Antwort. fuer weitere Infos siehe Antwort.
+ * Die PrimaryKey Klasse zu Antwort. fuer weitere Infos siehe Antwort.
  * 
  * @author Seve
  */

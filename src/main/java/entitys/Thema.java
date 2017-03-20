@@ -67,6 +67,13 @@ public class Thema implements Serializable {
 
     public Thema(){}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param modul Modul das zu dem Thema gehoert
+     * @param name Name des Themas
+     * @param anteil Anteil den das Thema an der gesamten Klausur ausmacht
+     */
     public Thema(Modul modul, String name, int anteil) {
         this.modul = modul;
         this.name = name;
@@ -74,7 +81,9 @@ public class Thema implements Serializable {
         this.aufgabenZahl = 0;
     }
     
-    
+    /**
+     * Erhoeht die Zahl der Aufgabe, wenn zum Thema neue Aufgabe hinzugefuegt wird.
+     */
     public void addAufgabe() {
         this.aufgabenZahl++;
     }
@@ -103,6 +112,11 @@ public class Thema implements Serializable {
         return aufgabenZahl;
     }
 
+    /**
+     * Liefert den Lernstadi, die das Thema bearbeitet.
+     * 
+     * @return Lernstadi des Themas
+     */
     public Collection<LernStatus> getLernStadi() {
         Collection<LernStatus> result;
         

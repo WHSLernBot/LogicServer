@@ -32,6 +32,9 @@ public class Teilnahme implements Serializable {
     @Id
     private Long id;
     
+    /**
+     * Die Klausur an der der Benutzer teilgenommen hat.
+     */
     @ManyToOne
     private Klausur klausur;
     
@@ -41,10 +44,19 @@ public class Teilnahme implements Serializable {
      */
     private short note;
     
+    /**
+     * Der Prozentwert der Teilnahme an der Klausur.
+     */
     private int prozent;
     
     public Teilnahme(){}
 
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param benutzer der Benutzer, der an der Klausur teilnimmt
+     * @param klausur Klausur an der der Benutzer teilgenommen hat
+     */
     public Teilnahme(Benutzer benutzer, Klausur klausur) {
         this.benutzer = benutzer;
         this.klausur = klausur;

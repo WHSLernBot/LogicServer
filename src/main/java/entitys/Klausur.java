@@ -38,7 +38,7 @@ public class Klausur implements Serializable {
     private Date datum;
     
     /**
-     * Die Pruefungsperiode in der die Klausur liegt.
+     * Die Pruefungsperiode, in der die Klausur liegt.
      */
     @Id
     @ManyToOne
@@ -57,7 +57,7 @@ public class Klausur implements Serializable {
     private String ort;
     
     /**
-     * Die Uhrzeit an dem die Klausur geschrieben wird.
+     * Die Uhrzeit, an dem die Klausur geschrieben wird.
      */
     private Time uhrzeit;
     
@@ -97,6 +97,18 @@ public class Klausur implements Serializable {
     
     public Klausur(){}
     
+    /**
+     * Erstellt ein neues Klausurobjekt.
+     * 
+     * @param modul Modul, ueber das die Klausur geht
+     * @param pruefungsperiode Die Pruefungsperiode in der die Klausur liegt
+     * @param datum Datum der Klausur
+     * @param uhrzeit Uhrzeit der Klausur
+     * @param dauer Dauer der Klausur
+     * @param ort Der Ort in dem die Klausur geschrieben wird
+     * @param hilfsmittel Die Hilfsmittel die in der Klausur benutzer werden koennen
+     * @param typ Die Art der Klausur
+     */
     public Klausur(Modul modul,Pruefungsperiode pruefungsperiode, Date datum, Time uhrzeit, short dauer, String ort, String hilfsmittel, String typ){
         
         this.modul = modul;

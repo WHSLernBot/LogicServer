@@ -29,7 +29,7 @@ public class Statistik implements Serializable {
     
     /**
      * Die woche der Statistik. Gerechnet in bezug auf Abstand der Klausur.
-     * => 2 = 2 wochen vor der Klausur
+     * => 2 = 2 Wochen vor der Klausur
      */
     @Id
     private short woche;
@@ -43,6 +43,13 @@ public class Statistik implements Serializable {
         
     }
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param modul das zugehoerige Modul
+     * @param woche Woche der Statistik
+     * @param anteil Der Anteil den diese Statistik ausmacht
+     */
     public Statistik(Modul modul, short woche, int anteil) {
         this.modul = modul;
         this.woche = woche;
@@ -67,7 +74,8 @@ public class Statistik implements Serializable {
     
     /**
      * Addiert die Angegebene Zahl auf den Anteil drauf.
-     * @param p 
+     * 
+     * @param p Die Zahl, die drauf addiert werden soll
      */
     public void setPlusAnteil(int p) {
         anteil += p;

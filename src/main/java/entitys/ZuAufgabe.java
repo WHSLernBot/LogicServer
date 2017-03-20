@@ -36,11 +36,21 @@ public class ZuAufgabe implements Serializable {
     @OneToOne
     private LernStatus lernStatus;
     
+    /**
+     * Die Kennnummer fuer eine zubearbeitende Aufgabe. 
+     */
     @Id
     private int kennung;
     
     public ZuAufgabe(){}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param status Der zugehoerige Lernstatus
+     * @param aufgabe Die zubearbeitende Aufgabe
+     * @param kennung Die Kennummer
+     */
     public ZuAufgabe(LernStatus status, Aufgabe aufgabe,int kennung){
         this.lernStatus = status;
         this.aufgabe = aufgabe;

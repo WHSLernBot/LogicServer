@@ -108,6 +108,13 @@ public class LernStatus implements Serializable {
     
     public LernStatus(){}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param benutzer Benutzer dem der LernStatus gehoehrt
+     * @param thema Thema das der LernStatus persistiert
+     * @param letztesDatum Datum der zuletzt geloesten Aufgabe
+     */
     public LernStatus(Benutzer benutzer, Thema thema, Date letztesDatum){
         
         this.benutzer = benutzer;
@@ -140,6 +147,9 @@ public class LernStatus implements Serializable {
         this.beendet = true;
     }
     
+    /**
+     * Erhoeht den Wert, wenn die Aufgabe richtig geloest wird.
+     */
     public void richtigGeloest(){
         this.richtige++;
     }
@@ -164,6 +174,11 @@ public class LernStatus implements Serializable {
         return letztesDatum;
     }
 
+    /**
+     * Liefert die Aufgaben, die der Benutzer bearbeitet hat.
+     * 
+     * @return bearbeitete Aufgaben
+     */
     public Collection<BeAufgabe> getBeAufgaben() {
         Collection<BeAufgabe> result;
         
@@ -189,6 +204,11 @@ public class LernStatus implements Serializable {
 //        this.kennungBe++;
 //    }
 
+    /**
+     * Liefert die Aufgaben, die der Benutzer zusaetzlich geloest hat. 
+     * 
+     * @return zusaetzlich geloeste Aufgaben
+     */
     public Collection<XGAufgabe> getXgAufgaben() {
         
         Collection<XGAufgabe> result;

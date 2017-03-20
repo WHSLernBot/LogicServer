@@ -33,11 +33,21 @@ public class XGAufgabe implements Serializable {
     @ManyToOne
     private LernStatus lernStatus;
     
+    /**
+     * Die Kennnummer fuer eine extra geloeste Aufgabe.
+     */
     @Id
     private int kennung;
     
     public XGAufgabe(){}
 
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param aufgabe Aufgabe, die bearbeitet wurde
+     * @param lernStatus Lernstatus der diese Aufgabe bearbeitet hat
+     * @param kennung Die Kennnummer
+     */
     public XGAufgabe(Aufgabe aufgabe, LernStatus lernStatus, int kennung) {
         this.aufgabe = aufgabe;
         this.lernStatus = lernStatus;

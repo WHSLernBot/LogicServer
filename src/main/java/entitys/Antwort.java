@@ -54,6 +54,14 @@ public class Antwort implements Serializable {
 
     }
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param aufgabe Aufgabe, die beantwortet wird
+     * @param nummer Die Nummer der Antwort
+     * @param antwort der Antworttext
+     * @param richtig true, wenn die Aufgabe richtig ist
+     */
     public Antwort(Aufgabe aufgabe, short nummer, String antwort, Boolean richtig) {
        this.aufgabe = aufgabe;
        this.nummer = nummer;

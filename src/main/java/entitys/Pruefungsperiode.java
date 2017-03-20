@@ -32,7 +32,7 @@ public class Pruefungsperiode implements Serializable {
     private short jahr;
     
     /**
-     * DIe entsprechende nummer der Phase.
+     * Die entsprechende nummer der Phase.
      */
     @Id
     private short phase;
@@ -67,6 +67,16 @@ public class Pruefungsperiode implements Serializable {
 
     public Pruefungsperiode(){}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param uni Die Uni dieser Pruefungsperiode
+     * @param jahr Jahr der Pruefungsperiode
+     * @param phase Die Nummer der Phase
+     * @param anmeldebeginn Datum der Anmeldung
+     * @param anfang Anfangsdatum der Periode
+     * @param ende Enddatum der Periode
+     */
     public Pruefungsperiode(Uni uni, short jahr, short phase, Date anmeldebeginn, Date anfang, Date ende){
         this.uni = uni;
         this.jahr = jahr;

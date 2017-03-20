@@ -34,6 +34,9 @@ public class BeAufgabe implements Serializable {
     @ManyToOne
     private LernStatus lernStatus;
     
+    /**
+     * Die Kennnummer fuer eine bearbeitete Aufgabe.
+     */
     @Id
     private int kennung;
     
@@ -62,6 +65,17 @@ public class BeAufgabe implements Serializable {
         
     }
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param aufgabe Die bearbeitete Aufgabe
+     * @param lernStatus Der Lernstatus des Benutzers
+     * @param kennung Die Kennnummer der bearbeitete Aufgabe
+     * @param richtig true, falls die Antwort richtig war
+     * @param datum Datum, an dem die Aufgabe bearbeitet wurde
+     * @param hinweis true, falls ein Hinweis benutzt wurde
+     * @param beantwortet true, falls die Aufgabe beantwortet wurde
+     */
     public BeAufgabe(Aufgabe aufgabe, LernStatus lernStatus,int kennung, Boolean richtig, 
             Date datum, Boolean hinweis, Boolean beantwortet) {
         
@@ -74,6 +88,10 @@ public class BeAufgabe implements Serializable {
         this.kennung = kennung;
     }
     
+    /**     
+     * 
+     * @return Liefert true, wenn die bearbeitete Aufgabe richtig ist, false sonst.
+     */
     public boolean istRichtig(){
         return richtig;
     }
@@ -102,6 +120,13 @@ public class BeAufgabe implements Serializable {
         return kennung;
     }
     
+    /**
+     * Setzt die Antwort der bearbeiteten Aufgabe.
+     * 
+     * @param richtig true, wenn die Aufgabe richtig bearbeitet wurde, sonst false.
+     * @param hinweis true, falls ein Hinweis benutzt wurde, sonst false.
+     * @param datum setzt das Datum, wann die Aufgabe bearbeitet wurde.
+     */
     public void setzeAntwort(boolean richtig, boolean hinweis, Date datum) {
         this.datum = datum;
         this.beantwortet = true;

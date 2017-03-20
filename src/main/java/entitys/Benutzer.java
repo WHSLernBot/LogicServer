@@ -64,7 +64,7 @@ public class Benutzer implements Serializable {
     private Collection<LernStatus> lernStadi;
     
     /**
-     * Die Klausuren an den der Benutzer teilnimmt.
+     * Die Klausuren, an den der Benutzer teilnimmt.
      */
     @OneToMany(mappedBy="benutzer" , cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Teilnahme> teilnahmen;
@@ -75,6 +75,9 @@ public class Benutzer implements Serializable {
     @OneToOne(mappedBy="benutzer", cascade=CascadeType.ALL,orphanRemoval = true)
     private Plattform plattform;
     
+    /**
+     * Die Anzahl der geschriebenen Klausuren.
+     */
     private long klausuranzahl;
     
     public Benutzer(){
@@ -97,10 +100,18 @@ public class Benutzer implements Serializable {
         klausuranzahl = 0;
     }
     
+    /**
+     * Erhoeht die Anzahl, wenn die Klausur neu geschrieben wird.
+     */
     public void neueKlausur() {
         klausuranzahl++;
     }
     
+    /**
+     * Liefert die Anzahl der geschriebenen Klausuren. 
+     * 
+     * @return Anzahl der geschriebenen Klausuren
+     */
     public long gibKlausurNummer() {
         return klausuranzahl;
     }
@@ -134,6 +145,11 @@ public class Benutzer implements Serializable {
     }
     
 
+    /**
+     * Liefert den Lernstatus des Benutzers.
+     * 
+     * @return Lernstatus des Benutzers
+     */
     public Collection<LernStatus> getLernStadi() {
         
         Collection<LernStatus> result;

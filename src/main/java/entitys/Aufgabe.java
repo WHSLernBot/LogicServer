@@ -99,6 +99,9 @@ public class Aufgabe implements Serializable {
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<Bewertung> bewertungen;
     
+    /**
+     * Alle bearbeiteten Aufgaben.
+     */
     @OneToMany(mappedBy="aufgabe", cascade=CascadeType.ALL,orphanRemoval = true)
     private Collection<BeAufgabe> bearbeitet;
 
@@ -109,12 +112,13 @@ public class Aufgabe implements Serializable {
     }
     
     /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
      * 
-     * @param thema Das zugehoerige Thema der Frage.
+     * @param thema Das zugehoerige Thema der Aufgabe.
      * @param frage Der Fragetext.
      * @param schwierigkeit Der schwierigkeitsgrad.
-     * @param hinweis Ein Hinweistext.
-     * @param verweis Ein Verweistext zum nachlesen.
+     * @param hinweis Der Hinweistext.
+     * @param verweis Der Verweistext zum nachlesen.
      */
     public Aufgabe(Thema thema, String frage, int schwierigkeit, String hinweis, String verweis){
         
@@ -130,6 +134,7 @@ public class Aufgabe implements Serializable {
     }
     
     /**
+     * Liefert alle Antwortmoeglichkeiten zu der Aufgabe.
      * 
      * @return Alle Antwortmoeglichkeiten dieser Frage.
      */
@@ -165,71 +170,150 @@ public class Aufgabe implements Serializable {
 //    }
     
     
-    
+    /**
+     * Liefert die ID der Aufgabe.
+     * 
+     * @return ID der Aufgabe
+     */
     public long getAufgabenID(){
         return aufgabenID;
     }
     
+    /**
+     * Setzt die Frage zu der Aufgabe.
+     * 
+     * @param frage, die gesetzt werden soll
+     */
     public void setFrage(String frage){
         this.frage = frage;
     }
     
+    /**
+     * Liefert die Frage.
+     * 
+     * @return Frage, die gestellt wird. 
+     */
     public String getFrage(){
         return frage;
     }
     
+    /**
+     * Setzt einen Wert, wie schwer eine Aufgabe ist.
+     * 
+     * @param schwierigkeit 
+     */
     public void setSchwierigkeit(int schwierigkeit){
         this.schwierigkeit = schwierigkeit;
     }
     
+    /**
+     * Liefert den Schwierigkeitsgrad der Aufgabe.
+     * 
+     * @return schwierigkeit
+     */
     public int getSchwierigkeit(){
         return schwierigkeit;
     }
     
+    /**
+     * Setzt einen Hinweistext zu der Aufgabe.
+     * 
+     * @param hinweis Der Hinweistext
+     */
     public void setHinweis(String hinweis){
         this.hinweis = hinweis;
     }
     
+    /**
+     * Gibt einen Hinweistext zurueck.
+     * 
+     * @return Hinweistext
+     */
     public String getHinweis(){
         return hinweis;
     }
     
+    /**
+     *  Erhoeht den Wert, wenn die Aufgabe positiv bewertet wird.
+     * 
+     */
     public void positivBewertet(){
         this.bewertung++;
     } 
     
+    /**
+     * Erniedrigt den Wert, wenn die Aufgabe negativ bewertet wird.
+     */
     public void negativBewertet() {
         this.bewertung--;
     }
     
+    /**
+     * Gibt eine Bewertung fuer die Augabe zurueck.
+     * 
+     * @return Die Bewertung
+     */
     public int getBewertung(){
         return bewertung;
     } 
     
+    /**
+     * Setzt Verweise zu der Aufgabe.
+     * 
+     * @param verweis Der Verweistext
+     */
     public void setVerweis(String verweis){
         this.verweis = verweis;
     }
     
+    /**
+     * Gibt einen Verweis zu der Aufgabe zurueck.
+     * 
+     * @return der Verweistext
+     */
     public String getVerweis(){
         return verweis;
     }
 
+    /**
+     * Setzt Punkte zu der Aufgabe. 
+     * 
+     * @param punkte 
+     */
     public void setPunkte(int punkte){
         this.punkte = punkte;
     }
     
+    /**
+     * Gibt die Punktzahl der Aufgabe zuruek.
+     * 
+     * @return Die Punkte
+     */
     public int getPunkte(){
         return punkte;
     }
 
+    /**
+     * Liefert das Thema zu dem der Aufgabe gestellt werden soll.
+     * 
+     * @return Thema der Aufgabe
+     */
     public Thema getThema() {
         return thema;
     }
 
+    /**
+     * Gibt die Anzhalt der beantworteten Aufgaben zurueck.
+     * 
+     * @return Anzahl der Antworten
+     */
     public short getAnzAntworten() {
         return anzAntworten;
     }
     
+    /**
+     * Erhoeht die Anzahl der Antworten, wenn eine Antwort hinzugeguegt wird.
+     */
     public void addAntwort() {
         anzAntworten++;
     }

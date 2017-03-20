@@ -64,6 +64,11 @@ public class Uni implements Serializable {
     
     public Uni() {}
     
+    /**
+     * Erstellt ein neues Uni-Objekt.
+     * 
+     * @param name Name der Universitaet
+     */
     public Uni(String name) {
         this.name = name;
         this.password = "projekt";
@@ -89,6 +94,11 @@ public class Uni implements Serializable {
         this.password = password;
     }
 
+    /**
+     * Liefert alle Benutzer die zu der Uni gehoeren.
+     * 
+     * @return Benuter der Unis
+     */
     public Collection<Benutzer> getBenutzer() {
         Collection<Benutzer> result;
         
@@ -104,10 +114,16 @@ public class Uni implements Serializable {
         return result;
     }
 
+  
     public void addBenutzer(Benutzer benutzer) {
         this.benutzer.add(benutzer);
     }
 
+    /**
+     * Liefert alle Module die zu der Uni gehoeren.
+     * 
+     * @return Module der Uni
+     */
     public Collection<Modul> getModul() {
         Collection<Modul> result;
         
@@ -127,6 +143,11 @@ public class Uni implements Serializable {
 //        this.modul.add(new Modul(this,kuerzel,name));
 //    }
 
+    /**
+     * Liefert die Pruefungsperiode der Uni.
+     * 
+     * @return Pruefungsperiode der Uni
+     */
     public Collection<Pruefungsperiode> getPruefungsperiode() {
         Collection<Pruefungsperiode> result;
         

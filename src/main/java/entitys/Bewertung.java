@@ -23,7 +23,7 @@ public class Bewertung implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
-     * Die Bewertete Aufgabe.
+     * Die bewertete Aufgabe.
      */
     @ManyToOne
     private Aufgabe aufgabe;
@@ -42,6 +42,13 @@ public class Bewertung implements Serializable {
 
     public Bewertung() {}
     
+    /**
+     * Erzeugt ein neues Objekt dieser Klasse mit den angegebenen Daten.
+     * 
+     * @param aufgabe Aufgabe, die bewertet wird
+     * @param lernStatus Lerstatus des Benutzers
+     * @param positiv true, falls die Aufgabe positiv bewertet wurde, ansonsten negativ false.
+     */
     public Bewertung(Aufgabe aufgabe, LernStatus lernStatus, boolean positiv) {
         this.aufgabe = aufgabe;
         this.lernStatus = lernStatus;
